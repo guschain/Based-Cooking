@@ -78,13 +78,14 @@ Step by step:
 4. Choose the category with the arrow keys and press `Enter`.
 5. Choose one or more tags with the arrow keys and `Enter`.
 6. Accept the default image or type another image path.
-7. Add ingredients, one per line, then press `Enter` on an empty line to finish.
-8. Add preparation steps, one per line, then press `Enter` on an empty line to finish.
-9. Add notes if needed, then press `Enter` on an empty line to finish.
-10. When the script finishes, a new file will appear in `recipes/`.
-11. If you want to preview the site on your own computer, run `npm run build`.
-12. Commit and push the new recipe to GitHub.
-13. Wait for the `Deploy GitHub Pages` workflow to finish.
+7. Add each ingredient in two fields: first the quantity, then the ingredient name.
+8. Leave the next quantity empty when you are done adding ingredients.
+9. Add preparation steps, one per line, then press `Enter` on an empty line to finish.
+10. Add notes if needed, then press `Enter` on an empty line to finish.
+11. When the script finishes, a new file will appear in `recipes/`.
+12. If you want to preview the site on your own computer, run `npm run build`.
+13. Commit and push the new recipe to GitHub.
+14. Wait for the `Deploy GitHub Pages` workflow to finish.
 
 ### Browser-only option (no terminal)
 
@@ -109,11 +110,13 @@ Step by step in GitHub, with no terminal:
 5. In another browser tab, open `templates/recipe-template.md`.
 6. Copy its contents and paste them into the new file.
 7. Replace all placeholders with the real recipe details.
-8. Click the green `Commit changes...` button in the top-right of the file editor.
-9. In the dialog that opens, keep `Commit directly to the main branch` selected.
-10. Click the green `Commit changes` button in that dialog.
-11. Open the `Actions` tab and wait for `Deploy GitHub Pages` to finish.
-12. Open `https://guschain.github.io/Based-Cooking/` and refresh the page.
+8. In `#### Ingredientes`, use one line per ingredient in this format: `- quantidade ingrediente`.
+9. Example: `- 2 kg peito de frango`
+10. Click the green `Commit changes...` button in the top-right of the file editor.
+11. In the dialog that opens, keep `Commit directly to the main branch` selected.
+12. Click the green `Commit changes` button in that dialog.
+13. Open the `Actions` tab and wait for `Deploy GitHub Pages` to finish.
+14. Open `https://guschain.github.io/Based-Cooking/` and refresh the page.
 
 ### Publish the change
 
@@ -153,6 +156,21 @@ In practice:
 2. Reference it in the recipe front matter, for example `image: images/frango-assado.jpg`.
 3. If you want a local preview, rebuild the site.
 4. Commit and push the image and recipe change.
+
+## Ingredient format
+
+To keep recipes consistent, write ingredients like this:
+
+1. One ingredient per line.
+2. Start the line with `-`.
+3. Put the quantity first.
+4. Put the ingredient name after the quantity.
+
+Examples:
+
+1. `- 2 kg peito de frango`
+2. `- 3 colheres de sopa azeite`
+3. `- q.b. sal`
 
 ## Change the recipe template
 

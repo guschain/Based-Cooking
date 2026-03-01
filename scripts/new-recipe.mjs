@@ -216,6 +216,44 @@ async function promptMultiline(rl, intro, formatter, { required = false } = {}) 
   return lines.map((line, index) => formatter(line, index)).join("\n");
 }
 
+async function promptStructuredIngredients(rl) {
+  console.log("Ingredientes");
+  console.log("Cada ingrediente e preenchido em dois campos: quantidade e nome.");
+  console.log("Exemplo: quantidade `2 kg`, ingrediente `peito de frango`.");
+  console.log("Deixa a quantidade vazia depois do ultimo ingrediente para terminar.");
+
+  const items = [];
+  let index = 1;
+
+  while (true) {
+    const quantity = (await rl.question(`Quantidade ${index}: `)).trim();
+
+    if (!quantity) {
+      if (!items.length) {
+        console.log("Adiciona pelo menos um ingrediente.");
+        continue;
+      }
+
+      break;
+    }
+
+    let ingredientName = "";
+
+    while (!ingredientName) {
+      ingredientName = (await rl.question(`Ingrediente ${index}: `)).trim();
+
+      if (!ingredientName) {
+        console.log("O nome do ingrediente e obrigatorio.");
+      }
+    }
+
+    items.push(`- ${quantity} ${ingredientName}`);
+    index += 1;
+  }
+
+  return items.join("\n");
+}
+
 function renderNotesSection(notes) {
   if (!notes) {
     return "";
@@ -280,7 +318,17 @@ function createVisibleWindow(rows, cursorIndex) {
   };
 }
 
-async function selectSingleOption(title, options, { allowCustom = true } = {}) {
+async function selectSingleOption(
+  title,
+  options,
+  {
+    allowCustom = true,
+    customLabelPrefix = "Criar novo valor",
+    emptyLabel = "Sem resultados. Escreve para criar um novo valor.",
+    emptyFilteredLabel = "Sem resultados para este filtro.",
+    optionFormatter = (value) => value
+  } = {}
+) {
   return new Promise((resolve, reject) => {
     emitKeypressEvents(input);
     input.setRawMode(true);
@@ -305,34 +353,36 @@ async function selectSingleOption(title, options, { allowCustom = true } = {}) {
     };
 
     const render = () => {
+      const trimmedQuery = query.trim();
       const filtered = options.filter((option) =>
         normaliseForSearch(option).includes(normaliseForSearch(query))
       );
+      const hasExactMatch =
+        trimmedQuery &&
+        options.some((option) => normaliseForSearch(option) === normaliseForSearch(trimmedQuery));
 
       rows = [];
-
-      if (allowCustom && query.trim()) {
-        rows.push({
-          type: "custom",
-          label: `Criar novo valor: ${query.trim()}`,
-          value: query.trim()
-        });
-      }
 
       for (const option of filtered) {
         rows.push({
           type: "option",
-          label: option,
+          label: optionFormatter(option),
           value: option
+        });
+      }
+
+      if (allowCustom && trimmedQuery && !hasExactMatch) {
+        rows.push({
+          type: "custom",
+          label: `${customLabelPrefix}: ${trimmedQuery}`,
+          value: trimmedQuery
         });
       }
 
       if (!rows.length) {
         rows.push({
           type: "empty",
-          label: allowCustom
-            ? "Sem resultados. Escreve para criar um novo valor."
-            : "Sem resultados para este filtro.",
+          label: allowCustom ? emptyLabel : emptyFilteredLabel,
           value: ""
         });
       }
@@ -625,7 +675,12 @@ async function promptCategory(rl, categories) {
   rl.pause();
 
   try {
-    return await selectSingleOption("Categoria", categories, { allowCustom: true });
+    return await selectSingleOption("Categoria", categories, {
+      allowCustom: true,
+      customLabelPrefix: "Criar nova categoria",
+      emptyLabel: "Sem resultados. Escreve para criar uma nova categoria.",
+      optionFormatter: (value) => `[ ] ${value}`
+    });
   } finally {
     safeResumeReadline(rl);
   }
@@ -667,12 +722,7 @@ async function main() {
     const suggestedTags = buildSuggestedTags(title, category, recipeOptions.tags);
     const tags = await promptTags(rl, recipeOptions.tags, suggestedTags);
     const image = await promptOptional(rl, `Imagem [${placeholderImage}]: `, placeholderImage);
-    const ingredients = await promptMultiline(
-      rl,
-      "Ingredientes (uma linha por ingrediente; linha vazia para terminar):",
-      (line) => `- ${line}`,
-      { required: true }
-    );
+    const ingredients = await promptStructuredIngredients(rl);
     const preparation = await promptMultiline(
       rl,
       "Preparacao (uma linha por passo; linha vazia para terminar):",
@@ -726,6 +776,11 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error.message);
+  if (error.message === "readline was closed") {
+    console.error("Operacao cancelada.");
+  } else {
+    console.error(error.message);
+  }
+
   process.exitCode = 1;
 });
