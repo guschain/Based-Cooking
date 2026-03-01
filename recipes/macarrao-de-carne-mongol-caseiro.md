@@ -1,5 +1,5 @@
 ---
-title: Macarrão de carne mongol caseiro
+title: Macarrão de Carne Mongol caseiro
 category: Pratos principais
 tags: pratos-principais, macarrao, carne, mongol
 image: images/recipe-placeholder.svg

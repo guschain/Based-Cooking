@@ -1,5 +1,5 @@
 ---
-title: Torta de laranja
+title: Torta de Laranja
 category: Sobremesas
 tags: sobremesas, torta, laranja
 image: images/recipe-placeholder.svg

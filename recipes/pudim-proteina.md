@@ -1,5 +1,5 @@
 ---
-title: Pudim proteína
+title: Pudim Proteína
 category: Sobremesas
 tags: sobremesas, pudim, proteina
 image: images/recipe-placeholder.svg

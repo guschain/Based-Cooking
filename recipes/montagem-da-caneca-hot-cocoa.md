@@ -1,5 +1,5 @@
 ---
-title: Montagem da caneca (hot cocoa)
+title: Montagem da Caneca (hot cocoa)
 category: Bebidas
 tags: bebidas, montagem, caneca, cocoa
 image: images/recipe-placeholder.svg

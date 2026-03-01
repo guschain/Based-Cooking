@@ -1,5 +1,5 @@
 ---
-title: Arroz de salmão
+title: Arroz de Salmão
 category: Pratos principais
 tags: pratos-principais, arroz, salmao
 image: images/recipe-placeholder.svg

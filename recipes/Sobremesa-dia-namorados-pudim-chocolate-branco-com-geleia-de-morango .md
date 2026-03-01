@@ -1,5 +1,5 @@
 ---
-title: Sobremesa dia namorados - Pudim de chocolate branco com geleia de morango
+title: Sobremesa Dia Namorados - Pudim de Chocolate Branco com Geleia de Morango
 category: Sobremesas
 tags: sobremesas, pudim, chocolate, morango, frutos
 image: images/recipe-placeholder.svg

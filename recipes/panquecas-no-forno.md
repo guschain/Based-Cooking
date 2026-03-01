@@ -1,5 +1,5 @@
 ---
-title: Panquecas no forno
+title: Panquecas no Forno
 category: Pequeno-almoço e lanches
 tags: pequeno-almoco-e-lanches, panquecas, forno
 image: images/recipe-placeholder.svg

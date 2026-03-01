@@ -1,5 +1,5 @@
 ---
-title: Sopa de feijão verde
+title: Sopa de Feijão Verde
 category: Sopas
 tags: sopas, sopa, feijao, verde
 image: images/recipe-placeholder.svg

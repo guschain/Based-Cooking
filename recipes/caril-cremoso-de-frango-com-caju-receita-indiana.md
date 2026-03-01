@@ -1,5 +1,5 @@
 ---
-title: Caril cremoso de frango com caju — Receita Indiana
+title: Caril Cremoso de Frango com Caju — Receita Indiana
 category: Pratos principais
 tags: pratos-principais, caril, cremoso, frango, caju
 image: images/recipe-placeholder.svg

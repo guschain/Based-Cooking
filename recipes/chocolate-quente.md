@@ -1,5 +1,5 @@
 ---
-title: Chocolate quente
+title: Chocolate Quente
 category: Bebidas
 tags: bebidas, chocolate, quente
 image: images/recipe-placeholder.svg

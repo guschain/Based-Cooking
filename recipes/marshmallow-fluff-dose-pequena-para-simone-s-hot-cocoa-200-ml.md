@@ -1,5 +1,5 @@
 ---
-title: Marshmallow fluff (dose pequena) — para “Simone's Hot Cocoa (200 ml)”
+title: Marshmallow Fluff (dose pequena) — para “Simone's Hot Cocoa (200 ml)”
 category: Bebidas
 tags: bebidas, marshmallow, fluff, dose, simone
 image: images/recipe-placeholder.svg

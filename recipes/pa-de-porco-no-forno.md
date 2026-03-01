@@ -1,5 +1,5 @@
 ---
-title: Pá de Porco no forno
+title: Pá de Porco no Forno
 category: Pratos principais
 tags: pratos-principais, porco, forno
 image: images/recipe-placeholder.svg
