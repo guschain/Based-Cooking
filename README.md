@@ -60,17 +60,33 @@ npm run new-recipe
 
 It asks for the title, category, tags, image, ingredients, preparation steps, and optional notes, then creates a new file in `recipes/`.
 
+For category and tags, it reuses the existing shared lists:
+
+1. Type to filter the list.
+2. Use the arrow keys to move.
+3. Press `Enter` to choose a category.
+4. In the tags step, press `Enter` to add or remove the highlighted tag.
+5. Press `Enter` on `[Concluir selecao]` when finished.
+
+This keeps tags consistent and avoids duplicates like `Dinner` vs `dinner`.
+
 Step by step:
 
 1. Open a terminal in this project folder.
 2. Run `npm run new-recipe`.
-3. Answer each question.
-4. When the script finishes, a new file will appear in `recipes/`.
-5. If you want to preview the site on your own computer, run `npm run build`.
-6. Commit and push the new recipe to GitHub.
-7. Wait for the `Deploy GitHub Pages` workflow to finish.
+3. Type the recipe title.
+4. Choose the category with the arrow keys and press `Enter`.
+5. Choose one or more tags with the arrow keys and `Enter`.
+6. Accept the default image or type another image path.
+7. Add ingredients, one per line, then press `Enter` on an empty line to finish.
+8. Add preparation steps, one per line, then press `Enter` on an empty line to finish.
+9. Add notes if needed, then press `Enter` on an empty line to finish.
+10. When the script finishes, a new file will appear in `recipes/`.
+11. If you want to preview the site on your own computer, run `npm run build`.
+12. Commit and push the new recipe to GitHub.
+13. Wait for the `Deploy GitHub Pages` workflow to finish.
 
-### Non-technical option
+### Browser-only option (no terminal)
 
 Copy `templates/recipe-template.md` into `recipes/`, rename it, and replace the visible placeholders:
 
@@ -93,10 +109,11 @@ Step by step in GitHub, with no terminal:
 5. In another browser tab, open `templates/recipe-template.md`.
 6. Copy its contents and paste them into the new file.
 7. Replace all placeholders with the real recipe details.
-8. Scroll down and click `Commit changes...`.
-9. Commit directly to `main`.
-10. Open the `Actions` tab and wait for `Deploy GitHub Pages` to finish.
-11. Open `https://guschain.github.io/Based-Cooking/` and refresh the page.
+8. Click the green `Commit changes...` button in the top-right of the file editor.
+9. In the dialog that opens, keep `Commit directly to the main branch` selected.
+10. Click the green `Commit changes` button in that dialog.
+11. Open the `Actions` tab and wait for `Deploy GitHub Pages` to finish.
+12. Open `https://guschain.github.io/Based-Cooking/` and refresh the page.
 
 ### Publish the change
 
@@ -107,6 +124,28 @@ npm run build
 ```
 
 This local build is optional for publishing. GitHub Actions builds the site again on GitHub after you push.
+
+## Does the site update automatically?
+
+Yes, but only after a commit reaches `main`.
+
+What triggers it:
+
+1. A push from your computer to `main`.
+2. A web edit in GitHub when you click `Commit changes...` and confirm the commit.
+3. A manual `Run workflow` in the `Actions` tab.
+
+What does not trigger it:
+
+1. Creating or editing a file only on your own computer without pushing it.
+2. Leaving a draft edit open in the GitHub editor without committing it.
+
+In practice:
+
+1. Add or edit the recipe.
+2. Commit the change.
+3. GitHub starts `Deploy GitHub Pages`, usually within a few seconds.
+4. When that workflow is green, refresh the public site.
 
 ## Add an image
 
@@ -139,6 +178,20 @@ python3 -m http.server 4173 -d docs
 ```
 
 Then open `http://localhost:4173`.
+
+## Website addresses
+
+Live website:
+
+1. `https://guschain.github.io/Based-Cooking/`
+
+GitHub repository:
+
+1. `https://github.com/guschain/Based-Cooking`
+
+Local preview after running the local server:
+
+1. `http://localhost:4173`
 
 ## GitHub Pages setup
 
