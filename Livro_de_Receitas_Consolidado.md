@@ -16,7 +16,7 @@ _Edição consolidada — 01/03/2026_
   - [Frango no Forno Fácil](#frango-no-forno-facil)
   - [Massinha Pevide com Legumes (Vegetariana)](#massinha-pevide-com-legumes-vegetariana)
   - [Esparguete à Bolonhesa](#esparguete-a-bolonhesa)
-  - [Sardineira Tradicional](#sardineira-tradicional)
+  - [Jardineira Tradicional](#jardineira-tradicional)
   - [Arroz de Pato](#arroz-de-pato)
   - [Macarrão de carne mongol caseiro](#macarrao-de-carne-mongol-caseiro)
 - [Sopas](#sopas)
@@ -370,7 +370,7 @@ _Edição consolidada — 01/03/2026_
 
 ---
 
-### Sardineira Tradicional
+### Jardineira Tradicional
 #### Ingredientes
 - 800 g de carne de vaca (para estufar)
 - 1/2 chouriço

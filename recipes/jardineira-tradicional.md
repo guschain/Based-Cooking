@@ -1,7 +1,7 @@
 ---
-title: Sardineira Tradicional
+title: Jardineira Tradicional
 category: Pratos principais
-tags: pratos-principais, sardineira
+tags: pratos-principais, jardineira
 image: images/recipe-placeholder.svg
 ---
 

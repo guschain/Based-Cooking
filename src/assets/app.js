@@ -232,7 +232,7 @@ function renderResultsSummary() {
 
   if (!state.selectedSlug) {
     elements.resultsHelp.textContent =
-      "Nenhuma receita e aberta automaticamente. Escolhe uma da lista para ver os detalhes.";
+      "Escolhe uma receita na lista ou no painel da direita para abrir os detalhes.";
     return;
   }
 
@@ -346,26 +346,57 @@ function renderDetail() {
 
   if (!recipe) {
     const count = state.filteredRecipes.length;
-    const title =
-      count === 0
-        ? "Nenhuma receita corresponde a este filtro."
-        : count === 1
-          ? "1 receita pronta a abrir."
-          : `${count} receitas prontas a abrir.`;
-    const copy =
-      count === 0
-        ? "Tenta outra pesquisa, muda a categoria ou remove algumas tags."
-        : "Escolhe uma receita da lista da esquerda para ver os detalhes. Assim fica mais claro quantas opcoes existem neste filtro.";
+    if (!count) {
+      elements.detail.innerHTML = `
+        <div class="detail-placeholder detail-placeholder-empty">
+          <p class="eyebrow">${escapeHtml(buildFilterLabel())}</p>
+          <h2>Nenhuma receita corresponde a este filtro.</h2>
+          <p class="detail-placeholder-copy">
+            Tenta outra pesquisa, muda a categoria ou remove algumas tags.
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    const quickPickButtons = state.filteredRecipes
+      .map(
+        (item) => `
+          <button
+            class="detail-picker-button"
+            type="button"
+            data-detail-pick="${escapeHtml(item.slug)}"
+          >
+            <span class="detail-picker-title">${escapeHtml(item.title)}</span>
+            <span class="detail-picker-meta">${escapeHtml(item.category)}</span>
+          </button>
+        `
+      )
+      .join("");
 
     elements.detail.innerHTML = `
-      <div class="empty-state empty-state-wide">
-        <div class="empty-state-card">
-          <p class="eyebrow">${escapeHtml(buildFilterLabel())}</p>
-          <h2>${escapeHtml(title)}</h2>
-          <p>${escapeHtml(copy)}</p>
+      <div class="detail-placeholder">
+        <p class="eyebrow">${escapeHtml(buildFilterLabel())}</p>
+        <div class="detail-placeholder-head">
+          <h2>${escapeHtml(count === 1 ? "1 receita neste filtro" : `${count} receitas neste filtro`)}</h2>
+          <p class="detail-placeholder-copy">
+            Escolhe uma receita abaixo ou usa a lista da esquerda. Nada e aberto automaticamente.
+          </p>
         </div>
+        <div class="detail-picker-list">${quickPickButtons}</div>
       </div>
     `;
+
+    for (const button of elements.detail.querySelectorAll("[data-detail-pick]")) {
+      button.addEventListener("click", () => {
+        const slug = button.dataset.detailPick;
+
+        if (slug) {
+          setSelection(slug);
+        }
+      });
+    }
+
     return;
   }
 

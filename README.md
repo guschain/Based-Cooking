@@ -78,8 +78,8 @@ Step by step:
 4. Choose the category with the arrow keys and press `Enter`.
 5. Choose one or more tags with the arrow keys and `Enter`.
 6. Accept the default image or type another image path.
-7. Add each ingredient in two fields: first the quantity, then the ingredient name.
-8. Leave the next quantity empty when you are done adding ingredients.
+7. Add ingredients, one per line, then press `Enter` on an empty line to finish.
+8. Try to keep the format as `quantidade ingrediente`, for example `2 kg peito de frango`.
 9. Add preparation steps, one per line, then press `Enter` on an empty line to finish.
 10. Add notes if needed, then press `Enter` on an empty line to finish.
 11. When the script finishes, a new file will appear in `recipes/`.
@@ -159,7 +159,7 @@ In practice:
 
 ## Ingredient format
 
-To keep recipes consistent, write ingredients like this:
+To keep recipes consistent, try to write ingredients like this:
 
 1. One ingredient per line.
 2. Start the line with `-`.

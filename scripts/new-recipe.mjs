@@ -216,44 +216,6 @@ async function promptMultiline(rl, intro, formatter, { required = false } = {}) 
   return lines.map((line, index) => formatter(line, index)).join("\n");
 }
 
-async function promptStructuredIngredients(rl) {
-  console.log("Ingredientes");
-  console.log("Cada ingrediente e preenchido em dois campos: quantidade e nome.");
-  console.log("Exemplo: quantidade `2 kg`, ingrediente `peito de frango`.");
-  console.log("Deixa a quantidade vazia depois do ultimo ingrediente para terminar.");
-
-  const items = [];
-  let index = 1;
-
-  while (true) {
-    const quantity = (await rl.question(`Quantidade ${index}: `)).trim();
-
-    if (!quantity) {
-      if (!items.length) {
-        console.log("Adiciona pelo menos um ingrediente.");
-        continue;
-      }
-
-      break;
-    }
-
-    let ingredientName = "";
-
-    while (!ingredientName) {
-      ingredientName = (await rl.question(`Ingrediente ${index}: `)).trim();
-
-      if (!ingredientName) {
-        console.log("O nome do ingrediente e obrigatorio.");
-      }
-    }
-
-    items.push(`- ${quantity} ${ingredientName}`);
-    index += 1;
-  }
-
-  return items.join("\n");
-}
-
 function renderNotesSection(notes) {
   if (!notes) {
     return "";
@@ -722,7 +684,12 @@ async function main() {
     const suggestedTags = buildSuggestedTags(title, category, recipeOptions.tags);
     const tags = await promptTags(rl, recipeOptions.tags, suggestedTags);
     const image = await promptOptional(rl, `Imagem [${placeholderImage}]: `, placeholderImage);
-    const ingredients = await promptStructuredIngredients(rl);
+    const ingredients = await promptMultiline(
+      rl,
+      "Ingredientes (uma linha por ingrediente; linha vazia para terminar). Idealmente: quantidade + ingrediente.",
+      (line) => `- ${line.replace(/^-+\s*/, "")}`,
+      { required: true }
+    );
     const preparation = await promptMultiline(
       rl,
       "Preparacao (uma linha por passo; linha vazia para terminar):",
