@@ -1,20 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Bebidas">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e2f2ff" />
-      <stop offset="100%" stop-color="#cfe3ff" />
+      <stop offset="0%" stop-color="#dff1ff" />
+      <stop offset="100%" stop-color="#c8ddff" />
     </linearGradient>
-    <linearGradient id="drink" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#9ec2ff" />
-      <stop offset="100%" stop-color="#6d8be3" />
+    <linearGradient id="glass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9cc1ff" />
+      <stop offset="100%" stop-color="#6d87dd" />
     </linearGradient>
   </defs>
   <rect width="480" height="360" rx="48" fill="url(#bg)" />
-  <circle cx="358" cy="86" r="44" fill="#eef7ff" />
-  <rect x="176" y="102" width="128" height="172" rx="30" fill="#ffffff" fill-opacity="0.78" />
-  <rect x="190" y="132" width="100" height="124" rx="22" fill="url(#drink)" />
-  <path d="M250 90l36-44" stroke="#7a96de" stroke-width="10" stroke-linecap="round" />
-  <path d="M214 164c12-14 38-16 52-4 14-12 40-10 52 4" stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none" />
-  <circle cx="122" cy="110" r="10" fill="#ffffff" fill-opacity="0.9" />
-  <circle cx="144" cy="84" r="6" fill="#ffffff" fill-opacity="0.78" />
+  <circle cx="240" cy="188" r="116" fill="#eef7ff" />
+  <circle cx="240" cy="188" r="96" fill="#f8fbff" />
+  <circle cx="370" cy="84" r="42" fill="#f4f9ff" />
+  <rect x="188" y="114" width="104" height="156" rx="30" fill="#ffffff" fill-opacity="0.94" />
+  <rect x="204" y="138" width="72" height="104" rx="22" fill="url(#glass)" />
+  <path d="M252 104l30-44" stroke="#6d87dd" stroke-width="12" stroke-linecap="round" />
+  <circle cx="298" cy="148" r="18" fill="#ffe39b" />
+  <circle cx="298" cy="148" r="10" fill="none" stroke="#f0bf56" stroke-width="4" />
+  <circle cx="228" cy="174" r="8" fill="#ffffff" fill-opacity="0.88" />
+  <circle cx="250" cy="196" r="10" fill="#ffffff" fill-opacity="0.78" />
+  <circle cx="226" cy="218" r="7" fill="#ffffff" fill-opacity="0.84" />
 </svg>

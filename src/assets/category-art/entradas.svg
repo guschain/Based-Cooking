@@ -2,18 +2,20 @@
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#ffe8d7" />
-      <stop offset="100%" stop-color="#ffd7bf" />
+      <stop offset="100%" stop-color="#ffd4bf" />
     </linearGradient>
   </defs>
   <rect width="480" height="360" rx="48" fill="url(#bg)" />
-  <circle cx="378" cy="82" r="48" fill="#fff2df" />
-  <ellipse cx="240" cy="220" rx="142" ry="64" fill="#fff8ee" />
-  <ellipse cx="240" cy="210" rx="122" ry="50" fill="#ffffff" />
-  <circle cx="184" cy="196" r="18" fill="#f5b86a" />
-  <circle cx="230" cy="182" r="20" fill="#e56d5c" />
-  <circle cx="278" cy="202" r="18" fill="#8cb57c" />
-  <circle cx="312" cy="180" r="16" fill="#f5b86a" />
-  <path d="M170 232c34-18 102-18 140 0" stroke="#d39352" stroke-width="10" stroke-linecap="round" />
-  <circle cx="122" cy="96" r="10" fill="#ffffff" fill-opacity="0.9" />
-  <circle cx="142" cy="76" r="6" fill="#ffffff" fill-opacity="0.78" />
+  <circle cx="240" cy="188" r="116" fill="#fff1e1" />
+  <circle cx="240" cy="188" r="96" fill="#fff9f3" />
+  <circle cx="368" cy="82" r="42" fill="#fff4e8" />
+  <ellipse cx="240" cy="224" rx="98" ry="32" fill="#ffffff" />
+  <ellipse cx="240" cy="216" rx="80" ry="24" fill="#f4ddc6" />
+  <circle cx="184" cy="172" r="24" fill="#e36f5d" />
+  <circle cx="240" cy="162" r="28" fill="#8eb06f" />
+  <circle cx="296" cy="172" r="24" fill="#f0b363" />
+  <path d="M184 196v18" stroke="#cf7b58" stroke-width="7" stroke-linecap="round" />
+  <path d="M240 190v18" stroke="#6f8d59" stroke-width="7" stroke-linecap="round" />
+  <path d="M296 196v18" stroke="#d49449" stroke-width="7" stroke-linecap="round" />
+  <path d="M154 222h172" stroke="#d9b08a" stroke-width="8" stroke-linecap="round" />
 </svg>

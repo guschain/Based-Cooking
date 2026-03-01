@@ -2,17 +2,18 @@
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#ffe2c6" />
-      <stop offset="100%" stop-color="#ffd2c2" />
+      <stop offset="100%" stop-color="#ffd1bf" />
     </linearGradient>
   </defs>
   <rect width="480" height="360" rx="48" fill="url(#bg)" />
-  <circle cx="104" cy="88" r="12" fill="#ffffff" fill-opacity="0.9" />
-  <circle cx="136" cy="66" r="7" fill="#ffffff" fill-opacity="0.8" />
-  <circle cx="368" cy="86" r="44" fill="#fff1e0" />
-  <ellipse cx="240" cy="220" rx="146" ry="68" fill="#fff7ec" />
-  <ellipse cx="240" cy="212" rx="126" ry="54" fill="#f7d9a7" />
-  <path d="M164 214c26-26 50-38 78-38 38 0 76 21 96 60" fill="none" stroke="#a5533e" stroke-width="26" stroke-linecap="round" />
-  <circle cx="204" cy="202" r="12" fill="#8fb06a" />
-  <circle cx="286" cy="194" r="11" fill="#8fb06a" />
-  <circle cx="320" cy="224" r="10" fill="#f4a35d" />
+  <circle cx="240" cy="188" r="116" fill="#fff0e0" />
+  <circle cx="240" cy="188" r="96" fill="#fff8f1" />
+  <circle cx="370" cy="84" r="42" fill="#fff4e6" />
+  <circle cx="240" cy="118" r="14" fill="#7f9861" />
+  <rect x="232" y="132" width="16" height="16" rx="8" fill="#7f9861" />
+  <path d="M158 218c0-50 37-92 82-92s82 42 82 92z" fill="#c96b4d" />
+  <rect x="142" y="218" width="196" height="24" rx="12" fill="#fff7ef" />
+  <rect x="176" y="246" width="128" height="16" rx="8" fill="#d9b08a" />
+  <circle cx="196" cy="182" r="8" fill="#fff7ef" fill-opacity="0.8" />
+  <circle cx="284" cy="172" r="10" fill="#fff7ef" fill-opacity="0.72" />
 </svg>
