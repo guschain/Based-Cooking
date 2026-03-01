@@ -376,6 +376,12 @@ function renderTags() {
 function renderResultsSummary() {
   const count = state.filteredRecipes.length;
   const filterLabel = buildFilterLabel();
+  const idleHelp = isMobileViewport()
+    ? "Escolhe uma receita para abrir os detalhes."
+    : "Escolhe uma receita na lista ou no painel da direita para abrir os detalhes.";
+  const activeHelp = isMobileViewport()
+    ? "Podes trocar de receita sempre que quiseres."
+    : "A lista continua vis\u00EDvel para poderes trocar de receita dentro deste filtro.";
 
   renderSummaryVisual();
   elements.resultsLabel.textContent = filterLabel;
@@ -388,13 +394,11 @@ function renderResultsSummary() {
   }
 
   if (!state.selectedSlug) {
-    elements.resultsHelp.textContent =
-      "Escolhe uma receita na lista ou no painel da direita para abrir os detalhes.";
+    elements.resultsHelp.textContent = idleHelp;
     return;
   }
 
-  elements.resultsHelp.textContent =
-    "A lista continua vis\u00EDvel para poderes trocar de receita dentro deste filtro.";
+  elements.resultsHelp.textContent = activeHelp;
 }
 
 function renderRecipeList() {
@@ -607,7 +611,11 @@ function renderDetail() {
             <p class="eyebrow">${escapeHtml(buildFilterLabel())}</p>
             <h2>${escapeHtml(count === 1 ? "1 receita neste filtro" : `${count} receitas neste filtro`)}</h2>
             <p class="detail-placeholder-copy">
-              Escolhe uma receita abaixo ou usa a lista da esquerda. Nada \u00E9 aberto automaticamente.
+              ${
+                isMobileViewport()
+                  ? "Escolhe uma receita abaixo. Nada \u00E9 aberto automaticamente."
+                  : "Escolhe uma receita abaixo ou usa a lista da esquerda. Nada \u00E9 aberto automaticamente."
+              }
             </p>
           </div>
         </div>
