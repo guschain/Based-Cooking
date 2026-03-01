@@ -60,23 +60,15 @@ npm run new-recipe
 
 It asks for the title, category, tags, image, ingredients, preparation steps, and optional notes, then creates a new file in `recipes/`.
 
-For category and tags, it reuses the existing shared lists:
-
-1. Type to filter the list.
-2. Use the arrow keys to move.
-3. Press `Enter` to choose a category.
-4. In the tags step, press `Enter` to add or remove the highlighted tag.
-5. Press `Enter` on `[Concluir selecao]` when finished.
-
-This keeps tags consistent and avoids duplicates like `Dinner` vs `dinner`.
+The script also shows the existing categories and tags as reference, but the fields stay free to edit.
 
 Step by step:
 
 1. Open a terminal in this project folder.
 2. Run `npm run new-recipe`.
 3. Type the recipe title.
-4. Choose the category with the arrow keys and press `Enter`.
-5. Choose one or more tags with the arrow keys and `Enter`.
+4. Type the category.
+5. Type the tags.
 6. Accept the default image or type another image path.
 7. Add ingredients, one per line, then press `Enter` on an empty line to finish.
 8. Try to keep the format as `quantidade ingrediente`, for example `2 kg peito de frango`.

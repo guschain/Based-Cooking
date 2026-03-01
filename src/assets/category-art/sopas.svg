@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Sopas">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe9c9" />
+      <stop offset="100%" stop-color="#ffd6a8" />
+    </linearGradient>
+    <linearGradient id="steam" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" rx="48" fill="url(#bg)" />
+  <path d="M168 118c-15-30 14-56 24-82 7-18-3-34-3-34 35 22 39 51 30 73-10 22-30 32-24 58 2 8 8 17 15 24-15-6-28-20-42-39z" fill="url(#steam)" />
+  <path d="M246 106c-15-30 14-56 24-82 7-18-3-34-3-34 35 22 39 51 30 73-10 22-30 32-24 58 2 8 8 17 15 24-15-6-28-20-42-39z" fill="url(#steam)" />
+  <path d="M320 118c-15-30 14-56 24-82 7-18-3-34-3-34 35 22 39 51 30 73-10 22-30 32-24 58 2 8 8 17 15 24-15-6-28-20-42-39z" fill="url(#steam)" />
+  <ellipse cx="240" cy="230" rx="128" ry="52" fill="#fff8ef" />
+  <path d="M124 230h232c0 54-38 90-116 90s-116-36-116-90z" fill="#cb744b" />
+  <ellipse cx="240" cy="224" rx="106" ry="32" fill="#f6c767" />
+  <circle cx="206" cy="220" r="10" fill="#8ab06e" />
+  <circle cx="246" cy="232" r="9" fill="#e57a58" />
+  <circle cx="282" cy="214" r="8" fill="#8ab06e" />
+</svg>

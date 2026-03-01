@@ -17,12 +17,45 @@ const elements = {
   totalRecipes: document.querySelector("[data-total-recipes]"),
   visibleRecipes: document.querySelector("[data-visible-recipes]"),
   resultsSummary: document.querySelector("[data-results-summary]"),
+  summaryArt: document.querySelector("[data-summary-art]"),
+  summaryArtLabel: document.querySelector("[data-summary-art-label]"),
   resultsLabel: document.querySelector("[data-results-label]"),
   resultsCount: document.querySelector("[data-results-count]"),
   resultsHelp: document.querySelector("[data-results-help]"),
   results: document.querySelector("[data-results]"),
   detail: document.querySelector("[data-detail]"),
   clear: document.querySelector("[data-clear]")
+};
+
+const categoryVisuals = {
+  all: {
+    src: "./assets/category-art/livro.svg",
+    label: "Livro completo"
+  },
+  Entradas: {
+    src: "./assets/category-art/entradas.svg",
+    label: "Entradas"
+  },
+  "Pratos principais": {
+    src: "./assets/category-art/pratos-principais.svg",
+    label: "Pratos principais"
+  },
+  Sopas: {
+    src: "./assets/category-art/sopas.svg",
+    label: "Sopas"
+  },
+  "Pequeno-almoço e lanches": {
+    src: "./assets/category-art/pequeno-almoco-e-lanches.svg",
+    label: "Pequeno-almo\u00E7o e lanches"
+  },
+  Sobremesas: {
+    src: "./assets/category-art/sobremesas.svg",
+    label: "Sobremesas"
+  },
+  Bebidas: {
+    src: "./assets/category-art/bebidas.svg",
+    label: "Bebidas"
+  }
 };
 
 function escapeHtml(value) {
@@ -51,6 +84,10 @@ function resolveAssetPath(value) {
   }
 
   return `./${value.replace(/^\.\//, "")}`;
+}
+
+function activeCategoryVisual() {
+  return categoryVisuals[state.activeCategory] || categoryVisuals.all;
 }
 
 function uniqueCategories() {
@@ -179,11 +216,19 @@ function renderHeroStats() {
   elements.visibleRecipes.textContent = String(state.filteredRecipes.length);
 }
 
+function renderSummaryVisual() {
+  const visual = activeCategoryVisual();
+
+  elements.summaryArt.src = visual.src;
+  elements.summaryArt.alt = visual.label;
+  elements.summaryArtLabel.textContent = visual.label;
+}
+
 function renderTags() {
   const tags = uniqueTags();
 
   if (!tags.length) {
-    elements.tags.innerHTML = '<p class="results-summary-help">Sem tags disponiveis.</p>';
+    elements.tags.innerHTML = '<p class="results-summary-help">Sem tags dispon\u00EDveis.</p>';
     return;
   }
 
@@ -221,9 +266,10 @@ function renderResultsSummary() {
   const count = state.filteredRecipes.length;
   const filterLabel = buildFilterLabel();
 
+  renderSummaryVisual();
   elements.resultsLabel.textContent = filterLabel;
   elements.resultsCount.textContent =
-    count === 1 ? "1 receita disponivel" : `${count} receitas disponiveis`;
+    count === 1 ? "1 receita dispon\u00EDvel" : `${count} receitas dispon\u00EDveis`;
 
   if (!count) {
     elements.resultsHelp.textContent = "Ajusta a pesquisa ou remove alguns filtros.";
@@ -237,7 +283,7 @@ function renderResultsSummary() {
   }
 
   elements.resultsHelp.textContent =
-    "A lista continua visivel para poderes trocar de receita dentro deste filtro.";
+    "A lista continua vis\u00EDvel para poderes trocar de receita dentro deste filtro.";
 }
 
 function renderRecipeList() {
@@ -318,7 +364,7 @@ function renderSearchSuggestions() {
     ${
       extraCount
         ? `<p class="search-suggestion-more">+ ${extraCount} ${
-            extraCount === 1 ? "receita compativel" : "receitas compativeis"
+            extraCount === 1 ? "receita compat\u00EDvel" : "receitas compat\u00EDveis"
           }</p>`
         : ""
     }
@@ -346,9 +392,18 @@ function renderDetail() {
 
   if (!recipe) {
     const count = state.filteredRecipes.length;
+    const visual = activeCategoryVisual();
+
     if (!count) {
       elements.detail.innerHTML = `
         <div class="detail-placeholder detail-placeholder-empty">
+          <figure class="detail-placeholder-art-frame">
+            <img
+              class="detail-placeholder-art"
+              src="${escapeHtml(visual.src)}"
+              alt="${escapeHtml(visual.label)}"
+            >
+          </figure>
           <p class="eyebrow">${escapeHtml(buildFilterLabel())}</p>
           <h2>Nenhuma receita corresponde a este filtro.</h2>
           <p class="detail-placeholder-copy">
@@ -360,6 +415,7 @@ function renderDetail() {
     }
 
     const quickPickButtons = state.filteredRecipes
+      .slice(0, 6)
       .map(
         (item) => `
           <button
@@ -373,17 +429,37 @@ function renderDetail() {
         `
       )
       .join("");
+    const remainingCount = Math.max(0, count - 6);
 
     elements.detail.innerHTML = `
       <div class="detail-placeholder">
-        <p class="eyebrow">${escapeHtml(buildFilterLabel())}</p>
-        <div class="detail-placeholder-head">
-          <h2>${escapeHtml(count === 1 ? "1 receita neste filtro" : `${count} receitas neste filtro`)}</h2>
-          <p class="detail-placeholder-copy">
-            Escolhe uma receita abaixo ou usa a lista da esquerda. Nada e aberto automaticamente.
-          </p>
+        <div class="detail-placeholder-top">
+          <figure class="detail-placeholder-art-frame">
+            <img
+              class="detail-placeholder-art"
+              src="${escapeHtml(visual.src)}"
+              alt="${escapeHtml(visual.label)}"
+            >
+          </figure>
+          <div class="detail-placeholder-head">
+            <p class="eyebrow">${escapeHtml(buildFilterLabel())}</p>
+            <h2>${escapeHtml(count === 1 ? "1 receita neste filtro" : `${count} receitas neste filtro`)}</h2>
+            <p class="detail-placeholder-copy">
+              Escolhe uma receita abaixo ou usa a lista da esquerda. Nada \u00E9 aberto automaticamente.
+            </p>
+          </div>
         </div>
-        <div class="detail-picker-list">${quickPickButtons}</div>
+        <div class="detail-picker-block">
+          <p class="detail-picker-label">Abertura r\u00E1pida</p>
+          <div class="detail-picker-list">${quickPickButtons}</div>
+          ${
+            remainingCount
+              ? `<p class="detail-picker-more">+ ${remainingCount} ${
+                  remainingCount === 1 ? "receita na lista" : "receitas na lista"
+                }</p>`
+              : ""
+          }
+        </div>
       </div>
     `;
 
@@ -469,10 +545,11 @@ async function init() {
     state.filteredRecipes = [...state.recipes];
     renderCategoryOptions();
     renderHeroStats();
+    renderSummaryVisual();
     applyFilters();
   } catch (error) {
     elements.resultsLabel.textContent = "Erro";
-    elements.resultsCount.textContent = "Nao foi possivel carregar as receitas.";
+    elements.resultsCount.textContent = "N\u00E3o foi poss\u00EDvel carregar as receitas.";
     elements.resultsHelp.textContent = "Confirma se os ficheiros do site foram publicados.";
     elements.results.innerHTML = "";
     elements.detail.innerHTML = `

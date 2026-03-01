@@ -6,7 +6,7 @@
     <title>Based Cooking</title>
     <meta
       name="description"
-      content="Livro de receitas pesquisavel com filtros por tag, pesquisa textual e suporte simples para imagens."
+      content="Livro de receitas pesquis&aacute;vel com filtros por tag, pesquisa textual e suporte simples para imagens."
     >
     <link rel="stylesheet" href="./assets/styles.css">
   </head>
@@ -16,16 +16,16 @@
         <div class="hero-grid">
           <div class="hero-main">
             <p class="eyebrow">Based Cooking</p>
-            <h1>Receitas organizadas, pesquisaveis e sempre prontas para abrir.</h1>
+            <h1>Receitas organizadas, pesquis&aacute;veis e sempre prontas para abrir.</h1>
             <p class="hero-copy">
               Pesquisa por nome, ingrediente ou preparo. Filtra por categoria e por tags.
-              Cada receita pode ganhar imagem com um unico campo no Markdown, sem complicar
-              a manutencao.
+              Cada receita pode ganhar imagem com um &uacute;nico campo no Markdown, sem complicar
+              a manuten&ccedil;&atilde;o.
             </p>
             <div class="hero-ribbon">
-              <span class="hero-ribbon-item">Pesquisa instantanea</span>
+              <span class="hero-ribbon-item">Pesquisa instant&acirc;nea</span>
               <span class="hero-ribbon-item">Filtros por tags</span>
-              <span class="hero-ribbon-item">Publicacao gratuita</span>
+              <span class="hero-ribbon-item">Publica&ccedil;&atilde;o gratuita</span>
             </div>
           </div>
 
@@ -38,10 +38,10 @@
             <div class="hero-stat">
               <p class="hero-stat-label">Filtro atual</p>
               <p class="hero-stat-value" data-visible-recipes>--</p>
-              <p class="hero-stat-copy">receitas visiveis</p>
+              <p class="hero-stat-copy">receitas vis&iacute;veis</p>
             </div>
             <p class="hero-side-note">
-              O site publicado reflete o que esta no repositorio e fica disponivel em qualquer
+              O site publicado reflete o que est&aacute; no reposit&oacute;rio e fica dispon&iacute;vel em qualquer
               altura.
             </p>
           </div>
@@ -79,9 +79,17 @@
           </div>
 
           <div class="results-summary" data-results-summary>
-            <p class="results-summary-label" data-results-label>A carregar</p>
-            <p class="results-summary-value" data-results-count>A carregar receitas...</p>
-            <p class="results-summary-help" data-results-help>A preparar a lista.</p>
+            <div class="results-summary-visual">
+              <figure class="results-summary-art-frame">
+                <img class="results-summary-art" data-summary-art src="./assets/category-art/livro.svg" alt="">
+              </figure>
+              <p class="results-summary-art-label" data-summary-art-label>Livro completo</p>
+            </div>
+            <div class="results-summary-copy">
+              <p class="results-summary-label" data-results-label>A carregar</p>
+              <p class="results-summary-value" data-results-count>A carregar receitas...</p>
+              <p class="results-summary-help" data-results-help>A preparar a lista.</p>
+            </div>
           </div>
 
           <div class="recipe-list" data-results></div>

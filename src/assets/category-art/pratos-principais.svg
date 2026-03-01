@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Pratos principais">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe2c6" />
+      <stop offset="100%" stop-color="#ffd2c2" />
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" rx="48" fill="url(#bg)" />
+  <circle cx="104" cy="88" r="12" fill="#ffffff" fill-opacity="0.9" />
+  <circle cx="136" cy="66" r="7" fill="#ffffff" fill-opacity="0.8" />
+  <circle cx="368" cy="86" r="44" fill="#fff1e0" />
+  <ellipse cx="240" cy="220" rx="146" ry="68" fill="#fff7ec" />
+  <ellipse cx="240" cy="212" rx="126" ry="54" fill="#f7d9a7" />
+  <path d="M164 214c26-26 50-38 78-38 38 0 76 21 96 60" fill="none" stroke="#a5533e" stroke-width="26" stroke-linecap="round" />
+  <circle cx="204" cy="202" r="12" fill="#8fb06a" />
+  <circle cx="286" cy="194" r="11" fill="#8fb06a" />
+  <circle cx="320" cy="224" r="10" fill="#f4a35d" />
+</svg>

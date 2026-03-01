@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Pequeno-almoco e lanches">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff0d8" />
+      <stop offset="100%" stop-color="#ffe0bf" />
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" rx="48" fill="url(#bg)" />
+  <circle cx="368" cy="86" r="44" fill="#fff6e8" />
+  <rect x="126" y="176" width="228" height="104" rx="42" fill="#fff8ef" />
+  <rect x="150" y="194" width="180" height="68" rx="30" fill="#f1bb73" />
+  <circle cx="214" cy="226" r="26" fill="#fff4da" />
+  <circle cx="274" cy="226" r="26" fill="#fff4da" />
+  <circle cx="214" cy="226" r="8" fill="#f4b25e" />
+  <circle cx="274" cy="226" r="8" fill="#f4b25e" />
+  <path d="M118 126c14-10 34-12 53-5" stroke="#d09158" stroke-width="10" stroke-linecap="round" />
+  <circle cx="118" cy="126" r="14" fill="#cb744b" />
+</svg>

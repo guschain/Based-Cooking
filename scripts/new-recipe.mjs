@@ -630,45 +630,27 @@ async function selectMultipleTags(existingTags, selectedTags) {
 }
 
 async function promptCategory(rl, categories) {
-  if (!canUseInteractivePicker()) {
-    return promptRequired(rl, "Categoria: ");
+  if (categories.length) {
+    console.log(`Categorias existentes: ${categories.join(" | ")}`);
   }
 
-  rl.pause();
-
-  try {
-    return await selectSingleOption("Categoria", categories, {
-      allowCustom: true,
-      customLabelPrefix: "Criar nova categoria",
-      emptyLabel: "Sem resultados. Escreve para criar uma nova categoria.",
-      optionFormatter: (value) => `[ ] ${value}`
-    });
-  } finally {
-    safeResumeReadline(rl);
-  }
+  return promptRequired(rl, "Categoria: ");
 }
 
 async function promptTags(rl, existingTags, suggestedTags) {
   const defaultValue = formatTagList(suggestedTags);
 
-  if (!canUseInteractivePicker()) {
-    const typedTags = await promptOptional(
-      rl,
-      `Tags (separadas por virgulas) [${defaultValue}]: `,
-      defaultValue
-    );
-
-    return formatTagList(typedTags.split(",").map((tag) => tag.trim()));
+  if (existingTags.length) {
+    console.log(`Tags existentes: ${existingTags.join(" | ")}`);
   }
 
-  rl.pause();
+  const typedTags = await promptOptional(
+    rl,
+    `Tags (separadas por virgulas) [${defaultValue}]: `,
+    defaultValue
+  );
 
-  try {
-    const selectedTags = await selectMultipleTags(existingTags, suggestedTags);
-    return formatTagList(selectedTags);
-  } finally {
-    safeResumeReadline(rl);
-  }
+  return formatTagList(typedTags.split(",").map((tag) => tag.trim()));
 }
 
 async function main() {

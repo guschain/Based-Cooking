@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Livro de receitas">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffeecf" />
+      <stop offset="100%" stop-color="#ffd9b8" />
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" rx="48" fill="url(#bg)" />
+  <circle cx="388" cy="78" r="42" fill="#fff4dd" />
+  <circle cx="116" cy="90" r="14" fill="#ffffff" fill-opacity="0.9" />
+  <circle cx="144" cy="66" r="8" fill="#ffffff" fill-opacity="0.75" />
+  <rect x="94" y="112" width="292" height="168" rx="30" fill="#fff9ef" />
+  <path d="M240 112v168" stroke="#f1c58e" stroke-width="10" />
+  <path d="M128 154c26-18 58-19 90-4v88c-31-15-63-14-90 4z" fill="#f7d6a7" />
+  <path d="M262 150c32-15 64-14 90 4v88c-27-18-59-19-90-4z" fill="#f4b79d" />
+  <path d="M152 168c20-8 40-8 58-1" stroke="#b56b4e" stroke-width="8" stroke-linecap="round" />
+  <path d="M272 168c20-8 40-8 58-1" stroke="#b56b4e" stroke-width="8" stroke-linecap="round" />
+  <path d="M152 196c20-8 40-8 58-1" stroke="#b56b4e" stroke-width="8" stroke-linecap="round" />
+  <path d="M272 196c20-8 40-8 58-1" stroke="#b56b4e" stroke-width="8" stroke-linecap="round" />
+  <circle cx="352" cy="278" r="18" fill="#8bb08b" fill-opacity="0.7" />
+</svg>
