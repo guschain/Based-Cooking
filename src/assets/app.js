@@ -1,3 +1,5 @@
+const maxSuggestions = 6;
+
 const state = {
   recipes: [],
   filteredRecipes: [],
@@ -9,9 +11,15 @@ const state = {
 
 const elements = {
   search: document.querySelector("[data-search]"),
+  searchSuggestions: document.querySelector("[data-search-suggestions]"),
   category: document.querySelector("[data-category]"),
   tags: document.querySelector("[data-tags]"),
+  totalRecipes: document.querySelector("[data-total-recipes]"),
+  visibleRecipes: document.querySelector("[data-visible-recipes]"),
+  resultsSummary: document.querySelector("[data-results-summary]"),
+  resultsLabel: document.querySelector("[data-results-label]"),
   resultsCount: document.querySelector("[data-results-count]"),
+  resultsHelp: document.querySelector("[data-results-help]"),
   results: document.querySelector("[data-results]"),
   detail: document.querySelector("[data-detail]"),
   clear: document.querySelector("[data-clear]")
@@ -62,54 +70,95 @@ function uniqueTags() {
   return [...tags].sort((left, right) => left.localeCompare(right, "pt"));
 }
 
-function recipeMatches(recipe) {
+function baseFiltersMatch(recipe) {
   const matchesCategory =
     state.activeCategory === "all" || recipe.category === state.activeCategory;
   const matchesTags = [...state.activeTags].every((tag) => recipe.tags.includes(tag));
+
+  return matchesCategory && matchesTags;
+}
+
+function recipeMatches(recipe) {
   const matchesQuery =
     !state.query || normalise(recipe.searchText).includes(normalise(state.query));
 
-  return matchesCategory && matchesTags && matchesQuery;
+  return baseFiltersMatch(recipe) && matchesQuery;
+}
+
+function buildFilterLabel() {
+  const parts = [];
+
+  if (state.activeCategory !== "all") {
+    parts.push(`Categoria: ${state.activeCategory}`);
+  }
+
+  if (state.activeTags.size) {
+    parts.push(`Tags: ${[...state.activeTags].join(", ")}`);
+  }
+
+  if (state.query) {
+    parts.push(`Pesquisa: "${state.query}"`);
+  }
+
+  if (!parts.length) {
+    return "Livro completo";
+  }
+
+  return parts.join(" | ");
+}
+
+function currentSelectionIsVisible() {
+  return state.filteredRecipes.some((recipe) => recipe.slug === state.selectedSlug);
+}
+
+function clearSelection({ updateHash = true } = {}) {
+  state.selectedSlug = "";
+
+  if (updateHash && window.location.hash) {
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}${window.location.search}`
+    );
+  }
 }
 
 function setSelection(slug, { updateHash = true } = {}) {
   state.selectedSlug = slug;
 
-  if (updateHash && slug) {
-    if (window.location.hash !== `#${slug}`) {
-      window.location.hash = slug;
+  if (updateHash) {
+    if (slug) {
+      if (window.location.hash !== `#${slug}`) {
+        window.location.hash = slug;
+      }
+    } else if (window.location.hash) {
+      window.history.replaceState(
+        null,
+        "",
+        `${window.location.pathname}${window.location.search}`
+      );
     }
   }
 
+  renderResultsSummary();
   renderRecipeList();
   renderDetail();
+  renderSearchSuggestions();
 }
 
 function syncSelectionFromHash() {
   const slugFromHash = window.location.hash.replace(/^#/, "");
-  const filtered = state.filteredRecipes;
 
-  if (slugFromHash && filtered.some((recipe) => recipe.slug === slugFromHash)) {
+  if (slugFromHash && state.filteredRecipes.some((recipe) => recipe.slug === slugFromHash)) {
     state.selectedSlug = slugFromHash;
-    renderRecipeList();
-    renderDetail();
-    return;
+  } else if (!currentSelectionIsVisible()) {
+    clearSelection({ updateHash: Boolean(slugFromHash) });
   }
 
-  if (!filtered.length) {
-    state.selectedSlug = "";
-    renderRecipeList();
-    renderDetail();
-    return;
-  }
-
-  if (!filtered.some((recipe) => recipe.slug === state.selectedSlug)) {
-    setSelection(filtered[0].slug, { updateHash: true });
-    return;
-  }
-
+  renderResultsSummary();
   renderRecipeList();
   renderDetail();
+  renderSearchSuggestions();
 }
 
 function renderCategoryOptions() {
@@ -125,11 +174,16 @@ function renderCategoryOptions() {
   elements.category.value = state.activeCategory;
 }
 
+function renderHeroStats() {
+  elements.totalRecipes.textContent = String(state.recipes.length);
+  elements.visibleRecipes.textContent = String(state.filteredRecipes.length);
+}
+
 function renderTags() {
   const tags = uniqueTags();
 
   if (!tags.length) {
-    elements.tags.innerHTML = '<p class="results-count">Sem tags disponiveis.</p>';
+    elements.tags.innerHTML = '<p class="results-summary-help">Sem tags disponiveis.</p>';
     return;
   }
 
@@ -163,15 +217,35 @@ function renderTags() {
   }
 }
 
+function renderResultsSummary() {
+  const count = state.filteredRecipes.length;
+  const filterLabel = buildFilterLabel();
+
+  elements.resultsLabel.textContent = filterLabel;
+  elements.resultsCount.textContent =
+    count === 1 ? "1 receita disponivel" : `${count} receitas disponiveis`;
+
+  if (!count) {
+    elements.resultsHelp.textContent = "Ajusta a pesquisa ou remove alguns filtros.";
+    return;
+  }
+
+  if (!state.selectedSlug) {
+    elements.resultsHelp.textContent =
+      "Nenhuma receita e aberta automaticamente. Escolhe uma da lista para ver os detalhes.";
+    return;
+  }
+
+  elements.resultsHelp.textContent =
+    "A lista continua visivel para poderes trocar de receita dentro deste filtro.";
+}
+
 function renderRecipeList() {
   const recipes = state.filteredRecipes;
 
-  elements.resultsCount.textContent =
-    recipes.length === 1 ? "1 receita encontrada" : `${recipes.length} receitas encontradas`;
-
   if (!recipes.length) {
     elements.results.innerHTML =
-      '<div class="empty-state"><div><p class="eyebrow">Sem resultados</p><p>Ajusta a pesquisa ou remove alguns filtros.</p></div></div>';
+      '<div class="empty-state empty-state-compact"><div><p class="eyebrow">Sem resultados</p><p>Ajusta a pesquisa ou remove alguns filtros.</p></div></div>';
     return;
   }
 
@@ -207,15 +281,88 @@ function renderRecipeList() {
   }
 }
 
+function renderSearchSuggestions() {
+  const query = state.query.trim();
+  const exactSelectedMatch =
+    state.selectedSlug &&
+    state.filteredRecipes.some(
+      (recipe) =>
+        recipe.slug === state.selectedSlug && normalise(recipe.title) === normalise(query)
+    );
+
+  if (!query || !state.filteredRecipes.length || exactSelectedMatch) {
+    elements.searchSuggestions.hidden = true;
+    elements.searchSuggestions.innerHTML = "";
+    return;
+  }
+
+  const suggestions = state.filteredRecipes.slice(0, maxSuggestions);
+  const extraCount = Math.max(0, state.filteredRecipes.length - suggestions.length);
+
+  elements.searchSuggestions.hidden = false;
+  elements.searchSuggestions.innerHTML = `
+    ${suggestions
+      .map(
+        (recipe) => `
+          <button
+            class="search-suggestion"
+            type="button"
+            data-suggestion-slug="${escapeHtml(recipe.slug)}"
+          >
+            <span class="search-suggestion-title">${escapeHtml(recipe.title)}</span>
+            <span class="search-suggestion-meta">${escapeHtml(recipe.category)}</span>
+          </button>
+        `
+      )
+      .join("")}
+    ${
+      extraCount
+        ? `<p class="search-suggestion-more">+ ${extraCount} ${
+            extraCount === 1 ? "receita compativel" : "receitas compativeis"
+          }</p>`
+        : ""
+    }
+  `;
+
+  for (const button of elements.searchSuggestions.querySelectorAll("[data-suggestion-slug]")) {
+    button.addEventListener("click", () => {
+      const slug = button.dataset.suggestionSlug;
+      const recipe = state.recipes.find((item) => item.slug === slug);
+
+      if (!slug || !recipe) {
+        return;
+      }
+
+      state.query = recipe.title;
+      elements.search.value = recipe.title;
+      applyFilters();
+      setSelection(slug);
+    });
+  }
+}
+
 function renderDetail() {
   const recipe = state.filteredRecipes.find((item) => item.slug === state.selectedSlug);
 
   if (!recipe) {
+    const count = state.filteredRecipes.length;
+    const title =
+      count === 0
+        ? "Nenhuma receita corresponde a este filtro."
+        : count === 1
+          ? "1 receita pronta a abrir."
+          : `${count} receitas prontas a abrir.`;
+    const copy =
+      count === 0
+        ? "Tenta outra pesquisa, muda a categoria ou remove algumas tags."
+        : "Escolhe uma receita da lista da esquerda para ver os detalhes. Assim fica mais claro quantas opcoes existem neste filtro.";
+
     elements.detail.innerHTML = `
-      <div class="empty-state">
-        <div>
-          <p class="eyebrow">Sem receita ativa</p>
-          <h2>Escolhe uma receita para ver os detalhes.</h2>
+      <div class="empty-state empty-state-wide">
+        <div class="empty-state-card">
+          <p class="eyebrow">${escapeHtml(buildFilterLabel())}</p>
+          <h2>${escapeHtml(title)}</h2>
+          <p>${escapeHtml(copy)}</p>
         </div>
       </div>
     `;
@@ -246,6 +393,7 @@ function renderDetail() {
 
 function applyFilters() {
   state.filteredRecipes = state.recipes.filter(recipeMatches);
+  renderHeroStats();
   renderTags();
   syncSelectionFromHash();
 }
@@ -267,6 +415,7 @@ function bindEvents() {
     state.activeTags.clear();
     elements.search.value = "";
     elements.category.value = "all";
+    clearSelection();
     applyFilters();
   });
 
@@ -288,13 +437,16 @@ async function init() {
     state.recipes = await response.json();
     state.filteredRecipes = [...state.recipes];
     renderCategoryOptions();
+    renderHeroStats();
     applyFilters();
   } catch (error) {
+    elements.resultsLabel.textContent = "Erro";
     elements.resultsCount.textContent = "Nao foi possivel carregar as receitas.";
+    elements.resultsHelp.textContent = "Confirma se os ficheiros do site foram publicados.";
     elements.results.innerHTML = "";
     elements.detail.innerHTML = `
-      <div class="empty-state">
-        <div>
+      <div class="empty-state empty-state-wide">
+        <div class="empty-state-card">
           <p class="eyebrow">Erro</p>
           <h2>Falha ao carregar o site.</h2>
           <p>${escapeHtml(error.message)}</p>

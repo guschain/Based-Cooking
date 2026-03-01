@@ -13,12 +13,39 @@
   <body>
     <div class="page-shell">
       <header class="hero">
-        <p class="eyebrow">Based Cooking</p>
-        <h1>Receitas organizadas, pesquisaveis e prontas para GitHub Pages.</h1>
-        <p class="hero-copy">
-          Pesquisa por nome, ingrediente ou preparo. Filtra por categoria e por tags. Cada
-          receita pode ganhar imagem com um unico campo no Markdown.
-        </p>
+        <div class="hero-grid">
+          <div class="hero-main">
+            <p class="eyebrow">Based Cooking</p>
+            <h1>Receitas organizadas, pesquisaveis e sempre prontas para abrir.</h1>
+            <p class="hero-copy">
+              Pesquisa por nome, ingrediente ou preparo. Filtra por categoria e por tags.
+              Cada receita pode ganhar imagem com um unico campo no Markdown, sem complicar
+              a manutencao.
+            </p>
+            <div class="hero-ribbon">
+              <span class="hero-ribbon-item">Pesquisa instantanea</span>
+              <span class="hero-ribbon-item">Filtros por tags</span>
+              <span class="hero-ribbon-item">Publicacao gratuita</span>
+            </div>
+          </div>
+
+          <div class="hero-side" aria-label="Resumo do livro">
+            <div class="hero-stat">
+              <p class="hero-stat-label">Livro atual</p>
+              <p class="hero-stat-value" data-total-recipes>--</p>
+              <p class="hero-stat-copy">receitas catalogadas</p>
+            </div>
+            <div class="hero-stat">
+              <p class="hero-stat-label">Filtro atual</p>
+              <p class="hero-stat-value" data-visible-recipes>--</p>
+              <p class="hero-stat-copy">receitas visiveis</p>
+            </div>
+            <p class="hero-side-note">
+              O site publicado reflete o que esta no repositorio e fica disponivel em qualquer
+              altura.
+            </p>
+          </div>
+        </div>
       </header>
 
       <main class="workspace">
@@ -33,6 +60,7 @@
               autocomplete="off"
               data-search
             >
+            <div class="search-suggestions" data-search-suggestions hidden></div>
           </div>
 
           <div class="control-row">
@@ -50,8 +78,10 @@
             <div class="tag-grid" data-tags></div>
           </div>
 
-          <div class="results-head">
-            <p class="results-count" data-results-count>A carregar receitas...</p>
+          <div class="results-summary" data-results-summary>
+            <p class="results-summary-label" data-results-label>A carregar</p>
+            <p class="results-summary-value" data-results-count>A carregar receitas...</p>
+            <p class="results-summary-help" data-results-help>A preparar a lista.</p>
           </div>
 
           <div class="recipe-list" data-results></div>
