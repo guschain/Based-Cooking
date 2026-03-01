@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Based Cooking</title>
+    <meta
+      name="description"
+      content="Livro de receitas pesquisavel com filtros por tag, pesquisa textual e suporte simples para imagens."
+    >
+    <link rel="stylesheet" href="./assets/styles.css">
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">Based Cooking</p>
+        <h1>Receitas organizadas, pesquisaveis e prontas para GitHub Pages.</h1>
+        <p class="hero-copy">
+          Pesquisa por nome, ingrediente ou preparo. Filtra por categoria e por tags. Cada
+          receita pode ganhar imagem com um unico campo no Markdown.
+        </p>
+      </header>
+
+      <main class="workspace">
+        <section class="finder-panel" aria-label="Pesquisa e filtros">
+          <div class="control-row">
+            <label class="search-label" for="recipe-search">Pesquisar</label>
+            <input
+              id="recipe-search"
+              class="search-input"
+              type="search"
+              placeholder="Ex.: frango, forno, chocolate"
+              autocomplete="off"
+              data-search
+            >
+          </div>
+
+          <div class="control-row">
+            <label class="search-label" for="category-filter">Categoria</label>
+            <select id="category-filter" class="category-select" data-category>
+              <option value="all">Todas</option>
+            </select>
+          </div>
+
+          <div class="tag-bar">
+            <div class="tag-bar-head">
+              <span class="search-label">Tags</span>
+              <button class="clear-button" type="button" data-clear>Limpar filtros</button>
+            </div>
+            <div class="tag-grid" data-tags></div>
+          </div>
+
+          <div class="results-head">
+            <p class="results-count" data-results-count>A carregar receitas...</p>
+          </div>
+
+          <div class="recipe-list" data-results></div>
+        </section>
+
+        <section class="detail-panel" aria-live="polite" data-detail>
+          <div class="empty-state">
+            <p class="eyebrow">A carregar</p>
+            <h2>A preparar o livro de receitas.</h2>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./assets/app.js"></script>
+  </body>
+  </html>

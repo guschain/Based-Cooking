@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Recipe placeholder</title>
+  <desc id="desc">Illustrated placeholder image for recipes</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f6ead7" />
+      <stop offset="100%" stop-color="#e7d4b3" />
+    </linearGradient>
+    <linearGradient id="steam" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)" />
+  <circle cx="980" cy="120" r="92" fill="#d8b17a" opacity="0.35" />
+  <circle cx="1060" cy="210" r="42" fill="#8c4a2f" opacity="0.18" />
+  <circle cx="175" cy="520" r="110" fill="#5d7250" opacity="0.14" />
+  <path d="M470 200c-26-42 24-86 41-127 13-31-5-56-5-56 55 34 60 83 45 116-18 39-56 55-44 99 4 13 12 25 23 37-23-8-44-32-60-69z" fill="url(#steam)" />
+  <path d="M598 186c-16-34 17-64 27-94 9-24-4-44-4-44 41 25 46 62 35 88-12 27-39 40-31 73 3 10 10 20 18 30-18-7-33-25-45-53z" fill="url(#steam)" />
+  <path d="M698 214c-16-34 17-64 27-94 9-24-4-44-4-44 41 25 46 62 35 88-12 27-39 40-31 73 3 10 10 20 18 30-18-7-33-25-45-53z" fill="url(#steam)" />
+  <ellipse cx="600" cy="430" rx="235" ry="36" fill="#6f351e" opacity="0.18" />
+  <rect x="335" y="260" width="530" height="170" rx="78" fill="#3b2b20" />
+  <rect x="380" y="285" width="440" height="120" rx="56" fill="#8c4a2f" />
+  <rect x="810" y="313" width="120" height="30" rx="14" fill="#3b2b20" />
+  <circle cx="484" cy="345" r="20" fill="#f2d7a6" />
+  <circle cx="562" cy="327" r="18" fill="#d9b066" />
+  <circle cx="636" cy="352" r="20" fill="#f2d7a6" />
+  <circle cx="718" cy="331" r="17" fill="#d9b066" />
+  <circle cx="762" cy="365" r="22" fill="#f2d7a6" />
+  <path d="M310 455h580c0 88-64 141-290 141s-290-53-290-141z" fill="#fff8ef" opacity="0.82" />
+  <text x="600" y="516" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="74" fill="#6f351e">Based Cooking</text>
+  <text x="600" y="574" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="36" fill="#5d7250">Recipe image placeholder</text>
+</svg>
