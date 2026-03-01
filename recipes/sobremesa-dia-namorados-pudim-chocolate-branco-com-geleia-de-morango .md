@@ -24,5 +24,3 @@ image: images/recipe-placeholder.svg
 1. Forma de 20 cm de diâmetro untada com manteiga derretida e polvilhada com açúcar
 2. Assar em banho maria forma a 180º por 1h30m.
 3. Deixar gelar por 4 horas.
-4. 
-5. 
