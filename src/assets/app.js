@@ -414,6 +414,7 @@ function renderRecipeList() {
     .map((recipe) => {
       const isActive = recipe.slug === state.selectedSlug;
       const className = isActive ? "recipe-card is-active" : "recipe-card";
+      const visual = visualForCategory(recipe.category);
       const meta = [
         `<span class="meta-pill">${escapeHtml(recipe.category)}</span>`,
         ...recipe.tags
@@ -423,8 +424,19 @@ function renderRecipeList() {
 
       return `
         <button class="${className}" type="button" data-slug="${escapeHtml(recipe.slug)}">
-          <h3>${escapeHtml(recipe.title)}</h3>
-          <div class="recipe-meta">${meta}</div>
+          <div class="recipe-card-head">
+            <span class="recipe-card-thumb-frame">
+              <img
+                class="recipe-card-thumb"
+                src="${escapeHtml(visual.src)}"
+                alt="${escapeHtml(visual.label)}"
+              >
+            </span>
+            <div class="recipe-card-head-copy">
+              <h3>${escapeHtml(recipe.title)}</h3>
+              <div class="recipe-meta">${meta}</div>
+            </div>
+          </div>
           <p>${escapeHtml(recipe.excerpt)}</p>
         </button>
       `;
