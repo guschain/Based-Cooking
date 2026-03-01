@@ -21,26 +21,33 @@ The importer preserves `tags` and `image` if a recipe file already exists, so yo
 
 ## Add a recipe
 
-Create a new file in `recipes/`, for example:
+### Guided option
 
-```md
----
-title: Frango Assado
-category: Pratos principais
-tags: pratos-principais, frango, forno
-image: images/frango-assado.jpg
----
+Use the interactive generator:
 
-#### Ingredientes
-- 1 frango
-- Sal
-
-#### Preparacao
-1. Temperar.
-2. Assar.
+```bash
+npm run new-recipe
 ```
 
-Then run:
+It asks for the title, category, tags, image, ingredients, preparation steps, and optional notes, then creates a new file in `recipes/`.
+
+### Non-technical option
+
+Copy `templates/recipe-template.md` into `recipes/`, rename it, and replace the visible placeholders:
+
+- `[TITULO_DA_RECEITA]`
+- `[CATEGORIA]`
+- `[TAGS_SEPARADAS_POR_VIRGULAS]`
+- `[CAMINHO_DA_IMAGEM]`
+- `[[INGREDIENTES]]`
+- `[[PREPARACAO]]`
+- `[[NOTAS_SECTION]]`
+
+The generator script also reads this template file, so non-technical users can change the default structure in one place without editing any JavaScript.
+
+### Publish the change
+
+After creating or editing a recipe, run:
 
 ```bash
 npm run build
@@ -51,6 +58,20 @@ npm run build
 1. Put the image in `images/`.
 2. Reference it in the recipe front matter, for example `image: images/frango-assado.jpg`.
 3. Rebuild the site.
+
+## Change the recipe template
+
+Edit `templates/recipe-template.md`.
+
+Keep these placeholders somewhere in the file so the generator can fill them:
+
+- `[TITULO_DA_RECEITA]`
+- `[CATEGORIA]`
+- `[TAGS_SEPARADAS_POR_VIRGULAS]`
+- `[CAMINHO_DA_IMAGEM]`
+- `[[INGREDIENTES]]`
+- `[[PREPARACAO]]`
+- `[[NOTAS_SECTION]]`
 
 ## Local preview
 

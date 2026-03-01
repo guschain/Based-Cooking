@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "import": "node scripts/import-consolidated.mjs",
-    "build": "node scripts/build-site.mjs"
+    "build": "node scripts/build-site.mjs",
+    "new-recipe": "node scripts/new-recipe.mjs"
   }
 }
