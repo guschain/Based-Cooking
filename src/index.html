@@ -47,8 +47,28 @@
         </div>
       </header>
 
-      <main class="workspace">
-        <section class="finder-panel" aria-label="Pesquisa e filtros">
+      <main class="main-shell">
+        <div class="mobile-nav" data-mobile-nav aria-label="Navega&ccedil;&atilde;o m&oacute;vel" hidden>
+          <button
+            class="mobile-nav-button is-active"
+            type="button"
+            data-mobile-panel="browse"
+            aria-pressed="true"
+          >
+            Explorar
+          </button>
+          <button
+            class="mobile-nav-button"
+            type="button"
+            data-mobile-panel="detail"
+            aria-pressed="false"
+          >
+            Receita
+          </button>
+        </div>
+
+        <div class="workspace" data-workspace>
+          <section class="finder-panel" aria-label="Pesquisa e filtros">
           <div class="control-row">
             <label class="search-label" for="recipe-search">Pesquisar</label>
             <input
@@ -91,15 +111,16 @@
             </div>
           </div>
 
-          <div class="recipe-list" data-results></div>
-        </section>
+            <div class="recipe-list" data-results></div>
+          </section>
 
-        <section class="detail-panel" aria-live="polite" data-detail>
-          <div class="empty-state">
-            <p class="eyebrow">A carregar</p>
-            <h2>A preparar o livro de receitas.</h2>
-          </div>
-        </section>
+          <section class="detail-panel" aria-live="polite" data-detail>
+            <div class="empty-state">
+              <p class="eyebrow">A carregar</p>
+              <h2>A preparar o livro de receitas.</h2>
+            </div>
+          </section>
+        </div>
       </main>
     </div>
 

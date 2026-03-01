@@ -1,5 +1,6 @@
 const maxSuggestions = 6;
 const minimumVisibleTagCount = 2;
+const mobileMedia = window.matchMedia("(max-width: 860px)");
 
 const state = {
   recipes: [],
@@ -7,10 +8,14 @@ const state = {
   activeTags: new Set(),
   activeCategory: "all",
   query: "",
-  selectedSlug: ""
+  selectedSlug: "",
+  mobileView: "browse"
 };
 
 const elements = {
+  mobileNav: document.querySelector("[data-mobile-nav]"),
+  mobileButtons: document.querySelectorAll("[data-mobile-panel]"),
+  workspace: document.querySelector("[data-workspace]"),
   search: document.querySelector("[data-search]"),
   searchSuggestions: document.querySelector("[data-search-suggestions]"),
   category: document.querySelector("[data-category]"),
@@ -27,6 +32,10 @@ const elements = {
   detail: document.querySelector("[data-detail]"),
   clear: document.querySelector("[data-clear]")
 };
+
+function isMobileViewport() {
+  return mobileMedia.matches;
+}
 
 const categoryVisuals = {
   all: {
@@ -179,6 +188,10 @@ function clearSelection({ updateHash = true } = {}) {
 function setSelection(slug, { updateHash = true } = {}) {
   state.selectedSlug = slug;
 
+  if (slug && isMobileViewport()) {
+    state.mobileView = "detail";
+  }
+
   if (updateHash) {
     if (slug) {
       if (window.location.hash !== `#${slug}`) {
@@ -197,6 +210,11 @@ function setSelection(slug, { updateHash = true } = {}) {
   renderRecipeList();
   renderDetail();
   renderSearchSuggestions();
+  renderMobileView();
+
+  if (slug) {
+    scrollMobileWorkspaceIntoView();
+  }
 }
 
 function syncSelectionFromHash() {
@@ -212,6 +230,7 @@ function syncSelectionFromHash() {
   renderRecipeList();
   renderDetail();
   renderSearchSuggestions();
+  renderMobileView();
 }
 
 function renderCategoryOptions() {
@@ -225,6 +244,37 @@ function renderCategoryOptions() {
 
   elements.category.innerHTML = options.join("");
   elements.category.value = state.activeCategory;
+}
+
+function renderMobileView() {
+  if (!elements.workspace || !elements.mobileNav) {
+    return;
+  }
+
+  if (!isMobileViewport()) {
+    elements.mobileNav.hidden = true;
+    elements.workspace.dataset.mobileView = "split";
+  } else {
+    elements.mobileNav.hidden = false;
+    elements.workspace.dataset.mobileView = state.mobileView;
+  }
+
+  for (const button of elements.mobileButtons) {
+    const panel = button.dataset.mobilePanel;
+    const isActive = isMobileViewport() && panel === state.mobileView;
+
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", isActive ? "true" : "false");
+  }
+}
+
+function scrollMobileWorkspaceIntoView() {
+  if (!isMobileViewport() || !elements.mobileNav) {
+    return;
+  }
+
+  const top = window.scrollY + elements.mobileNav.getBoundingClientRect().top - 8;
+  window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
 }
 
 function renderHeroStats() {
@@ -317,6 +367,7 @@ function renderTags() {
         state.activeTags.add(tag);
       }
 
+      state.mobileView = "browse";
       applyFilters();
     });
   }
@@ -477,6 +528,7 @@ function renderSearchSuggestions() {
 
         state.activeCategory = category;
         state.query = "";
+        state.mobileView = "browse";
         elements.category.value = category;
         elements.search.value = "";
         clearSelection();
@@ -618,11 +670,13 @@ function applyFilters() {
 function bindEvents() {
   elements.search.addEventListener("input", (event) => {
     state.query = event.target.value.trim();
+    state.mobileView = "browse";
     applyFilters();
   });
 
   elements.category.addEventListener("change", (event) => {
     state.activeCategory = event.target.value;
+    state.mobileView = "browse";
     applyFilters();
   });
 
@@ -630,6 +684,7 @@ function bindEvents() {
     state.query = "";
     state.activeCategory = "all";
     state.activeTags.clear();
+    state.mobileView = "browse";
     elements.search.value = "";
     elements.category.value = "all";
     clearSelection();
@@ -639,10 +694,31 @@ function bindEvents() {
   window.addEventListener("hashchange", () => {
     syncSelectionFromHash();
   });
+
+  for (const button of elements.mobileButtons) {
+    button.addEventListener("click", () => {
+      const panel = button.dataset.mobilePanel;
+
+      if (!panel) {
+        return;
+      }
+
+      state.mobileView = panel;
+      renderMobileView();
+      scrollMobileWorkspaceIntoView();
+    });
+  }
+
+  if (typeof mobileMedia.addEventListener === "function") {
+    mobileMedia.addEventListener("change", renderMobileView);
+  } else if (typeof mobileMedia.addListener === "function") {
+    mobileMedia.addListener(renderMobileView);
+  }
 }
 
 async function init() {
   bindEvents();
+  renderMobileView();
 
   try {
     const response = await fetch("./data/recipes.json");
