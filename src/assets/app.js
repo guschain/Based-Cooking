@@ -1,4 +1,5 @@
 const maxSuggestions = 6;
+const minimumVisibleTagCount = 2;
 
 const state = {
   recipes: [],
@@ -90,6 +91,10 @@ function activeCategoryVisual() {
   return categoryVisuals[state.activeCategory] || categoryVisuals.all;
 }
 
+function visualForCategory(category) {
+  return categoryVisuals[category] || categoryVisuals.all;
+}
+
 function uniqueCategories() {
   const categories = new Set(state.recipes.map((recipe) => recipe.category));
   return [...categories].sort((left, right) => left.localeCompare(right, "pt"));
@@ -105,6 +110,17 @@ function uniqueTags() {
   }
 
   return [...tags].sort((left, right) => left.localeCompare(right, "pt"));
+}
+
+function tagPanelRecipes() {
+  return state.recipes.filter((recipe) => {
+    const matchesCategory =
+      state.activeCategory === "all" || recipe.category === state.activeCategory;
+    const matchesQuery =
+      !state.query || normalise(recipe.searchText).includes(normalise(state.query));
+
+    return matchesCategory && matchesQuery;
+  });
 }
 
 function baseFiltersMatch(recipe) {
@@ -225,23 +241,67 @@ function renderSummaryVisual() {
 }
 
 function renderTags() {
-  const tags = uniqueTags();
+  const counts = new Map();
 
-  if (!tags.length) {
-    elements.tags.innerHTML = '<p class="results-summary-help">Sem tags dispon\u00EDveis.</p>';
+  for (const recipe of tagPanelRecipes()) {
+    for (const tag of recipe.tags) {
+      counts.set(tag, (counts.get(tag) || 0) + 1);
+    }
+  }
+
+  const visibleTags = [...new Set([...counts.keys(), ...state.activeTags])]
+    .map((tag) => ({
+      tag,
+      count: counts.get(tag) || 0,
+      isActive: state.activeTags.has(tag)
+    }))
+    .filter((entry) => entry.isActive || entry.count >= minimumVisibleTagCount)
+    .sort((left, right) => {
+      if (left.isActive !== right.isActive) {
+        return left.isActive ? -1 : 1;
+      }
+
+      if (left.count !== right.count) {
+        return right.count - left.count;
+      }
+
+      return left.tag.localeCompare(right.tag, "pt");
+    });
+
+  const hiddenSingleTags = [...counts.entries()].filter(
+    ([tag, count]) => !state.activeTags.has(tag) && count < minimumVisibleTagCount
+  ).length;
+
+  if (!visibleTags.length) {
+    elements.tags.innerHTML =
+      '<p class="tag-note-chip">Sem tags repetidas neste filtro. Usa a pesquisa para detalhes mais espec\u00EDficos.</p>';
     return;
   }
 
-  elements.tags.innerHTML = tags
-    .map((tag) => {
-      const isActive = state.activeTags.has(tag);
-      const className = isActive ? "tag-chip is-active" : "tag-chip";
+  elements.tags.innerHTML = `
+    ${visibleTags
+      .map((entry) => {
+        const className = entry.isActive ? "tag-chip is-active" : "tag-chip";
 
-      return `<button class="${className}" type="button" data-tag="${escapeHtml(tag)}">${escapeHtml(
-        tag
-      )}</button>`;
-    })
-    .join("");
+        return `
+          <button
+            class="${className}"
+            type="button"
+            data-tag="${escapeHtml(entry.tag)}"
+            aria-pressed="${entry.isActive ? "true" : "false"}"
+          >
+            <span class="tag-chip-name">${escapeHtml(entry.tag)}</span>
+            <span class="tag-chip-count">${entry.count}</span>
+          </button>
+        `;
+      })
+      .join("")}
+    ${
+      hiddenSingleTags
+        ? `<span class="tag-note-chip">+ ${hiddenSingleTags} tags \u00FAnicas ocultas</span>`
+        : ""
+    }
+  `;
 
   for (const button of elements.tags.querySelectorAll("[data-tag]")) {
     button.addEventListener("click", () => {
@@ -329,34 +389,67 @@ function renderRecipeList() {
 
 function renderSearchSuggestions() {
   const query = state.query.trim();
-  const exactSelectedMatch =
-    state.selectedSlug &&
-    state.filteredRecipes.some(
-      (recipe) =>
-        recipe.slug === state.selectedSlug && normalise(recipe.title) === normalise(query)
-    );
 
-  if (!query || !state.filteredRecipes.length || exactSelectedMatch) {
+  if (!query) {
     elements.searchSuggestions.hidden = true;
     elements.searchSuggestions.innerHTML = "";
     return;
   }
 
-  const suggestions = state.filteredRecipes.slice(0, maxSuggestions);
-  const extraCount = Math.max(0, state.filteredRecipes.length - suggestions.length);
+  const normalisedQuery = normalise(query);
+  const categorySuggestions = uniqueCategories()
+    .filter((category) => normalise(category).includes(normalisedQuery))
+    .map((category) => ({
+      key: `category:${category}`,
+      type: "category",
+      title: category,
+      meta: "Categoria",
+      visual: visualForCategory(category)
+    }));
+  const recipeSuggestions = state.filteredRecipes.map((recipe) => ({
+    key: `recipe:${recipe.slug}`,
+    type: "recipe",
+    slug: recipe.slug,
+    title: recipe.title,
+    meta: recipe.category,
+    visual: visualForCategory(recipe.category)
+  }));
+  const allSuggestions = [...categorySuggestions, ...recipeSuggestions];
+
+  if (!allSuggestions.length) {
+    elements.searchSuggestions.hidden = true;
+    elements.searchSuggestions.innerHTML = "";
+    return;
+  }
+
+  const visibleSuggestions = allSuggestions.slice(0, maxSuggestions);
+  const extraCount = Math.max(0, allSuggestions.length - visibleSuggestions.length);
 
   elements.searchSuggestions.hidden = false;
   elements.searchSuggestions.innerHTML = `
-    ${suggestions
+    ${visibleSuggestions
       .map(
-        (recipe) => `
+        (suggestion) => `
           <button
             class="search-suggestion"
             type="button"
-            data-suggestion-slug="${escapeHtml(recipe.slug)}"
+            data-suggestion-type="${escapeHtml(suggestion.type)}"
+            data-suggestion-key="${escapeHtml(suggestion.key)}"
           >
-            <span class="search-suggestion-title">${escapeHtml(recipe.title)}</span>
-            <span class="search-suggestion-meta">${escapeHtml(recipe.category)}</span>
+            <span class="search-suggestion-thumb-frame">
+              <img
+                class="search-suggestion-thumb"
+                src="${escapeHtml(suggestion.visual.src)}"
+                alt="${escapeHtml(suggestion.visual.label)}"
+              >
+            </span>
+            <span class="search-suggestion-body">
+              <span class="search-suggestion-title">${escapeHtml(suggestion.title)}</span>
+              <span class="search-suggestion-meta">${escapeHtml(suggestion.meta)}</span>
+            </span>
+            <span class="search-suggestion-kind search-suggestion-kind-${escapeHtml(suggestion.type)}">
+              ${suggestion.type === "category" ? "Categoria" : "Receita"}
+            </span>
           </button>
         `
       )
@@ -370,19 +463,36 @@ function renderSearchSuggestions() {
     }
   `;
 
-  for (const button of elements.searchSuggestions.querySelectorAll("[data-suggestion-slug]")) {
+  for (const button of elements.searchSuggestions.querySelectorAll("[data-suggestion-key]")) {
     button.addEventListener("click", () => {
-      const slug = button.dataset.suggestionSlug;
-      const recipe = state.recipes.find((item) => item.slug === slug);
+      const type = button.dataset.suggestionType;
+      const key = button.dataset.suggestionKey;
 
-      if (!slug || !recipe) {
+      if (type === "category") {
+        const category = key?.replace(/^category:/, "");
+
+        if (!category) {
+          return;
+        }
+
+        state.activeCategory = category;
+        state.query = "";
+        elements.category.value = category;
+        elements.search.value = "";
+        clearSelection();
+        applyFilters();
         return;
       }
 
-      state.query = recipe.title;
-      elements.search.value = recipe.title;
-      applyFilters();
-      setSelection(slug);
+      const slug = key?.replace(/^recipe:/, "");
+      const recipe = state.recipes.find((item) => item.slug === slug);
+
+      if (slug && recipe) {
+        state.query = recipe.title;
+        elements.search.value = recipe.title;
+        applyFilters();
+        setSelection(slug);
+      }
     });
   }
 }
