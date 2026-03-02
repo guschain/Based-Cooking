@@ -2,7 +2,7 @@
 title: Bolinhas de Natal
 category: Sobremesas
 tags: sobremesas, bolinhas, natal
-image: images/recipe-placeholder.svg
+image: images/bolinhas-de-natal.jpg
 ---
 
 #### Ingredientes
