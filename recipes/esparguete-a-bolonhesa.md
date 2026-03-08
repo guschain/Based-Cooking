@@ -2,7 +2,7 @@
 title: Esparguete à Bolonhesa
 category: Pratos principais
 tags: pratos-principais, esparguete, bolonhesa
-image: images/recipe-placeholder.svg
+image: images/esparguete-a-bolonhesa.jpg
 ---
 
 #### Ingredientes
