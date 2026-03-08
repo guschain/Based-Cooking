@@ -2,7 +2,7 @@
 title: Sopa de Frango com Legumes
 category: Sopas
 tags: sopas, sopa, frango, legumes
-image: images/recipe-placeholder.svg
+image: images/sopa-de-frango.jpg
 ---
 
 #### Ingredientes
