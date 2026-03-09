@@ -2,7 +2,7 @@
 title: Ovos Coreanos
 category: Pequeno-almoço e lanches
 tags: pequeno-almoco-e-lanches, ovos, coreanos
-image: images/recipe-placeholder.svg
+image: images/ovos-coreanos.jpg
 ---
 
 #### Ingredientes
