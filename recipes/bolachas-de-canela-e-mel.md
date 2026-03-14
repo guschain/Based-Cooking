@@ -2,7 +2,7 @@
 title: Bolachas de Canela e Mel
 category: Sobremesas
 tags: sobremesas, bolachas, canela
-image: images/recipes/bolachas-de-canela-e-mel.jpg
+image: images/bolachas-de-canela-e-mel.jpg
 ---
 
 #### Ingredientes
