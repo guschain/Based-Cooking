@@ -2,7 +2,7 @@
 title: Papas de Aveia Sabor Leite de Creme de Laranja
 category: Pequeno-almoço e lanches
 tags: pequeno-almoco-e-lanches, papas, aveia, sabor, leite
-image: images/recipe-placeholder.svg
+image: images/Papas-de-Aveia-Sabor-Leite-de-Creme-de-Laranja.jpg
 ---
 
 #### Ingredientes
