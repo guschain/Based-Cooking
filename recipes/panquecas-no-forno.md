@@ -10,7 +10,7 @@ image: images/recipe-placeholder.svg
 - 50 g de iogurte grego
 - 35 g de farinha
 - 1 colher de chá de fermento em pó
-- 1 scoop de whey isolate *(parece estar riscado/alterado — por confirmar)*
+- 1 scoop de whey isolate *(opcional)*
 - 80 ml de leite
 - Mel (ou algo semelhante), q.b.
 - Cobertura (à escolha): pepitas de chocolate / mirtilos e amêndoa / banana + noz
