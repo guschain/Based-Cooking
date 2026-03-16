@@ -20,5 +20,5 @@ image: images/recipe-placeholder.svg
 1. Misturar bem todos os ingredientes base
 2. Adicionar mel (ou algo semelhante), se quiser
 3. Adicionar a cobertura (à escolha)
-4. Levar ao forno (máximo indicado como “250”, por confirmar) durante 20–25 minutos, com papel de alumínio por cima
-5. Nota escrita: “25 min com + 5 sem”
+4. Levar ao forno (250° forno com ventoinha, por confirmar) durante 20–25 minutos, com papel de alumínio por cima
+5. Nota escrita: “25 min com papel de alumínio por cima + 5 sem papel de alumínio”
