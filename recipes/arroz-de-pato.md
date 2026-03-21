@@ -2,7 +2,7 @@
 title: Arroz de Pato
 category: Pratos principais
 tags: pratos-principais, arroz, pato
-image: images/recipe-placeholder.svg
+image: images/arroz-de-pato.jpg
 ---
 
 #### Ingredientes
