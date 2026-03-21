@@ -7,7 +7,7 @@ image: images/recipe-placeholder.svg
 
 #### Ingredientes
 - 2 kg peito frango
-- 5 roma tomates
+- 5 tomates cherry
 - Manjericão fresco
 - Queijo mozzarella (fresco - branco)
 - Vinagre balsâmico
@@ -28,4 +28,4 @@ image: images/recipe-placeholder.svg
 9. Cortar a mozzarella em rodelas e colocar por cima.
 10. Cozinhar no forno por 30–35 minutos, forno pré-aquecido a 200 graus.
 11. Tirar do forno, colocar um pouco de vinagre balsâmico por cima e manjericão picado.
-12. Servir com legumes salteados, por exemplo arroz.
+12. Servir com legumes salteados ou por exemplo arroz.
