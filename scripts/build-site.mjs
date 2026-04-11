@@ -6,18 +6,24 @@ const recipeDir = path.join(rootDir, "recipes");
 const sourceDir = path.join(rootDir, "src");
 const imageDir = path.join(rootDir, "images");
 const outputDir = path.join(rootDir, "docs");
+const placeholderImage = "images/recipe-placeholder.svg";
+const recipePageDirName = "receitas";
 
-function slugify(value) {
+function normalise(value) {
   return value
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function slugify(value) {
+  return normalise(value)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
 function escapeHtml(value) {
-  return value
+  return String(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -33,18 +39,14 @@ function renderInline(value) {
 }
 
 function parseFrontMatter(content) {
-  if (!content.startsWith("---\n")) {
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+
+  if (!match) {
     return { data: {}, body: content };
   }
 
-  const endIndex = content.indexOf("\n---\n", 4);
-
-  if (endIndex === -1) {
-    return { data: {}, body: content };
-  }
-
-  const rawFrontMatter = content.slice(4, endIndex);
-  const body = content.slice(endIndex + 5).trim();
+  const rawFrontMatter = match[1];
+  const body = content.slice(match[0].length).trim();
   const data = {};
 
   for (const line of rawFrontMatter.split(/\r?\n/)) {
@@ -167,11 +169,384 @@ function stripMarkdown(markdown) {
 }
 
 function buildExcerpt(text) {
-  if (text.length <= 160) {
+  if (text.length <= 170) {
     return text;
   }
 
-  return `${text.slice(0, 157).trim()}...`;
+  return `${text.slice(0, 167).trim()}...`;
+}
+
+function normaliseRelativePath(value) {
+  return String(value || "")
+    .trim()
+    .replace(/\\/g, "/")
+    .replace(/^\.\//, "");
+}
+
+async function resolveRecipeImage(value) {
+  const requestedPath = normaliseRelativePath(value);
+
+  if (!requestedPath) {
+    return placeholderImage;
+  }
+
+  if (/^https?:\/\//.test(requestedPath)) {
+    return requestedPath;
+  }
+
+  try {
+    await fs.access(path.join(rootDir, requestedPath));
+    return requestedPath;
+  } catch {
+    return placeholderImage;
+  }
+}
+
+function parseMarkdownSections(markdown) {
+  const sections = [];
+  const lines = markdown.split(/\r?\n/);
+  let current = { title: "", lines: [] };
+
+  const pushCurrent = () => {
+    const content = current.lines.join("\n").trim();
+
+    if (current.title || content) {
+      sections.push({
+        title: current.title,
+        lines: [...current.lines]
+      });
+    }
+  };
+
+  for (const line of lines) {
+    const headingMatch = line.trim().match(/^(#{1,6})\s+(.*)$/);
+
+    if (headingMatch) {
+      pushCurrent();
+      current = {
+        title: headingMatch[2].trim(),
+        lines: []
+      };
+      continue;
+    }
+
+    current.lines.push(line);
+  }
+
+  pushCurrent();
+  return sections;
+}
+
+function detectSectionType(title) {
+  if (!title) {
+    return "intro";
+  }
+
+  const heading = normalise(title).toLowerCase();
+
+  if (heading.includes("ingrediente")) {
+    return "ingredients";
+  }
+
+  if (heading.includes("preparacao") || heading.includes("preparo")) {
+    return "preparation";
+  }
+
+  if (heading.includes("nota") || heading.includes("observa")) {
+    return "notes";
+  }
+
+  return "generic";
+}
+
+function countMatchingLines(lines, pattern) {
+  return lines.map((line) => line.trim()).filter((line) => pattern.test(line)).length;
+}
+
+function appendHtml(existingHtml, nextHtml) {
+  if (!nextHtml) {
+    return existingHtml;
+  }
+
+  if (!existingHtml) {
+    return nextHtml;
+  }
+
+  return `${existingHtml}\n${nextHtml}`;
+}
+
+function buildStructuredSections(body) {
+  const structured = {
+    introHtml: "",
+    ingredientsHtml: "",
+    preparationHtml: "",
+    notesHtml: "",
+    extraSections: [],
+    ingredientCount: 0,
+    stepCount: 0
+  };
+
+  for (const section of parseMarkdownSections(body)) {
+    const markdown = section.lines.join("\n").trim();
+    const html = markdown ? markdownToHtml(markdown) : "";
+    const type = detectSectionType(section.title);
+
+    if (type === "intro") {
+      structured.introHtml = appendHtml(structured.introHtml, html);
+      continue;
+    }
+
+    if (type === "ingredients") {
+      structured.ingredientsHtml = appendHtml(structured.ingredientsHtml, html);
+      structured.ingredientCount += countMatchingLines(section.lines, /^- /);
+      continue;
+    }
+
+    if (type === "preparation") {
+      structured.preparationHtml = appendHtml(structured.preparationHtml, html);
+      structured.stepCount += countMatchingLines(section.lines, /^\d+\.\s+/);
+      continue;
+    }
+
+    if (type === "notes") {
+      structured.notesHtml = appendHtml(structured.notesHtml, html);
+      continue;
+    }
+
+    structured.extraSections.push({
+      title: section.title,
+      html
+    });
+  }
+
+  return structured;
+}
+
+function relativePrefix(depth) {
+  return depth === 0 ? "./" : "../".repeat(depth);
+}
+
+function buildAssetHref(assetPath, depth) {
+  if (!assetPath) {
+    return "";
+  }
+
+  if (/^https?:\/\//.test(assetPath)) {
+    return assetPath;
+  }
+
+  return `${relativePrefix(depth)}${normaliseRelativePath(assetPath)}`;
+}
+
+function buildRecipeHref(slug, depth = 0) {
+  return `${relativePrefix(depth)}${recipePageDirName}/${slug}/`;
+}
+
+function buildHomeHref(depth = 0) {
+  return relativePrefix(depth);
+}
+
+function buildPageTitle(value) {
+  return `${value} | Based Cooking`;
+}
+
+function buildDocumentHead({ title, description, stylesheetHref, canonicalHref = "" }) {
+  const canonicalMarkup = canonicalHref
+    ? `<link rel="canonical" href="${escapeHtml(canonicalHref)}">`
+    : "";
+
+  return `<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${escapeHtml(title)}</title>
+    <meta name="description" content="${escapeHtml(description)}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="${escapeHtml(stylesheetHref)}">
+    ${canonicalMarkup}
+  </head>`;
+}
+
+function renderTagMarkup(tags) {
+  return tags
+    .map((tag) => `<span class="meta-pill meta-pill-tag">${escapeHtml(tag)}</span>`)
+    .join("");
+}
+
+function renderStatisticMarkup(label, value, accentClass = "") {
+  return `
+    <div class="metric-card ${accentClass}">
+      <span class="metric-label">${escapeHtml(label)}</span>
+      <strong class="metric-value">${escapeHtml(value)}</strong>
+    </div>
+  `;
+}
+
+function buildRelatedRecipes(recipes, recipe) {
+  return recipes
+    .filter((candidate) => candidate.slug !== recipe.slug)
+    .map((candidate) => {
+      let score = 0;
+
+      if (candidate.category === recipe.category) {
+        score += 6;
+      }
+
+      for (const tag of candidate.tags) {
+        if (recipe.tags.includes(tag)) {
+          score += 2;
+        }
+      }
+
+      if (candidate.image !== placeholderImage) {
+        score += 1;
+      }
+
+      return { candidate, score };
+    })
+    .sort((left, right) => {
+      if (left.score !== right.score) {
+        return right.score - left.score;
+      }
+
+      return left.candidate.title.localeCompare(right.candidate.title, "pt");
+    })
+    .slice(0, 3)
+    .map((entry) => entry.candidate);
+}
+
+function renderSectionCard(title, content, extraClass = "") {
+  if (!content) {
+    return "";
+  }
+
+  return `
+    <section class="content-card ${extraClass}">
+      <div class="content-card-head">
+        <p class="section-kicker">Receita</p>
+        <h2>${escapeHtml(title)}</h2>
+      </div>
+      <div class="content-flow">
+        ${content}
+      </div>
+    </section>
+  `;
+}
+
+function renderExtraSections(sections) {
+  return sections
+    .filter((section) => section.html)
+    .map((section) => renderSectionCard(section.title, section.html))
+    .join("");
+}
+
+function renderRecipePage(recipe, context) {
+  const { previousRecipe, nextRecipe, relatedRecipes } = context;
+  const stylesheetHref = buildAssetHref("assets/styles.css", 2);
+  const imageHref = buildAssetHref(recipe.image, 2);
+  const homeHref = buildHomeHref(2);
+  const prevHref = previousRecipe ? buildRecipeHref(previousRecipe.slug, 2) : homeHref;
+  const nextHref = nextRecipe ? buildRecipeHref(nextRecipe.slug, 2) : homeHref;
+  const description = recipe.excerpt || `Receita de ${recipe.title}.`;
+  const ingredientCount = recipe.ingredientCount
+    ? `${recipe.ingredientCount} ingrediente${recipe.ingredientCount === 1 ? "" : "s"}`
+    : "Ingredientes";
+  const stepCount = recipe.stepCount
+    ? `${recipe.stepCount} passo${recipe.stepCount === 1 ? "" : "s"}`
+    : "Preparação";
+  const relatedMarkup = relatedRecipes.length
+    ? `
+      <section class="related-strip">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Mais receitas</p>
+            <h2>Continua a explorar</h2>
+          </div>
+        </div>
+        <div class="related-grid">
+          ${relatedRecipes
+            .map(
+              (relatedRecipe) => `
+                <a class="related-card" href="${escapeHtml(buildRecipeHref(relatedRecipe.slug, 2))}">
+                  <figure class="related-card-media">
+                    <img
+                      src="${escapeHtml(buildAssetHref(relatedRecipe.image, 2))}"
+                      alt="${escapeHtml(relatedRecipe.title)}"
+                    >
+                  </figure>
+                  <div class="related-card-body">
+                    <span class="meta-pill">${escapeHtml(relatedRecipe.category)}</span>
+                    <h3>${escapeHtml(relatedRecipe.title)}</h3>
+                    <p>${escapeHtml(relatedRecipe.excerpt)}</p>
+                  </div>
+                </a>
+              `
+            )
+            .join("")}
+        </div>
+      </section>
+    `
+    : "";
+
+  return `${buildDocumentHead({
+    title: buildPageTitle(recipe.title),
+    description,
+    stylesheetHref
+  })}
+  <body class="recipe-page">
+    <div class="site-shell recipe-shell">
+      <header class="recipe-hero">
+        <div class="recipe-hero-copy">
+          <a class="back-link" href="${escapeHtml(homeHref)}">Voltar ao catálogo</a>
+          <p class="site-kicker">Based Cooking</p>
+          <span class="meta-pill">${escapeHtml(recipe.category)}</span>
+          <h1>${escapeHtml(recipe.title)}</h1>
+          <p class="recipe-summary">${escapeHtml(description)}</p>
+          <div class="recipe-tag-row">
+            ${renderTagMarkup(recipe.tags)}
+          </div>
+          <div class="metric-grid metric-grid-compact">
+            ${renderStatisticMarkup("Ingredientes", ingredientCount)}
+            ${renderStatisticMarkup("Preparação", stepCount, "metric-card-accent")}
+          </div>
+          <div class="recipe-hero-actions">
+            <a class="hero-link" href="${escapeHtml(homeHref)}#catalogo">Explorar mais</a>
+            <div class="pager-links">
+              <a class="pager-link" href="${escapeHtml(prevHref)}">Anterior</a>
+              <a class="pager-link" href="${escapeHtml(nextHref)}">Seguinte</a>
+            </div>
+          </div>
+        </div>
+
+        <figure class="recipe-hero-media">
+          <img src="${escapeHtml(imageHref)}" alt="${escapeHtml(recipe.title)}">
+        </figure>
+      </header>
+
+      <main class="recipe-layout">
+        <aside class="recipe-sidebar">
+          ${renderSectionCard("Ingredientes", recipe.ingredientsHtml, "content-card-sticky")}
+          ${renderSectionCard("Notas", recipe.notesHtml)}
+        </aside>
+
+        <article class="recipe-main">
+          ${renderSectionCard("Introdução", recipe.introHtml)}
+          ${renderSectionCard("Preparação", recipe.preparationHtml)}
+          ${renderExtraSections(recipe.extraSections)}
+        </article>
+      </main>
+
+      ${relatedMarkup}
+    </div>
+  </body>
+</html>
+`;
 }
 
 async function loadRecipes() {
@@ -187,6 +562,7 @@ async function loadRecipes() {
     const filePath = path.join(recipeDir, fileName);
     const content = await fs.readFile(filePath, "utf8");
     const { data, body } = parseFrontMatter(content);
+    const structured = buildStructuredSections(body);
     const text = stripMarkdown(body);
     const title = data.title || fileName.replace(/\.md$/, "");
     const category = data.category || "Sem categoria";
@@ -201,10 +577,16 @@ async function loadRecipes() {
       title,
       category,
       tags,
-      image: data.image || "",
+      image: await resolveRecipeImage(data.image),
       excerpt: buildExcerpt(text),
       searchText: [title, category, tags.join(" "), text].join(" ").toLowerCase(),
-      html: markdownToHtml(body)
+      introHtml: structured.introHtml,
+      ingredientsHtml: structured.ingredientsHtml,
+      preparationHtml: structured.preparationHtml,
+      notesHtml: structured.notesHtml,
+      extraSections: structured.extraSections,
+      ingredientCount: structured.ingredientCount,
+      stepCount: structured.stepCount
     });
   }
 
@@ -222,6 +604,44 @@ async function copyStaticSource() {
   }
 }
 
+async function writeRecipePages(recipes) {
+  const recipeDirOutput = path.join(outputDir, recipePageDirName);
+  await fs.mkdir(recipeDirOutput, { recursive: true });
+
+  for (const [index, recipe] of recipes.entries()) {
+    const previousRecipe = index > 0 ? recipes[index - 1] : recipes[recipes.length - 1];
+    const nextRecipe = index < recipes.length - 1 ? recipes[index + 1] : recipes[0];
+    const relatedRecipes = buildRelatedRecipes(recipes, recipe);
+    const pageDir = path.join(recipeDirOutput, recipe.slug);
+
+    await fs.mkdir(pageDir, { recursive: true });
+    await fs.writeFile(
+      path.join(pageDir, "index.html"),
+      renderRecipePage(recipe, {
+        previousRecipe,
+        nextRecipe,
+        relatedRecipes
+      }),
+      "utf8"
+    );
+  }
+}
+
+function buildRecipeIndex(recipes) {
+  return recipes.map((recipe) => ({
+    slug: recipe.slug,
+    title: recipe.title,
+    category: recipe.category,
+    tags: recipe.tags,
+    image: recipe.image,
+    excerpt: recipe.excerpt,
+    ingredientCount: recipe.ingredientCount,
+    stepCount: recipe.stepCount,
+    searchText: recipe.searchText,
+    href: buildRecipeHref(recipe.slug)
+  }));
+}
+
 async function main() {
   const recipes = await loadRecipes();
 
@@ -232,9 +652,10 @@ async function main() {
   await fs.rm(outputDir, { recursive: true, force: true });
   await fs.mkdir(path.join(outputDir, "data"), { recursive: true });
   await copyStaticSource();
+  await writeRecipePages(recipes);
   await fs.writeFile(
     path.join(outputDir, "data", "recipes.json"),
-    `${JSON.stringify(recipes, null, 2)}\n`,
+    `${JSON.stringify(buildRecipeIndex(recipes), null, 2)}\n`,
     "utf8"
   );
 

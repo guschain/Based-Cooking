@@ -718,6 +718,7 @@ async function main() {
 
     console.log(`Receita criada: recipes/${path.basename(filePath)}`);
     console.log("Se quiser ver a mudanca localmente, executa `npm run build`.");
+    console.log("O build gera automaticamente uma pagina dedicada para esta receita.");
     console.log("Para publicar no site, faz commit e push para `main` ou usa o editor do GitHub.");
   } finally {
     safeCloseReadline(rl);

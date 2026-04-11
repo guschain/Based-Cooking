@@ -1,12 +1,12 @@
 # Based Cooking
 
-Minimal static cookbook for GitHub Pages, built from Markdown files in `recipes/`.
+Static cookbook for GitHub Pages, built from Markdown files in `recipes/`, with a visual catalogue and one dedicated page per recipe.
 
 ## How it works
 
 1. `recipes/*.md` is the source of truth.
 2. Each recipe has a small front matter block for `title`, `category`, `tags`, and `image`.
-3. `node scripts/build-site.mjs` generates the static site into `docs/`.
+3. `node scripts/build-site.mjs` generates the static site into `docs/`, including the catalogue homepage and one page per recipe.
 4. The GitHub Actions workflow deploys `docs/` to GitHub Pages on every push to `main`.
 
 ## GitHub Actions and Pages
@@ -28,7 +28,7 @@ How often it runs:
 Why it matters:
 
 1. You do not need to manually upload website files.
-2. GitHub rebuilds and republishes the site for free each time recipes change.
+2. GitHub rebuilds and republishes the site for free each time recipes or images change.
 3. This is what keeps the public cookbook online at `https://guschain.github.io/Based-Cooking/`.
 
 How to use it:
@@ -77,7 +77,7 @@ Step by step:
 11. When the script finishes, a new file will appear in `recipes/`.
 12. If you want to preview the site on your own computer, run `npm run build`.
 13. Commit and push the new recipe to GitHub.
-14. Wait for the `Deploy GitHub Pages` workflow to finish.
+14. Wait for the `Deploy GitHub Pages` workflow to finish. The recipe page is generated automatically during the build.
 
 ### Browser-only option (no terminal)
 
@@ -107,8 +107,9 @@ Step by step in GitHub, with no terminal:
 10. Click the green `Commit changes...` button in the top-right of the file editor.
 11. In the dialog that opens, keep `Commit directly to the main branch` selected.
 12. Click the green `Commit changes` button in that dialog.
-13. Open the `Actions` tab and wait for `Deploy GitHub Pages` to finish.
-14. Open `https://guschain.github.io/Based-Cooking/` and refresh the page.
+13. If the recipe uses an image, add it to `images/` and commit that file too.
+14. Open the `Actions` tab and wait for `Deploy GitHub Pages` to finish.
+15. Open `https://guschain.github.io/Based-Cooking/` and refresh the catalogue. The new recipe card and its own page are created automatically.
 
 ### Publish the change
 
@@ -140,14 +141,14 @@ In practice:
 1. Add or edit the recipe.
 2. Commit the change.
 3. GitHub starts `Deploy GitHub Pages`, usually within a few seconds.
-4. When that workflow is green, refresh the public site.
+4. When that workflow is green, refresh the public site. The catalogue and the dedicated recipe page are both regenerated automatically.
 
 ## Add an image
 
 1. Put the image in `images/`.
 2. Reference it in the recipe front matter, for example `image: images/frango-assado.jpg`.
 3. If you want a local preview, rebuild the site.
-4. Commit and push the image and recipe change.
+4. Commit and push the image and recipe change. The next deploy publishes the recipe page with that image.
 
 ## Ingredient format
 
