@@ -1,6 +1,5 @@
 const placeholderImage = "images/recipe-placeholder.svg";
-const maxVisibleTags = 16;
-const featuredRecipeCount = 4;
+const maxVisibleTags = 18;
 
 const state = {
   recipes: [],
@@ -12,6 +11,7 @@ const state = {
 
 const elements = {
   search: document.querySelector("[data-search]"),
+  searchForm: document.querySelector("[data-search-form]"),
   clear: document.querySelector("[data-clear]"),
   categories: document.querySelector("[data-categories]"),
   tags: document.querySelector("[data-tags]"),
@@ -20,8 +20,12 @@ const elements = {
   resultsCopy: document.querySelector("[data-results-copy]"),
   totalRecipes: document.querySelector("[data-total-recipes]"),
   visibleRecipes: document.querySelector("[data-visible-recipes]"),
-  featuredGrid: document.querySelector("[data-featured-grid]"),
-  randomLink: document.querySelector("[data-random-link]")
+  heroImage: document.querySelector("[data-hero-image]"),
+  heroCategory: document.querySelector("[data-hero-category]"),
+  heroTitle: document.querySelector("[data-hero-title]"),
+  heroExcerpt: document.querySelector("[data-hero-excerpt]"),
+  heroLink: document.querySelector("[data-hero-link]"),
+  randomLinks: document.querySelectorAll("[data-random-link]")
 };
 
 function escapeHtml(value) {
@@ -56,6 +60,16 @@ function hasCustomImage(recipe) {
   return recipe.image && recipe.image !== placeholderImage;
 }
 
+function sortRecipes(recipes) {
+  return [...recipes].sort((left, right) => {
+    if (hasCustomImage(left) !== hasCustomImage(right)) {
+      return hasCustomImage(left) ? -1 : 1;
+    }
+
+    return left.title.localeCompare(right.title, "pt");
+  });
+}
+
 function uniqueCategories() {
   const categories = new Set(state.recipes.map((recipe) => recipe.category));
   return [...categories].sort((left, right) => left.localeCompare(right, "pt"));
@@ -71,16 +85,6 @@ function uniqueTags() {
   }
 
   return [...tags].sort((left, right) => left.localeCompare(right, "pt"));
-}
-
-function sortRecipes(recipes) {
-  return [...recipes].sort((left, right) => {
-    if (hasCustomImage(left) !== hasCustomImage(right)) {
-      return hasCustomImage(left) ? -1 : 1;
-    }
-
-    return left.title.localeCompare(right.title, "pt");
-  });
 }
 
 function parseSearchParams() {
@@ -118,8 +122,8 @@ function syncSearchParams() {
     params.set("tags", [...state.activeTags].join(","));
   }
 
-  const query = params.toString();
-  const nextUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+  const nextQuery = params.toString();
+  const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
   window.history.replaceState(null, "", nextUrl);
 }
 
@@ -138,6 +142,16 @@ function recipeMatches(recipe) {
   return recipeMatchesBase(recipe) && queryMatches;
 }
 
+function categoryPanelRecipes() {
+  return state.recipes.filter((recipe) => {
+    const queryMatches =
+      !state.query || normalise(recipe.searchText).includes(normalise(state.query));
+    const tagMatches = [...state.activeTags].every((tag) => recipe.tags.includes(tag));
+
+    return queryMatches && tagMatches;
+  });
+}
+
 function tagPanelRecipes() {
   return state.recipes.filter((recipe) => {
     const queryMatches =
@@ -146,16 +160,6 @@ function tagPanelRecipes() {
       state.activeCategory === "all" || recipe.category === state.activeCategory;
 
     return queryMatches && categoryMatches;
-  });
-}
-
-function categoryPanelRecipes() {
-  return state.recipes.filter((recipe) => {
-    const queryMatches =
-      !state.query || normalise(recipe.searchText).includes(normalise(state.query));
-    const tagMatches = [...state.activeTags].every((tag) => recipe.tags.includes(tag));
-
-    return queryMatches && tagMatches;
   });
 }
 
@@ -182,85 +186,102 @@ function renderHeroStats() {
   elements.visibleRecipes.textContent = String(state.filteredRecipes.length);
 }
 
+function selectHeroRecipe() {
+  const source = state.filteredRecipes.length ? state.filteredRecipes : state.recipes;
+  const recipes = sortRecipes(source);
+
+  return recipes.find(hasCustomImage) || recipes[0] || null;
+}
+
+function renderHeroRecipe() {
+  const recipe = selectHeroRecipe();
+
+  if (!recipe) {
+    elements.heroImage.src = `./${placeholderImage}`;
+    elements.heroImage.alt = "Sem receita em destaque";
+    elements.heroCategory.textContent = "Receita em destaque";
+    elements.heroTitle.textContent = "Sem receitas";
+    elements.heroExcerpt.textContent = "Não foi possível carregar receitas.";
+    elements.heroLink.href = "./";
+    return;
+  }
+
+  elements.heroImage.src = resolveAssetPath(recipe.image);
+  elements.heroImage.alt = recipe.title;
+  elements.heroCategory.textContent = recipe.category;
+  elements.heroTitle.textContent = recipe.title;
+  elements.heroExcerpt.textContent = recipe.excerpt;
+  elements.heroLink.href = recipe.href;
+}
+
 function renderResultsSummary() {
   const count = state.filteredRecipes.length;
-  const title =
-    count === 1 ? "1 receita pronta a abrir" : `${count} receitas prontas a abrir`;
 
-  elements.resultsTitle.textContent = title;
+  elements.resultsTitle.textContent =
+    count === 1 ? "1 receita pronta a abrir" : `${count} receitas prontas a abrir`;
   elements.resultsCopy.textContent =
     count === 0
       ? "Não há receitas para este filtro. Ajusta a pesquisa ou remove uma tag."
       : buildFilterSummary();
 }
 
-function renderFeaturedGrid() {
-  const source = state.filteredRecipes.length ? state.filteredRecipes : state.recipes;
-  const featured = sortRecipes(source).slice(0, featuredRecipeCount);
-
-  if (!featured.length) {
-    elements.featuredGrid.innerHTML = `
-      <article class="showcase-card showcase-card-loading">
-        <div class="showcase-card-body">
-          <p>Sem receitas em destaque para este filtro.</p>
-        </div>
-      </article>
-    `;
-    return;
-  }
-
-  elements.featuredGrid.innerHTML = featured
-    .map(
-      (recipe, index) => `
-        <a class="showcase-card showcase-card-${index + 1}" href="${escapeHtml(recipe.href)}">
-          <img
-            class="showcase-card-media"
-            src="${escapeHtml(resolveAssetPath(recipe.image))}"
-            alt="${escapeHtml(recipe.title)}"
-          >
-          <div class="showcase-card-body">
-            <span class="meta-pill">${escapeHtml(recipe.category)}</span>
-            <h2>${escapeHtml(recipe.title)}</h2>
-            <p>${escapeHtml(recipe.excerpt)}</p>
-          </div>
-        </a>
-      `
-    )
-    .join("");
-}
-
 function renderCategories() {
   const counts = new Map();
+  const representatives = new Map();
 
   for (const recipe of categoryPanelRecipes()) {
     counts.set(recipe.category, (counts.get(recipe.category) || 0) + 1);
+
+    if (!representatives.has(recipe.category)) {
+      representatives.set(recipe.category, recipe);
+    } else if (hasCustomImage(recipe) && !hasCustomImage(representatives.get(recipe.category))) {
+      representatives.set(recipe.category, recipe);
+    }
   }
 
   const categories = uniqueCategories();
   const allCount = categoryPanelRecipes().length;
+  const allRepresentative = sortRecipes(categoryPanelRecipes())[0];
 
-  elements.categories.innerHTML = [
-    `
-      <button
-        class="category-pill ${state.activeCategory === "all" ? "is-active" : ""}"
-        type="button"
-        data-category-filter="all"
-      >
-        <span>Todas</span>
-        <strong>${allCount}</strong>
-      </button>
-    `,
-    ...categories.map((category) => `
-      <button
-        class="category-pill ${state.activeCategory === category ? "is-active" : ""}"
-        type="button"
-        data-category-filter="${escapeHtml(category)}"
-      >
-        <span>${escapeHtml(category)}</span>
-        <strong>${counts.get(category) || 0}</strong>
-      </button>
-    `)
-  ].join("");
+  const items = [
+    {
+      value: "all",
+      title: "Todas",
+      count: allCount,
+      recipe: allRepresentative
+    },
+    ...categories.map((category) => ({
+      value: category,
+      title: category,
+      count: counts.get(category) || 0,
+      recipe: representatives.get(category)
+    }))
+  ];
+
+  elements.categories.innerHTML = items
+    .map((item) => {
+      const isActive = state.activeCategory === item.value;
+      const image = item.recipe ? resolveAssetPath(item.recipe.image) : `./${placeholderImage}`;
+      const subtitle = item.recipe ? item.recipe.title : "Sem destaque";
+
+      return `
+        <button
+          class="signpost-card ${isActive ? "is-active" : ""}"
+          type="button"
+          data-category-filter="${escapeHtml(item.value)}"
+        >
+          <div class="signpost-card-copy">
+            <span class="signpost-card-title">${escapeHtml(item.title)}</span>
+            <span class="signpost-card-meta">${escapeHtml(
+              item.count === 1 ? "1 receita" : `${item.count} receitas`
+            )}</span>
+            <span class="signpost-card-subtitle">${escapeHtml(subtitle)}</span>
+          </div>
+          <img class="signpost-card-image" src="${escapeHtml(image)}" alt="${escapeHtml(item.title)}">
+        </button>
+      `;
+    })
+    .join("");
 
   for (const button of elements.categories.querySelectorAll("[data-category-filter]")) {
     button.addEventListener("click", () => {
@@ -307,7 +328,7 @@ function renderTags() {
     .map(
       (entry) => `
         <button
-          class="tag-pill ${entry.active ? "is-active" : ""}"
+          class="tag-chip ${entry.active ? "is-active" : ""}"
           type="button"
           data-tag-filter="${escapeHtml(entry.tag)}"
         >
@@ -340,19 +361,23 @@ function renderTags() {
 function renderRecipeGrid() {
   if (!state.filteredRecipes.length) {
     elements.results.innerHTML = `
-      <article class="empty-panel">
-        <p class="section-kicker">Sem resultados</p>
-        <h3>Nenhuma receita corresponde a este filtro.</h3>
-        <p>Ajusta a pesquisa, remove uma tag ou volta ao catálogo completo.</p>
+      <article class="recipe-card recipe-card-empty">
+        <div class="recipe-card-body">
+          <p class="eyebrow">Sem resultados</p>
+          <h3>Nenhuma receita corresponde a este filtro.</h3>
+          <p>Ajusta a pesquisa, muda a categoria ou remove uma tag.</p>
+        </div>
       </article>
     `;
     return;
   }
 
   elements.results.innerHTML = state.filteredRecipes
-    .map(
-      (recipe) => `
-        <a class="recipe-card" href="${escapeHtml(recipe.href)}">
+    .map((recipe, index) => {
+      const featureClass = index === 0 ? "recipe-card-feature" : "";
+
+      return `
+        <a class="recipe-card ${featureClass}" href="${escapeHtml(recipe.href)}">
           <figure class="recipe-card-media">
             <img
               src="${escapeHtml(resolveAssetPath(recipe.image))}"
@@ -360,45 +385,44 @@ function renderRecipeGrid() {
             >
           </figure>
           <div class="recipe-card-body">
-            <div class="recipe-card-topline">
-              <span class="meta-pill">${escapeHtml(recipe.category)}</span>
-              <span class="recipe-card-stats">
-                ${recipe.ingredientCount || 0} ing. · ${recipe.stepCount || 0} passos
-              </span>
+            <div class="recipe-card-head">
+              <span class="recipe-kicker">${escapeHtml(recipe.category)}</span>
+              <span class="recipe-meta-line">${escapeHtml(
+                `${recipe.ingredientCount || 0} ingredientes · ${recipe.stepCount || 0} passos`
+              )}</span>
             </div>
             <h3>${escapeHtml(recipe.title)}</h3>
             <p>${escapeHtml(recipe.excerpt)}</p>
-            <div class="tag-stack">
+            <div class="recipe-card-tags">
               ${recipe.tags
                 .slice(0, 4)
-                .map((tag) => `<span class="meta-pill meta-pill-tag">${escapeHtml(tag)}</span>`)
+                .map((tag) => `<span class="recipe-tag">${escapeHtml(tag)}</span>`)
                 .join("")}
             </div>
+            <span class="text-link">Abrir receita</span>
           </div>
         </a>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
-function updateRandomLink() {
-  if (!elements.randomLink) {
-    return;
+function updateRandomLinks() {
+  for (const link of elements.randomLinks) {
+    if (!state.filteredRecipes.length) {
+      link.href = "./";
+      link.classList.add("is-disabled");
+      link.setAttribute("aria-disabled", "true");
+      continue;
+    }
+
+    const index = Math.floor(Math.random() * state.filteredRecipes.length);
+    const recipe = state.filteredRecipes[index];
+
+    link.href = recipe.href;
+    link.classList.remove("is-disabled");
+    link.removeAttribute("aria-disabled");
   }
-
-  if (!state.filteredRecipes.length) {
-    elements.randomLink.href = "./";
-    elements.randomLink.classList.add("is-disabled");
-    elements.randomLink.setAttribute("aria-disabled", "true");
-    return;
-  }
-
-  const index = Math.floor(Math.random() * state.filteredRecipes.length);
-  const recipe = state.filteredRecipes[index];
-
-  elements.randomLink.href = recipe.href;
-  elements.randomLink.classList.remove("is-disabled");
-  elements.randomLink.removeAttribute("aria-disabled");
 }
 
 function normaliseState() {
@@ -416,18 +440,24 @@ function applyFilters() {
   normaliseState();
   state.filteredRecipes = sortRecipes(state.recipes.filter(recipeMatches));
   renderHeroStats();
+  renderHeroRecipe();
   renderResultsSummary();
-  renderFeaturedGrid();
   renderCategories();
   renderTags();
   renderRecipeGrid();
-  updateRandomLink();
+  updateRandomLinks();
   syncSearchParams();
 }
 
 function bindEvents() {
   elements.search.addEventListener("input", (event) => {
     state.query = event.target.value.trim();
+    applyFilters();
+  });
+
+  elements.searchForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    state.query = elements.search.value.trim();
     applyFilters();
   });
 
@@ -458,18 +488,13 @@ async function init() {
     elements.resultsCopy.textContent = "Confirma se o build do site foi publicado.";
     elements.categories.innerHTML = "";
     elements.tags.innerHTML = "";
-    elements.featuredGrid.innerHTML = `
-      <article class="showcase-card showcase-card-loading">
-        <div class="showcase-card-body">
+    elements.results.innerHTML = `
+      <article class="recipe-card recipe-card-empty">
+        <div class="recipe-card-body">
+          <p class="eyebrow">Erro</p>
+          <h3>Não foi possível carregar as receitas.</h3>
           <p>${escapeHtml(error.message)}</p>
         </div>
-      </article>
-    `;
-    elements.results.innerHTML = `
-      <article class="empty-panel">
-        <p class="section-kicker">Erro</p>
-        <h3>Não foi possível carregar as receitas.</h3>
-        <p>${escapeHtml(error.message)}</p>
       </article>
     `;
   }

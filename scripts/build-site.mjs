@@ -365,7 +365,7 @@ function buildDocumentHead({ title, description, stylesheetHref, canonicalHref =
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     >
     <link rel="stylesheet" href="${escapeHtml(stylesheetHref)}">
@@ -374,17 +374,15 @@ function buildDocumentHead({ title, description, stylesheetHref, canonicalHref =
 }
 
 function renderTagMarkup(tags) {
-  return tags
-    .map((tag) => `<span class="meta-pill meta-pill-tag">${escapeHtml(tag)}</span>`)
-    .join("");
+  return tags.map((tag) => `<span class="recipe-tag">${escapeHtml(tag)}</span>`).join("");
 }
 
 function renderStatisticMarkup(label, value, accentClass = "") {
   return `
-    <div class="metric-card ${accentClass}">
+    <article class="metric-panel ${accentClass}">
       <span class="metric-label">${escapeHtml(label)}</span>
       <strong class="metric-value">${escapeHtml(value)}</strong>
-    </div>
+    </article>
   `;
 }
 
@@ -417,7 +415,7 @@ function buildRelatedRecipes(recipes, recipe) {
 
       return left.candidate.title.localeCompare(right.candidate.title, "pt");
     })
-    .slice(0, 3)
+    .slice(0, 4)
     .map((entry) => entry.candidate);
 }
 
@@ -427,9 +425,9 @@ function renderSectionCard(title, content, extraClass = "") {
   }
 
   return `
-    <section class="content-card ${extraClass}">
-      <div class="content-card-head">
-        <p class="section-kicker">Receita</p>
+    <section class="detail-surface ${extraClass}">
+      <div class="detail-surface-head">
+        <p class="eyebrow">Receita</p>
         <h2>${escapeHtml(title)}</h2>
       </div>
       <div class="content-flow">
@@ -460,16 +458,18 @@ function renderRecipePage(recipe, context) {
   const stepCount = recipe.stepCount
     ? `${recipe.stepCount} passo${recipe.stepCount === 1 ? "" : "s"}`
     : "Preparação";
+  const introMarkup = renderSectionCard("Introdução", recipe.introHtml);
+  const notesMarkup = renderSectionCard("Notas", recipe.notesHtml);
   const relatedMarkup = relatedRecipes.length
     ? `
-      <section class="related-strip">
-        <div class="section-head">
+      <section class="catalog-section related-section">
+        <div class="section-heading">
           <div>
-            <p class="section-kicker">Mais receitas</p>
+            <p class="eyebrow">Mais receitas</p>
             <h2>Continua a explorar</h2>
           </div>
         </div>
-        <div class="related-grid">
+        <div class="related-filmstrip">
           ${relatedRecipes
             .map(
               (relatedRecipe) => `
@@ -481,9 +481,12 @@ function renderRecipePage(recipe, context) {
                     >
                   </figure>
                   <div class="related-card-body">
-                    <span class="meta-pill">${escapeHtml(relatedRecipe.category)}</span>
+                    <div class="recipe-card-head">
+                      <span class="recipe-kicker">${escapeHtml(relatedRecipe.category)}</span>
+                    </div>
                     <h3>${escapeHtml(relatedRecipe.title)}</h3>
                     <p>${escapeHtml(relatedRecipe.excerpt)}</p>
+                    <span class="text-link">Abrir receita</span>
                   </div>
                 </a>
               `
@@ -500,44 +503,54 @@ function renderRecipePage(recipe, context) {
     stylesheetHref
   })}
   <body class="recipe-page">
-    <div class="site-shell recipe-shell">
-      <header class="recipe-hero">
+    <div class="site-shell site-shell-recipe">
+      <header class="site-header">
+        <a class="brand-link" href="${escapeHtml(homeHref)}">Based Cooking</a>
+        <div class="site-header-actions">
+          <a class="header-link" href="${escapeHtml(homeHref)}#receitas">Catálogo</a>
+        </div>
+      </header>
+
+      <section class="recipe-hero-banner">
         <div class="recipe-hero-copy">
-          <a class="back-link" href="${escapeHtml(homeHref)}">Voltar ao catálogo</a>
-          <p class="site-kicker">Based Cooking</p>
-          <span class="meta-pill">${escapeHtml(recipe.category)}</span>
+          <p class="eyebrow">Receita</p>
+          <div class="breadcrumb-row">
+            <span>Based Cooking</span>
+            <span>/</span>
+            <span>${escapeHtml(recipe.category)}</span>
+          </div>
           <h1>${escapeHtml(recipe.title)}</h1>
-          <p class="recipe-summary">${escapeHtml(description)}</p>
-          <div class="recipe-tag-row">
+          <p class="intro-copy recipe-summary">${escapeHtml(description)}</p>
+          <div class="recipe-hero-tags">
+            <span class="recipe-kicker">${escapeHtml(recipe.category)}</span>
             ${renderTagMarkup(recipe.tags)}
           </div>
-          <div class="metric-grid metric-grid-compact">
+          <div class="metric-row">
             ${renderStatisticMarkup("Ingredientes", ingredientCount)}
-            ${renderStatisticMarkup("Preparação", stepCount, "metric-card-accent")}
+            ${renderStatisticMarkup("Preparação", stepCount, "metric-panel-highlight")}
           </div>
-          <div class="recipe-hero-actions">
-            <a class="hero-link" href="${escapeHtml(homeHref)}#catalogo">Explorar mais</a>
-            <div class="pager-links">
-              <a class="pager-link" href="${escapeHtml(prevHref)}">Anterior</a>
-              <a class="pager-link" href="${escapeHtml(nextHref)}">Seguinte</a>
-            </div>
+          <div class="hero-actions">
+            <a class="button-primary" href="${escapeHtml(homeHref)}#receitas">Mais receitas</a>
+            <a class="button-secondary" href="${escapeHtml(prevHref)}">Anterior</a>
+            <a class="button-secondary" href="${escapeHtml(nextHref)}">Seguinte</a>
           </div>
+          <a class="text-link text-link-inline" href="${escapeHtml(homeHref)}">Voltar ao catálogo</a>
         </div>
 
         <figure class="recipe-hero-media">
           <img src="${escapeHtml(imageHref)}" alt="${escapeHtml(recipe.title)}">
         </figure>
-      </header>
+      </section>
 
-      <main class="recipe-layout">
-        <aside class="recipe-sidebar">
-          ${renderSectionCard("Ingredientes", recipe.ingredientsHtml, "content-card-sticky")}
-          ${renderSectionCard("Notas", recipe.notesHtml)}
+      <main class="recipe-content-grid">
+        <aside class="recipe-side-column">
+          ${renderSectionCard("Ingredientes", recipe.ingredientsHtml, "detail-surface-sticky")}
+          ${notesMarkup}
         </aside>
 
-        <article class="recipe-main">
-          ${renderSectionCard("Introdução", recipe.introHtml)}
-          ${renderSectionCard("Preparação", recipe.preparationHtml)}
+        <article class="recipe-main-column">
+          ${introMarkup}
+          ${renderSectionCard("Preparação", recipe.preparationHtml, "detail-surface-steps")}
           ${renderExtraSections(recipe.extraSections)}
         </article>
       </main>

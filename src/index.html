@@ -6,120 +6,127 @@
     <title>Based Cooking</title>
     <meta
       name="description"
-      content="Catálogo visual de receitas com pesquisa, filtros rápidos e uma página dedicada para cada prato."
+      content="Catálogo de receitas com pesquisa, categorias e uma página dedicada para cada prato."
     >
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     >
     <link rel="stylesheet" href="./assets/styles.css">
   </head>
   <body class="catalog-page">
     <div class="site-shell">
-      <header class="catalog-hero">
-        <div class="catalog-hero-copy">
-          <p class="site-kicker">Based Cooking</p>
-          <h1>Receitas pensadas para escolher depressa e abrir logo a página certa.</h1>
-          <p class="site-lede">
-            O catálogo mantém-se alimentado pelos mesmos ficheiros Markdown e imagens. Cada nova
-            receita passa a gerar automaticamente a sua própria página no site.
-          </p>
-
-          <div class="hero-action-row">
-            <a class="hero-link" href="#catalogo">Explorar catálogo</a>
-            <a class="hero-link hero-link-secondary" href="./" data-random-link>
-              Escolhe por mim
-            </a>
-          </div>
-
-          <div class="metric-grid">
-            <div class="metric-card">
-              <span class="metric-label">Coleção</span>
-              <strong class="metric-value" data-total-recipes>--</strong>
-            </div>
-            <div class="metric-card metric-card-accent">
-              <span class="metric-label">Filtro atual</span>
-              <strong class="metric-value" data-visible-recipes>--</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="hero-showcase" data-featured-grid>
-          <article class="showcase-card showcase-card-loading">
-            <div class="showcase-card-body">
-              <p>A carregar receitas...</p>
-            </div>
-          </article>
+      <header class="site-header">
+        <a class="brand-link" href="./">Based Cooking</a>
+        <div class="site-header-actions">
+          <a class="header-link" href="./" data-random-link>Receita aleatória</a>
         </div>
       </header>
 
-      <main id="catalogo" class="catalog-main">
-        <section class="filter-deck">
-          <div class="filter-card filter-card-search">
-            <label class="field-label" for="recipe-search">Pesquisar</label>
-            <input
-              id="recipe-search"
-              class="search-input"
-              type="search"
-              placeholder="Ex.: frango, chocolate, forno, arroz"
-              autocomplete="off"
-              data-search
-            >
-            <p class="field-help">
-              Pesquisa por nome, categoria, tags ou texto da receita.
-            </p>
+      <section class="hero-banner">
+        <div class="hero-banner-copy">
+          <p class="eyebrow">Recipe Catalog</p>
+          <h1>Receitas para escolher depressa e abrir logo a página certa.</h1>
+          <p class="intro-copy">
+            O workflow mantém-se simples: colocas a imagem em <code>images/</code>, a receita em
+            <code>recipes/</code>, fazes commit para <code>main</code> e o GitHub Pages cria
+            automaticamente a nova página.
+          </p>
+          <div class="hero-actions">
+            <a class="button-primary" href="#receitas">Explorar receitas</a>
+            <a class="button-secondary" href="./" data-random-link>Surpreende-me</a>
           </div>
+          <div class="metric-row">
+            <article class="metric-panel">
+              <span class="metric-label">Receitas</span>
+              <strong class="metric-value" data-total-recipes>--</strong>
+            </article>
+            <article class="metric-panel metric-panel-highlight">
+              <span class="metric-label">Visíveis</span>
+              <strong class="metric-value" data-visible-recipes>--</strong>
+            </article>
+          </div>
+        </div>
 
-          <div class="filter-card">
-            <p class="field-label">Estado atual</p>
-            <h2 class="status-title" data-results-title>A carregar receitas...</h2>
-            <p class="status-copy" data-results-copy>
-              A preparar o catálogo visual.
-            </p>
-          </div>
+        <figure class="hero-banner-media">
+          <img
+            class="hero-image"
+            data-hero-image
+            src="./images/recipe-placeholder.svg"
+            alt="Receita em destaque"
+          >
+          <figcaption class="hero-feature-card">
+            <p class="hero-feature-kicker" data-hero-category>Receita em destaque</p>
+            <h2 data-hero-title>A carregar receita...</h2>
+            <p data-hero-excerpt>O destaque aparece quando as receitas forem carregadas.</p>
+            <a class="text-link" data-hero-link href="./">Abrir receita</a>
+          </figcaption>
+        </figure>
+      </section>
 
-          <div class="filter-card filter-card-action">
-            <p class="field-label">Workflow</p>
-            <p class="status-copy">
-              Adiciona um ficheiro em <code>recipes/</code> e a respetiva imagem em
-              <code>images/</code>. O build gera a nova página automaticamente.
-            </p>
-            <button class="clear-button" type="button" data-clear>Limpar filtros</button>
+      <section class="search-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Search</p>
+            <h2>Encontra por nome, categoria ou ingrediente</h2>
           </div>
-        </section>
+          <button class="button-secondary" type="button" data-clear>Limpar filtros</button>
+        </div>
 
-        <section class="section-block">
-          <div class="section-head">
-            <div>
-              <p class="section-kicker">Categorias</p>
-              <h2>Navegação rápida</h2>
-            </div>
-          </div>
-          <div class="category-rail" data-categories></div>
-        </section>
+        <form class="search-form" data-search-form>
+          <label class="sr-only" for="recipe-search">Pesquisar receitas</label>
+          <input
+            id="recipe-search"
+            class="search-input"
+            type="search"
+            placeholder="Pesquisar receitas"
+            autocomplete="off"
+            data-search
+          >
+          <button class="button-primary" type="submit">Pesquisar</button>
+        </form>
 
-        <section class="section-block">
-          <div class="section-head">
-            <div>
-              <p class="section-kicker">Tags</p>
-              <h2>Atalhos visuais</h2>
-            </div>
+        <div class="search-status">
+          <div>
+            <p class="eyebrow">Seleção</p>
+            <h3 data-results-title>A carregar receitas...</h3>
+            <p class="status-copy" data-results-copy>A preparar o catálogo.</p>
           </div>
-          <div class="tag-rail" data-tags></div>
-        </section>
+          <a class="header-link" href="./" data-random-link>Outra sugestão</a>
+        </div>
+      </section>
 
-        <section class="section-block section-block-results">
-          <div class="section-head">
-            <div>
-              <p class="section-kicker">Seleção</p>
-              <h2>Receitas</h2>
-            </div>
+      <section class="catalog-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Categories</p>
+            <h2>Navegação por categoria</h2>
           </div>
-          <div class="recipe-grid" data-results></div>
-        </section>
-      </main>
+        </div>
+        <div class="signpost-grid" data-categories></div>
+      </section>
+
+      <section class="catalog-section tag-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Tags</p>
+            <h2>Refinar seleção</h2>
+          </div>
+        </div>
+        <div class="tag-cloud" data-tags></div>
+      </section>
+
+      <section id="receitas" class="catalog-section recipes-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Recipes</p>
+            <h2>Receitas</h2>
+          </div>
+        </div>
+        <div class="recipe-grid" data-results></div>
+      </section>
     </div>
 
     <script type="module" src="./assets/app.js"></script>
