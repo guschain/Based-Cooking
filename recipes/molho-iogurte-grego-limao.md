@@ -6,12 +6,12 @@ image: images/molho-iogurte-grego-limao.jpg
 ---
 
 #### Ingredientes
-- 160 g de iogurte grego zero gordura
-- Sumo de 1/2 limão
-- 2 a 3 colheres de sopa de salsa picada
-- 1 dente de alho amassado
-- 1/4 de colher de chá de sal
-- 1/8 de colher de chá de pimenta-preta
+- 320 g de iogurte grego zero gordura
+- Sumo de 1 limão
+- 4 colheres de sopa de salsa picada
+- 2 dente de alho amassado
+- 1 de colher de chá de sal
+- 1/4 de colher de chá de pimenta-preta
 
 #### Preparação
 1. Colocar o iogurte grego numa tigela.
