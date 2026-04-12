@@ -2,7 +2,7 @@
 title: Pavlova (Merengue com Chantilly e Fruta)
 category: Sobremesas
 tags: sobremesas, pavlova, merengue, chantilly, fruta
-image: images/recipe-placeholder.svg
+image: images/pavlova-merengue-com-chantilly-e-fruta.jpg
 ---
 
 #### Ingredientes
