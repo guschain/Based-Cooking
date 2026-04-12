@@ -885,11 +885,9 @@ function renderExtraSections(sections) {
     .join("");
 }
 
-function renderRecipeCard(recipe, depth, featured = false) {
+function renderRecipeCard(recipe, depth) {
   return `
-    <a class="recipe-card ${featured ? "recipe-card-feature" : ""}" href="${escapeHtml(
-      buildRecipeHref(recipe.slug, depth)
-    )}">
+    <a class="recipe-card" href="${escapeHtml(buildRecipeHref(recipe.slug, depth))}">
       <figure class="recipe-card-media">
         <img
           src="${escapeHtml(buildAssetHref(recipe.image, depth))}"
@@ -928,7 +926,7 @@ function renderListingPage({
   const homeHref = buildHomeHref(depth);
   const catalogHref = `${homeHref}#receitas`;
   const recipeGridMarkup = recipes.length
-    ? recipes.map((recipe, index) => renderRecipeCard(recipe, depth, index === 0)).join("")
+    ? recipes.map((recipe) => renderRecipeCard(recipe, depth)).join("")
     : `
       <article class="recipe-card recipe-card-empty">
         <div class="recipe-card-body">

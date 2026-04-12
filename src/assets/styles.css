@@ -520,20 +520,10 @@ p {
   box-shadow: var(--shadow);
 }
 
-.recipe-card-feature {
-  grid-column: span 2;
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
-}
-
 .recipe-card-media {
   margin: 0;
   min-height: 240px;
   background: var(--surface-subtle);
-}
-
-.recipe-card-feature .recipe-card-media {
-  min-height: 340px;
 }
 
 .recipe-card-media img {
@@ -799,10 +789,6 @@ p {
     grid-template-columns: 1fr;
   }
 
-  .recipe-card-feature {
-    grid-column: span 1;
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 640px) {
