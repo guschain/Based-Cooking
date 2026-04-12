@@ -513,6 +513,9 @@ p {
 }
 
 .recipe-card {
+  display: grid;
+  grid-template-rows: 260px 1fr;
+  min-width: 0;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-xl);
@@ -787,6 +790,10 @@ p {
   .signpost-grid,
   .recipe-grid {
     grid-template-columns: 1fr;
+  }
+
+  .recipe-card {
+    grid-template-rows: 220px 1fr;
   }
 
 }
