@@ -6,7 +6,7 @@
     <title>Based Cooking</title>
     <meta
       name="description"
-      content="O site final é gerado por scripts/build-site.mjs a partir das receitas em Markdown."
+      content="Catálogo de receitas com pesquisa, categorias e uma página dedicada para cada prato."
     >
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,16 +18,117 @@
   </head>
   <body class="catalog-page">
     <div class="site-shell">
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">Based Cooking</p>
-          <h1>O site é gerado no build.</h1>
-          <p class="hero-lead">
-            A homepage, as categorias e as páginas de receita são geradas por
-            <code>scripts/build-site.mjs</code>.
+      <header class="site-header">
+        <a class="brand-link" href="./">Based Cooking</a>
+        <div class="site-header-actions">
+          <a class="header-link" href="./" data-random-link>Receita aleatória</a>
+        </div>
+      </header>
+
+      <section class="hero-banner">
+        <div class="hero-banner-copy">
+          <p class="eyebrow">Recipe Catalog</p>
+          <h1>Receitas para escolher depressa e abrir logo a página certa.</h1>
+          <p class="intro-copy">
+            O workflow mantém-se simples: colocas a imagem em <code>images/</code>, a receita em
+            <code>recipes/</code>, fazes commit para <code>main</code> e o GitHub Pages cria
+            automaticamente a nova página.
           </p>
+          <div class="hero-actions">
+            <a class="button-primary" href="#receitas">Explorar receitas</a>
+            <a class="button-secondary" href="./" data-random-link>Surpreende-me</a>
+          </div>
+          <div class="metric-row">
+            <article class="metric-panel">
+              <span class="metric-label">Receitas</span>
+              <strong class="metric-value" data-total-recipes>--</strong>
+            </article>
+            <article class="metric-panel metric-panel-highlight">
+              <span class="metric-label">Visíveis</span>
+              <strong class="metric-value" data-visible-recipes>--</strong>
+            </article>
+          </div>
+        </div>
+
+        <figure class="hero-banner-media">
+          <img
+            class="hero-image"
+            data-hero-image
+            src="./images/recipe-placeholder.svg"
+            alt="Receita em destaque"
+          >
+          <figcaption class="hero-feature-card">
+            <p class="hero-feature-kicker" data-hero-category>Receita em destaque</p>
+            <h2 data-hero-title>A carregar receita...</h2>
+            <p data-hero-excerpt>O destaque aparece quando as receitas forem carregadas.</p>
+            <a class="text-link" data-hero-link href="./">Abrir receita</a>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="search-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Search</p>
+            <h2>Encontra por nome, categoria ou ingrediente</h2>
+          </div>
+          <button class="button-secondary" type="button" data-clear>Limpar filtros</button>
+        </div>
+
+        <form class="search-form" data-search-form>
+          <label class="sr-only" for="recipe-search">Pesquisar receitas</label>
+          <input
+            id="recipe-search"
+            class="search-input"
+            type="search"
+            placeholder="Pesquisar receitas"
+            autocomplete="off"
+            data-search
+          >
+          <button class="button-primary" type="submit">Pesquisar</button>
+        </form>
+
+        <div class="search-status">
+          <div>
+            <p class="eyebrow">Seleção</p>
+            <h3 data-results-title>A carregar receitas...</h3>
+            <p class="status-copy" data-results-copy>A preparar o catálogo.</p>
+          </div>
+          <a class="header-link" href="./" data-random-link>Outra sugestão</a>
         </div>
       </section>
+
+      <section class="catalog-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Categories</p>
+            <h2>Navegação por categoria</h2>
+          </div>
+        </div>
+        <div class="signpost-grid" data-categories></div>
+      </section>
+
+      <section class="catalog-section tag-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Tags</p>
+            <h2>Refinar seleção</h2>
+          </div>
+        </div>
+        <div class="tag-cloud" data-tags></div>
+      </section>
+
+      <section id="receitas" class="catalog-section recipes-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Recipes</p>
+            <h2>Receitas</h2>
+          </div>
+        </div>
+        <div class="recipe-grid" data-results></div>
+      </section>
     </div>
+
+    <script type="module" src="./assets/app.js"></script>
   </body>
 </html>
