@@ -6,11 +6,11 @@ image: images/recipe-placeholder.svg
 ---
 
 #### Ingredientes
-- Marshmallow fluff
-- Chocolate quente
-- Chantilly (opcional)
-- Chocolate picado (opcional)
-- Meia bolacha digestive (opcional)
+- 2 a 3 colheres de sopa de marshmallow fluff
+- 200 ml de chocolate quente
+- 1 colher de sopa de chantilly (opcional)
+- 1 colher de chá de chocolate picado (opcional)
+- 1/2 bolacha digestive (opcional)
 
 #### Preparação
 1. Colocar um pouco do fluff num saco de pasteleiro

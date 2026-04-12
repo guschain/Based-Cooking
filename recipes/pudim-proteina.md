@@ -9,8 +9,8 @@ image: images/recipe-placeholder.svg
 - 250 ml de água quente
 - 250 g de iogurte grego
 - 1 saco de gelatina em pó sem açúcar
-- Punhado de framboesas (ou outra fruta)
-- Polvilho de chocolate preto
+- 1 punhado de framboesas (30 a 40 g, ou outra fruta)
+- 1 colher de chá de chocolate preto raspado ou picado
 
 #### Preparação
 1. Num recipiente, colocar a água, o iogurte grego e a gelatina; mexer bem

@@ -13,8 +13,8 @@ image: images/recipe-placeholder.svg
 - 170 g de açúcar
 - 100 g de farinha de trigo
 - 50 g de açúcar em pó
-- Margarina ou óleo (para untar as formas)
-- Chocolate em pó (para polvilhar as formas)
+- Margarina ou óleo q.b. para untar as formas
+- 1 a 2 colheres de sopa de chocolate em pó para polvilhar as formas
 
 #### Preparação
 1. Levar a banho-maria o chocolate e a manteiga (em cubos)

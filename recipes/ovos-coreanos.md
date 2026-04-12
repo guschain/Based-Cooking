@@ -6,17 +6,18 @@ image: images/ovos-coreanos.jpg
 ---
 
 #### Ingredientes
-- Malagueta (1)
-- Cebolinha (2)
-- Gengibre (9 g)
-- Cebola (1/2 cebola)
-- Alho (2 dentes)
-- Molho de soja (200 ml)
-- Vinagre de arroz (1 colher de sopa)
-- Mel (2 colheres de sopa)
-- Óleo de sésamo (1 colher de sopa)
-- Sementes de sésamo (2 colheres de sopa)
-- Água (q.b.)
+- 6 ovos
+- 1 malagueta
+- 2 cebolinhas
+- 9 g de gengibre
+- 1/2 cebola
+- 2 dentes de alho
+- 200 ml de molho de soja
+- 1 colher de sopa de vinagre de arroz
+- 2 colheres de sopa de mel
+- 1 colher de sopa de óleo de sésamo
+- 2 colheres de sopa de sementes de sésamo
+- 200 ml de água, ou q.b. para cobrir os ovos
 
 #### Preparação
 1. Cozer os ovos 7 minutos (remover a casca)

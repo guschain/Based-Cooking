@@ -12,9 +12,9 @@ image: images/recipe-placeholder.svg
 - 1 colher de chá de fermento em pó
 - 1 scoop de whey isolate *(opcional)*
 - 80 ml de leite
-- Mel (ou algo semelhante), q.b.
-- Cobertura (à escolha): pepitas de chocolate / mirtilos e amêndoa / banana + noz
-- Papel de alumínio (para cobrir)
+- 1 a 2 colheres de chá de mel (ou algo semelhante), a gosto
+- 2 a 3 colheres de sopa de cobertura à escolha: pepitas de chocolate, mirtilos e amêndoa, ou banana com noz
+- 1 folha de papel de alumínio (para cobrir)
 
 #### Preparação
 1. Misturar bem todos os ingredientes base

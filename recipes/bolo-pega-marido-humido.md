@@ -10,16 +10,16 @@ image: images/recipe-placeholder.svg
 - 1 lata de leite condensado
 - 200 ml de leite integral
 - 200 ml de leite de coco
-- Coco ralado (1 pacote pequeno)
-- Farinha de trigo
-- Açúcar, q.b.
+- 1 pacote pequeno de coco ralado
+- Farinha de trigo q.b. (a receita original não indica a medida exata)
+- Açúcar q.b. (a receita original não indica a medida exata)
 - 3 ovos grandes
 - 3 colheres (sopa) de margarina
 
 **Cobertura**
 - 200 ml de leite de coco
 - 2 colheres (sopa) de açúcar
-- 1 pacote de coco ralado
+- 1 pacote de coco ralado (cerca de 80 a 100 g)
 
 #### Preparação
 **Massa**

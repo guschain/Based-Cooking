@@ -6,12 +6,12 @@ image: images/recipe-placeholder.svg
 ---
 
 #### Ingredientes
-- Peitos de frango (3 a 5)
+- 3 a 5 peitos de frango
 - 200 ml de vinho branco
-- Azeite, q.b.
+- 2 colheres de sopa de azeite, ou q.b.
 - 4 dentes de alho
 - 1 colher (sopa) de pimentão vermelho
-- Sal e pimenta, q.b.
+- Sal e pimenta q.b.
 
 #### Preparação
 1. Triturar todos os ingredientes, menos o vinho e o frango.

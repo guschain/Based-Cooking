@@ -14,7 +14,7 @@ image: images/recipe-placeholder.svg
 - 1 lata de leite condensado
 - 3 dl de natas
 - 300 g de queijo ricotta
-- Papel vegetal
+- 1 folha de papel vegetal
 
 #### Preparação
 1. Levar ao lume o açúcar e os frutos vermelhos, misturando e mexendo de vez em quando até obter consistência de doce. Reservar.

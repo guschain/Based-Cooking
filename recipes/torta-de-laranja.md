@@ -11,9 +11,9 @@ image: images/recipe-placeholder.svg
 - 1 colher de sopa de farinha de trigo
 - Sumo e raspa de 2 laranjas
 - 80 g de margarina
-- Margarina (para untar)
+- Margarina q.b. para untar
 - 50 g de açúcar (para polvilhar)
-- Papel vegetal
+- 1 folha de papel vegetal
 
 #### Preparação
 1. Ligar o forno e deixar aquecer a 200ºC

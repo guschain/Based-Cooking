@@ -14,7 +14,7 @@ image: images/recipe-placeholder.svg
 - 1 curgete (descascada)
 - 4 chávenas de grão cozido
 - 200 g de espinafres
-- Azeite, q.b.
+- 2 colheres de sopa de azeite
 - 2-3 litros de água
 
 #### Preparação

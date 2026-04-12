@@ -17,8 +17,8 @@ image: images/recipe-placeholder.svg
 - 1 colher (chá) de pimentão em pó
 - 1/2 colher (chá) de pimenta
 - 1/4 colher (chá) de malagueta
-- Sal, q.b.
-- Óleo (q.b.)
+- Sal q.b.
+- 1 colher (sopa) de óleo
 
 #### Preparação
 1. Cortar todos os ingredientes frescos em cubos pequenos.

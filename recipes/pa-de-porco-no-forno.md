@@ -6,18 +6,18 @@ image: images/recipe-placeholder.svg
 ---
 
 #### Ingredientes
-- Pá de porco
-- Alho
-- Louro
-- Sal, q.b.
-- Vinho branco, q.b.
-- Pimentão doce
-- Vaqueiro
-- Azeite, q.b.
-- Pimenta, q.b.
-- Piri-piri, q.b.
-- Limas (por cima)
-- Vinho e água (se necessário, para adicionar mais)
+- 1 pá de porco (cerca de 2 kg)
+- 6 dentes de alho
+- 2 folhas de louro
+- 1 colher de sopa de sal, ou q.b.
+- 250 ml de vinho branco, mais um pouco se necessário
+- 2 colheres de sopa de pimentão doce
+- 2 colheres de sopa de Vaqueiro
+- 2 colheres de sopa de azeite, ou q.b.
+- 1 colher de chá de pimenta, ou q.b.
+- 1 colher de chá de piri-piri, ou q.b.
+- 2 limas para colocar por cima
+- 100 ml de água, ou q.b. se for necessário acrescentar líquido
 
 #### Preparação
 1. Temperar a carne com alho, louro, sal, vinho branco, pimentão doce, vaqueiro, azeite, pimenta e piri-piri.

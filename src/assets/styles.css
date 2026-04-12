@@ -250,17 +250,26 @@ p {
 }
 
 .hero-actions,
-.metric-row,
 .recipe-hero-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
+.metric-row {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(164px, 1fr));
+  gap: 10px;
+  align-items: stretch;
+  width: fit-content;
+  max-width: 100%;
+}
+
 .metric-panel {
   display: grid;
   gap: 6px;
   min-width: 164px;
+  height: 100%;
   padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -610,8 +619,11 @@ p {
   top: 18px;
 }
 
-.detail-surface-steps .content-flow ol {
+.detail-surface-steps .content-flow {
   counter-reset: recipe-steps;
+}
+
+.detail-surface-steps .content-flow ol {
   display: grid;
   gap: 10px;
   padding-left: 0;
@@ -639,6 +651,17 @@ p {
   border-radius: 999px;
   background: var(--accent-soft);
   color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.step-ingredients {
+  margin-top: 10px;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.step-ingredients span {
+  color: var(--ink);
   font-weight: 700;
 }
 
@@ -796,6 +819,10 @@ p {
   .hero-actions,
   .metric-row {
     width: 100%;
+  }
+
+  .metric-row {
+    grid-template-columns: 1fr;
   }
 
   .header-link,

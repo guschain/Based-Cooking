@@ -6,17 +6,17 @@ image: images/recipe-placeholder.svg
 ---
 
 #### Ingredientes
-- Peito de frango
-- Farinha Maizena
-- Sal, q.b.
-- Pimenta, q.b.
-- Óleo, q.b.
-- Manteiga ou margarina
-- Mel, q.b.
-- Molho de soja
-- Alho picado
-- Gengibre picado/ralado
-- Vinagre de maçã
+- 500 g de peito de frango
+- 4 colheres de sopa de farinha Maizena
+- Sal q.b.
+- Pimenta q.b.
+- 2 colheres de sopa de óleo
+- 1 colher de sopa de manteiga ou margarina
+- 2 colheres de sopa de mel
+- 4 colheres de sopa de molho de soja
+- 2 dentes de alho picados
+- 1 colher de chá de gengibre picado ou ralado
+- 1 colher de sopa de vinagre de maçã
 
 #### Preparação
 1. Temperar o frango com sal e pimenta e deixar cerca de 20 minutos.

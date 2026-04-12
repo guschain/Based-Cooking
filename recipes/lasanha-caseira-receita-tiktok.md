@@ -7,18 +7,18 @@ image: images/recipe-placeholder.svg
 
 #### Ingredientes
 - 1 cebola grande
-- Alho picado
+- 2 dentes de alho picados
 - 3 tomates picados
-- Cogumelos laminados
-- Carne picada
-- Sal, q.b.
-- Pimenta, q.b.
-- Salsa em pó
-- Alho em pó
-- Vinho branco, q.b.
-- Polpa de tomate
-- Folhas de lasanha
-- Molho bechamel
+- 200 g de cogumelos laminados
+- 500 g de carne picada
+- Sal q.b.
+- Pimenta q.b.
+- 1 colher de chá de salsa em pó
+- 1 colher de chá de alho em pó
+- 100 ml de vinho branco
+- 200 ml de polpa de tomate
+- 8 a 10 folhas de lasanha
+- 500 ml de molho bechamel
 
 #### Preparação
 **Carne**

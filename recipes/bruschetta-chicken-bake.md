@@ -6,15 +6,12 @@ image: images/recipe-placeholder.svg
 ---
 
 #### Ingredientes
-- 2 kg peito frango
+- 2 kg de peito de frango
 - 5 tomates cherry
-- Manjericão fresco
-- Queijo mozzarella (fresco - branco)
-- Vinagre balsâmico
-- Sal e pimenta, q.b.
-
-**Quantidades mencionadas na preparação**
-- Vinagre balsâmico: 3 colheres (sopa)
+- 8 a 10 folhas de manjericão fresco
+- 200 g de queijo mozzarella fresco (branco)
+- 3 colheres de sopa de vinagre balsâmico, mais um fio para finalizar
+- Sal e pimenta-preta q.b.
 
 #### Preparação
 1. Cortar o peito de frango ao meio (em 2 fatias mais finas).

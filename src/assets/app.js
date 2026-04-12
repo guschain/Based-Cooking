@@ -326,11 +326,9 @@ function renderRecipeGrid() {
   }
 
   elements.results.innerHTML = state.filteredRecipes
-    .map((recipe, index) => {
-      const featureClass = index === 0 ? "recipe-card-feature" : "";
-
+    .map((recipe) => {
       return `
-        <a class="recipe-card ${featureClass}" href="${escapeHtml(recipe.href)}">
+        <a class="recipe-card" href="${escapeHtml(recipe.href)}">
           <figure class="recipe-card-media">
             <img
               src="${escapeHtml(resolveAssetPath(recipe.image))}"

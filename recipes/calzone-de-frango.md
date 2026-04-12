@@ -14,9 +14,9 @@ image: images/calzone-de-frango.jpg
 - 1 dente de alho, picado
 - 1/2 colher de chá de alho em pó
 - 1/2 colher de chá de cebola em pó
-- sal
-- pimenta preta
-- ketchup sem açúcar (opcional)
+- Sal q.b.
+- Pimenta preta q.b.
+- 1 a 2 colheres de sopa de ketchup sem açúcar (opcional, para servir)
 
 #### Preparacao
 1. Cozinhar os espinafres com o alho até perderem a maior parte da água. Deixar arrefecer e espremer bem.

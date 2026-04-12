@@ -266,6 +266,372 @@ function countMatchingLines(lines, pattern) {
   return lines.map((line) => line.trim()).filter((line) => pattern.test(line)).length;
 }
 
+function ingredientLineHasQuantity(line) {
+  return /\d|q\.b\.|a gosto|punhado|pitada|meia?\b|fio\b|pouco\b/i.test(
+    normalise(line).toLowerCase()
+  );
+}
+
+function validateRecipeIngredientQuantities(fileName, title, body) {
+  const missingQuantities = [];
+
+  for (const section of parseMarkdownSections(body)) {
+    if (detectSectionType(section.title) !== "ingredients") {
+      continue;
+    }
+
+    for (const line of section.lines) {
+      const trimmed = line.trim();
+
+      if (!trimmed.startsWith("- ")) {
+        continue;
+      }
+
+      const ingredient = trimmed.slice(2).trim();
+
+      if (ingredient && !ingredientLineHasQuantity(ingredient)) {
+        missingQuantities.push(ingredient);
+      }
+    }
+  }
+
+  if (missingQuantities.length) {
+    throw new Error(
+      `Recipe "${title}" (${fileName}) has ingredient lines without an explicit quantity:\n${missingQuantities
+        .map((ingredient) => `- ${ingredient}`)
+        .join("\n")}`
+    );
+  }
+}
+
+const ingredientTokenStopwords = new Set([
+  "a",
+  "ao",
+  "aos",
+  "as",
+  "ate",
+  "b",
+  "base",
+  "branca",
+  "branco",
+  "brancos",
+  "brancas",
+  "cha",
+  "colher",
+  "colheres",
+  "com",
+  "como",
+  "copo",
+  "copos",
+  "cortada",
+  "cortadas",
+  "cortado",
+  "cortados",
+  "cozida",
+  "cozidas",
+  "cozido",
+  "cozidos",
+  "da",
+  "das",
+  "de",
+  "dl",
+  "do",
+  "dos",
+  "e",
+  "em",
+  "fase",
+  "fio",
+  "folha",
+  "folhas",
+  "fresca",
+  "frescas",
+  "fresco",
+  "frescos",
+  "g",
+  "grande",
+  "grandes",
+  "inteira",
+  "inteiras",
+  "inteiro",
+  "inteiros",
+  "kg",
+  "l",
+  "lata",
+  "latas",
+  "mais",
+  "meia",
+  "meias",
+  "meio",
+  "meios",
+  "media",
+  "medias",
+  "medio",
+  "medios",
+  "mistura",
+  "ml",
+  "molho",
+  "opcional",
+  "os",
+  "ou",
+  "outra",
+  "outras",
+  "outro",
+  "outros",
+  "pacote",
+  "pacotes",
+  "para",
+  "pequena",
+  "pequenas",
+  "pequeno",
+  "pequenos",
+  "picada",
+  "picadas",
+  "picado",
+  "picados",
+  "pitada",
+  "pouco",
+  "punhado",
+  "q",
+  "qb",
+  "ralada",
+  "raladas",
+  "ralado",
+  "ralados",
+  "restante",
+  "saco",
+  "sacos",
+  "saqueta",
+  "saquetas",
+  "sem",
+  "servir",
+  "sopa",
+  "tipo",
+  "um",
+  "uma",
+  "verde",
+  "verdes",
+  "vermelha",
+  "vermelhas",
+  "vermelho",
+  "vermelhos"
+]);
+
+function extractGroupLabel(line) {
+  const match = line.trim().match(/^\*\*(.+?)\*\*$/);
+  return match ? match[1].trim() : "";
+}
+
+function buildIngredientTokens(text) {
+  const cleaned = normalise(text)
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[0-9]+(?:[.,/-][0-9]+)*/g, " ")
+    .replace(/[^\p{L}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const tokens = [];
+  const seen = new Set();
+
+  for (const token of cleaned.split(" ")) {
+    if (!token) {
+      continue;
+    }
+
+    if (ingredientTokenStopwords.has(token)) {
+      continue;
+    }
+
+    if (token.length < 4 && !["mel", "ovo", "sal"].includes(token)) {
+      continue;
+    }
+
+    if (!seen.has(token)) {
+      tokens.push(token);
+      seen.add(token);
+    }
+
+    if (token.endsWith("s") && token.length > 4) {
+      const singularToken = token.slice(0, -1);
+
+      if (!seen.has(singularToken)) {
+        tokens.push(singularToken);
+        seen.add(singularToken);
+      }
+    }
+
+    if (tokens.length >= 2) {
+      break;
+    }
+  }
+
+  return tokens;
+}
+
+function parseIngredientItems(lines) {
+  const items = [];
+  let currentGroup = "";
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const groupLabel = extractGroupLabel(trimmed);
+
+    if (groupLabel) {
+      currentGroup = groupLabel;
+      continue;
+    }
+
+    const match = trimmed.match(/^- (.*)$/);
+
+    if (!match) {
+      continue;
+    }
+
+    const text = match[1].trim();
+    const tokens = buildIngredientTokens(text);
+
+    items.push({
+      text,
+      group: currentGroup,
+      groupKey: normalise(currentGroup).toLowerCase(),
+      tokens,
+      keyToken: tokens[0] || text
+    });
+  }
+
+  return items;
+}
+
+function parsePreparationBlocks(lines) {
+  const blocks = [];
+  let currentGroup = "";
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      continue;
+    }
+
+    const groupLabel = extractGroupLabel(trimmed);
+
+    if (groupLabel) {
+      currentGroup = groupLabel;
+      blocks.push({ type: "group", text: groupLabel });
+      continue;
+    }
+
+    const stepMatch = trimmed.match(/^\d+\.\s+(.*)$/);
+
+    if (stepMatch) {
+      blocks.push({
+        type: "step",
+        group: currentGroup,
+        text: stepMatch[1].trim()
+      });
+      continue;
+    }
+
+    blocks.push({
+      type: "paragraph",
+      text: trimmed
+    });
+  }
+
+  return blocks;
+}
+
+function findStepIngredients(stepText, stepGroup, ingredientItems) {
+  const normalisedStep = normalise(stepText)
+    .toLowerCase()
+    .replace(/[^\p{L}\d\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const paddedStep = ` ${normalisedStep} `;
+  const stepGroupKey = normalise(stepGroup || "").toLowerCase();
+  const referencedGroups = new Set(
+    ingredientItems
+      .map((item) => item.groupKey)
+      .filter(Boolean)
+      .filter((groupKey) => normalisedStep.includes(groupKey))
+  );
+  const matches = new Map();
+
+  if (normalisedStep.includes("todos os ingredientes")) {
+    if (referencedGroups.size) {
+      return ingredientItems.filter((item) => referencedGroups.has(item.groupKey));
+    }
+
+    if (stepGroupKey) {
+      return ingredientItems.filter((item) => item.groupKey === stepGroupKey);
+    }
+
+    return ingredientItems.filter((item) => !/opcional/i.test(item.text));
+  }
+
+  for (const item of ingredientItems) {
+    if (item.tokens.some((token) => paddedStep.includes(` ${token} `))) {
+      matches.set(item.keyToken || item.text, item);
+    }
+  }
+
+  if (!matches.size && referencedGroups.size) {
+    return ingredientItems.filter((item) => referencedGroups.has(item.groupKey));
+  }
+
+  return [...matches.values()];
+}
+
+function renderPreparationMarkup(lines, ingredientItems) {
+  const blocks = parsePreparationBlocks(lines);
+
+  if (!blocks.length) {
+    return "";
+  }
+
+  let html = "";
+  let listOpen = false;
+
+  const closeList = () => {
+    if (!listOpen) {
+      return;
+    }
+
+    html += "</ol>";
+    listOpen = false;
+  };
+
+  for (const block of blocks) {
+    if (block.type === "group") {
+      closeList();
+      html += `<h3>${escapeHtml(block.text)}</h3>`;
+      continue;
+    }
+
+    if (block.type === "paragraph") {
+      closeList();
+      html += `<p>${renderInline(block.text)}</p>`;
+      continue;
+    }
+
+    if (!listOpen) {
+      html += "<ol>";
+      listOpen = true;
+    }
+
+    const relatedIngredients = findStepIngredients(block.text, block.group, ingredientItems);
+    const relatedMarkup = relatedIngredients.length
+      ? `<p class="step-ingredients"><span>Usar aqui:</span> ${relatedIngredients
+          .map((item) => renderInline(item.text))
+          .join(" · ")}</p>`
+      : "";
+
+    html += `<li><p>${renderInline(block.text)}</p>${relatedMarkup}</li>`;
+  }
+
+  closeList();
+  return html;
+}
+
 function appendHtml(existingHtml, nextHtml) {
   if (!nextHtml) {
     return existingHtml;
@@ -285,6 +651,8 @@ function buildStructuredSections(body) {
     preparationHtml: "",
     notesHtml: "",
     extraSections: [],
+    ingredientItems: [],
+    preparationLines: [],
     ingredientCount: 0,
     stepCount: 0
   };
@@ -301,12 +669,13 @@ function buildStructuredSections(body) {
 
     if (type === "ingredients") {
       structured.ingredientsHtml = appendHtml(structured.ingredientsHtml, html);
+      structured.ingredientItems.push(...parseIngredientItems(section.lines));
       structured.ingredientCount += countMatchingLines(section.lines, /^- /);
       continue;
     }
 
     if (type === "preparation") {
-      structured.preparationHtml = appendHtml(structured.preparationHtml, html);
+      structured.preparationLines.push(...section.lines, "");
       structured.stepCount += countMatchingLines(section.lines, /^\d+\.\s+/);
       continue;
     }
@@ -321,6 +690,11 @@ function buildStructuredSections(body) {
       html
     });
   }
+
+  structured.preparationHtml = renderPreparationMarkup(
+    structured.preparationLines,
+    structured.ingredientItems
+  );
 
   return structured;
 }
@@ -773,9 +1147,12 @@ async function loadRecipes() {
     const filePath = path.join(recipeDir, fileName);
     const content = await fs.readFile(filePath, "utf8");
     const { data, body } = parseFrontMatter(content);
+    const title = data.title || fileName.replace(/\.md$/, "");
+
+    validateRecipeIngredientQuantities(fileName, title, body);
+
     const structured = buildStructuredSections(body);
     const text = stripMarkdown(body);
-    const title = data.title || fileName.replace(/\.md$/, "");
     const category = data.category || "Sem categoria";
     const tags = (data.tags || "")
       .split(",")

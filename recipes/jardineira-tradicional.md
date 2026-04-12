@@ -17,8 +17,8 @@ image: images/recipe-placeholder.svg
 - 100 ml de vinho branco
 - 50 ml de azeite
 - 1 folha de louro
-- Pimentão doce q.b.
-- Sal e pimenta, q.b.
+- 1 colher de chá de pimentão doce
+- Sal e pimenta q.b.
 
 #### Preparação
 1. Cortar a carne em pedaços pequenos e temperar com os dentes de alho picados, pimentão doce, o vinho branco, a folha de louro, sal e pimenta. Envolver e deixar marinar 30 minutos.

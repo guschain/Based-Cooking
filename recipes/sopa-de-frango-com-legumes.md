@@ -13,9 +13,11 @@ image: images/sopa-de-frango.jpg
 - 2 dentes de alho
 - 260 g de tomate
 - 5 g de azeite
-- Sal, pimentão doce e pimenta, q.b.
+- 1 colher de chá de sal
+- 1/2 colher de chá de pimentão doce
+- 1/4 colher de chá de pimenta
 - 1,5 L de água
-- Salsa (q.b.)
+- 1 a 2 colheres de sopa de salsa picada
 
 #### Preparação
 1. Descascar os legumes e as batatas; cortar em cubos. Cortar as cebolas em tiras.

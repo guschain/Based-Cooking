@@ -10,9 +10,9 @@ image: images/Papas-de-Aveia-Sabor-Leite-de-Creme-de-Laranja.jpg
 - 1 laranja descascada e limpa (160 g para 4)
 - 200 ml de bebida vegetal (1200 ml para 4)
 - 1 ovo (6 ovos para 4)
-- Mel (1 colher de sopa) *(ou outro adoçante)*
-- Casca de laranja (q.b.)
-- Pau de canela (2)
+- 1 colher de sopa de mel *(ou outro adoçante)*
+- Casca de laranja q.b. (de cerca de 1/4 a 1/2 laranja)
+- 2 paus de canela
 - Opcional: 1/2 scoop de whey de baunilha (≈ 15 g)
 
 #### Preparação

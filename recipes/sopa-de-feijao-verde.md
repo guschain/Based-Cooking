@@ -10,8 +10,8 @@ image: images/recipe-placeholder.svg
 - 4 cenouras
 - 1 cebola
 - 2 dentes de alho
-- Sal, q.b.
-- Azeite, q.b.
+- 1 colher de chá de sal, ou q.b.
+- 1 colher de sopa de azeite
 - 400–500 g de feijão verde
 - 1/2 cenoura (fininha)
 

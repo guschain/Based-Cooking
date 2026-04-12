@@ -10,23 +10,23 @@ image: images/arroz-de-pato.jpg
 - 1 pato cortado em quatro
 - 2 folhas de louro
 - 7 cravos-da-índia
-- Pimenta, q.b.
+- 1 colher de chá de pimenta-preta, ou q.b.
 - 6 dentes de alho esmagados
 - 2 cebolas descascadas e cortadas em 4
-- Alecrim (q.b.)
+- 2 ramos de alecrim
 - 1 lata de tomate pelado cortado aos cubos
-- Sal (q.b.)
-- Água (até cobrir o pato)
+- 1 colher de sopa de sal, ou q.b.
+- Água q.b. para cobrir o pato
 - 3 cenouras descascadas e cortadas
 
 **2ª fase**
 - 2 cebolas médias picadas
 - 3 dentes de alho picados
-- Azeite (q.b.)
-- Chouriço de porco preto, sem pele e cortado em rodelas
+- 2 colheres de sopa de azeite
+- 1 chouriço de porco preto pequeno, sem pele e cortado em rodelas
 - 500 g de arroz vaporizado
-- Caldo da cozedura do pato (até tapar o arroz)
-- Sal (q.b.)
+- Caldo da cozedura do pato q.b. para tapar o arroz
+- Sal q.b.
 
 #### Preparação
 1. Levar o pato a cozer (pode ser na panela de pressão) com água temperada de sal. Juntar todos os ingredientes da 1ª fase e deixar cozer 40 minutos (se na panela de pressão).

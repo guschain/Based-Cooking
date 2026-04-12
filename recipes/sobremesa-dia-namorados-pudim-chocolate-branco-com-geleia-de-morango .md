@@ -17,7 +17,7 @@ image: images/recipe-placeholder.svg
 **2ª fase - Geleia (no fim das 4h do frigorífico)**
 - 500 g de morangos
 - 4 colheres de sopa de açúcar
-- Sumo de meio limão
+- Sumo de 1/2 limão
 
 
 #### Preparação

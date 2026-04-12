@@ -6,16 +6,16 @@ image: images/esparguete-a-bolonhesa.jpg
 ---
 
 #### Ingredientes
-- Carne de vaca picada (1 kg)
-- Esparguete (375 g)
+- 1 kg de carne de vaca picada
+- 375 g de esparguete
 - 1 cebola grande
 - 3 dentes de alho
-- Polpa de tomate (600 ml)
-- Azeite (q.b.)
-- Queijo parmesão ralado (q.b.)
-- Manjericão (q.b.)
-- Sal e pimenta (q.b.)
-- Pimenta cayenne (opcional)
+- 600 ml de polpa de tomate
+- 2 colheres de sopa de azeite
+- 50 g de queijo parmesão ralado, ou q.b.
+- 6 a 8 folhas de manjericão, ou q.b.
+- Sal e pimenta q.b.
+- 1 pitada de pimenta cayenne (opcional)
 
 #### Preparação
 1. Picar a cebola e o alho.

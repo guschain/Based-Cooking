@@ -13,7 +13,7 @@ image: images/bolachas-de-canela-e-mel.jpg
 - 3 colheres (chá) de fermento
 - 6 colheres (sopa) de mel
 - 3 colheres (chá) de canela
-- Raspas de limão
+- Raspa de 1 limão
 
 #### Preparação
 1. Misturar a manteiga com o açúcar.
