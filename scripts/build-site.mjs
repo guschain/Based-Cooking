@@ -169,7 +169,15 @@ function stripMarkdown(markdown) {
     .trim();
 }
 
+function stripHtml(html) {
+  return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
 function buildExcerpt(text) {
+  if (!text) {
+    return "";
+  }
+
   if (text.length <= 170) {
     return text;
   }
@@ -279,6 +287,7 @@ function appendHtml(existingHtml, nextHtml) {
 function buildStructuredSections(body) {
   const structured = {
     introHtml: "",
+    introText: "",
     ingredientsHtml: "",
     preparationHtml: "",
     notesHtml: "",
@@ -294,6 +303,7 @@ function buildStructuredSections(body) {
 
     if (type === "intro") {
       structured.introHtml = appendHtml(structured.introHtml, html);
+      structured.introText = `${structured.introText} ${stripMarkdown(markdown)}`.trim();
       continue;
     }
 
@@ -378,7 +388,7 @@ function buildDocumentHead({ title, description, stylesheetHref }) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;700;800&display=swap"
       rel="stylesheet"
     >
     <link rel="stylesheet" href="${escapeHtml(stylesheetHref)}">
@@ -387,8 +397,8 @@ function buildDocumentHead({ title, description, stylesheetHref }) {
 
 function renderSiteHeader(depth, currentSection = "") {
   const homeHref = buildHomeHref(depth);
-  const recipesHref = buildRecipeIndexHref(depth);
   const categoriesHref = buildCategoryIndexHref(depth);
+  const recipesHref = buildRecipeIndexHref(depth);
 
   return `
     <header class="site-header">
@@ -402,115 +412,156 @@ function renderSiteHeader(depth, currentSection = "") {
   `;
 }
 
-function renderRecipeCard(recipe, depth, extraClass = "") {
-  const summary = /^(ingredientes|preparacao|preparo)\b/i.test(recipe.excerpt)
-    ? "Abre a receita completa para ver ingredientes e preparação passo a passo."
-    : recipe.excerpt;
+function renderTextLink(label, href) {
+  return `<a class="text-link" href="${escapeHtml(href)}">${escapeHtml(label)}</a>`;
+}
 
+function renderHomeMasthead(recipe) {
   return `
-    <a class="recipe-card ${extraClass}" href="${escapeHtml(buildRecipeHref(recipe.slug, depth))}">
-      <figure class="recipe-card-media">
+    <section class="masthead masthead-home">
+      <div class="masthead-copy">
+        <p class="eyebrow">Arquivo de cozinha</p>
+        <h1 class="display-title">Receitas pensadas como páginas para abrir com gosto.</h1>
+        <p class="masthead-dek">
+          Um arquivo editorial de pratos, doces e refeições do dia a dia, organizado por capítulos
+          e desenhado para escolher com calma.
+        </p>
+        <div class="masthead-actions">
+          ${renderTextLink("Entrar nas categorias", buildCategoryIndexHref())}
+          ${renderTextLink("Ver todas as receitas", buildRecipeIndexHref())}
+        </div>
+      </div>
+      <figure class="masthead-figure">
         <img
-          src="${escapeHtml(buildAssetHref(recipe.image, depth))}"
+          class="masthead-image"
+          src="${escapeHtml(buildAssetHref(recipe.image, 0))}"
           alt="${escapeHtml(recipe.title)}"
         >
+        <figcaption class="masthead-caption">
+          <p class="eyebrow">Em destaque</p>
+          <h2>${escapeHtml(recipe.title)}</h2>
+          <p>${escapeHtml(recipe.excerpt)}</p>
+          ${renderTextLink("Abrir receita", buildRecipeHref(recipe.slug))}
+        </figcaption>
       </figure>
-      <div class="recipe-card-body">
-        <p class="card-kicker">${escapeHtml(recipe.category)}</p>
-        <h3>${escapeHtml(recipe.title)}</h3>
-        <p>${escapeHtml(summary)}</p>
-        <span class="card-link">Abrir receita</span>
-      </div>
-    </a>
+    </section>
   `;
 }
 
-function renderCategoryCard(category, depth, extraClass = "") {
-  const featuredRecipe = category.recipes.find(hasCustomImage) || category.recipes[0];
-  const image = featuredRecipe ? buildAssetHref(featuredRecipe.image, depth) : buildAssetHref(placeholderImage, depth);
-  const description = category.description || `Ver receitas de ${category.name.toLowerCase()}.`;
-
-  return `
-    <a class="collection-card ${extraClass}" href="${escapeHtml(buildCategoryHref(category.slug, depth))}">
-      <div class="collection-card-copy">
-        <p class="card-kicker">Categoria</p>
-        <h3>${escapeHtml(category.name)}</h3>
-        <p>${escapeHtml(description)}</p>
-        <span class="card-link">Ver receitas</span>
-      </div>
-      <figure class="collection-card-media">
-        <img src="${escapeHtml(image)}" alt="${escapeHtml(category.name)}">
-      </figure>
-    </a>
-  `;
-}
-
-function renderPageHero({ eyebrow, title, description, primaryHref, primaryLabel, secondaryHref = "", secondaryLabel = "", mediaImage = "", mediaAlt = "" }) {
-  const secondaryMarkup = secondaryHref
-    ? `<a class="button-secondary" href="${escapeHtml(secondaryHref)}">${escapeHtml(secondaryLabel)}</a>`
-    : "";
-  const mediaMarkup = mediaImage
+function renderCollectionHero({ eyebrow, title, description, imageHref = "", imageAlt = "" }) {
+  const mediaMarkup = imageHref
     ? `
-      <figure class="hero-media">
-        <img src="${escapeHtml(mediaImage)}" alt="${escapeHtml(mediaAlt || title)}">
+      <figure class="collection-hero-media">
+        <img src="${escapeHtml(imageHref)}" alt="${escapeHtml(imageAlt || title)}">
       </figure>
     `
     : "";
 
   return `
-    <section class="hero">
-      <div class="hero-copy">
+    <section class="collection-hero ${imageHref ? "has-media" : ""}">
+      <div class="collection-hero-copy">
         <p class="eyebrow">${escapeHtml(eyebrow)}</p>
-        <h1>${escapeHtml(title)}</h1>
-        <p class="hero-lead">${escapeHtml(description)}</p>
-        <div class="hero-actions">
-          <a class="button-primary" href="${escapeHtml(primaryHref)}">${escapeHtml(primaryLabel)}</a>
-          ${secondaryMarkup}
-        </div>
+        <h1 class="display-title">${escapeHtml(title)}</h1>
+        <p class="collection-hero-dek">${escapeHtml(description)}</p>
       </div>
       ${mediaMarkup}
     </section>
   `;
 }
 
-function renderSection(title, description, content, extraClass = "") {
+function renderSectionIntro(eyebrow, title, description = "") {
   return `
-    <section class="section-block ${extraClass}">
-      <div class="section-heading">
-        <p class="eyebrow">Based Cooking</p>
-        <h2>${escapeHtml(title)}</h2>
-        ${description ? `<p class="section-copy">${escapeHtml(description)}</p>` : ""}
-      </div>
-      ${content}
-    </section>
-  `;
-}
-
-function renderRecipeGrid(recipes, depth, featuredFirst = false) {
-  if (!recipes.length) {
-    return `
-      <div class="empty-state">
-        <h3>Sem receitas.</h3>
-        <p>Adiciona uma nova receita em <code>recipes/</code> para a ver aqui.</p>
-      </div>
-    `;
-  }
-
-  return `
-    <div class="recipe-grid">
-      ${recipes
-        .map((recipe, index) => renderRecipeCard(recipe, depth, featuredFirst && index === 0 ? "recipe-card-featured" : ""))
-        .join("")}
+    <div class="section-intro">
+      <p class="eyebrow">${escapeHtml(eyebrow)}</p>
+      <h2 class="section-title">${escapeHtml(title)}</h2>
+      ${description ? `<p class="section-copy">${escapeHtml(description)}</p>` : ""}
     </div>
   `;
 }
 
-function renderCategoryGrid(categories, depth) {
+function renderChapterFeature(category, depth) {
+  const featuredRecipe = category.recipes.find(hasCustomImage) || category.recipes[0];
+  const imageHref = buildAssetHref(featuredRecipe.image, depth);
+
   return `
-    <div class="collection-grid">
-      ${categories
-        .map((category, index) => renderCategoryCard(category, depth, index === 0 ? "collection-card-featured" : ""))
-        .join("")}
+    <article class="chapter-feature">
+      <figure class="chapter-feature-media">
+        <img src="${escapeHtml(imageHref)}" alt="${escapeHtml(category.name)}">
+      </figure>
+      <div class="chapter-feature-copy">
+        <p class="eyebrow">Capítulo</p>
+        <h3>${escapeHtml(category.name)}</h3>
+        <p>${escapeHtml(category.description)}</p>
+        ${renderTextLink("Ver receitas desta categoria", buildCategoryHref(category.slug, depth))}
+      </div>
+    </article>
+  `;
+}
+
+function renderChapterListItem(category, depth) {
+  const featuredRecipe = category.recipes.find(hasCustomImage) || category.recipes[0];
+  const imageMarkup = featuredRecipe
+    ? `
+      <figure class="chapter-item-media">
+        <img src="${escapeHtml(buildAssetHref(featuredRecipe.image, depth))}" alt="${escapeHtml(category.name)}">
+      </figure>
+    `
+    : "";
+
+  return `
+    <a class="chapter-item" href="${escapeHtml(buildCategoryHref(category.slug, depth))}">
+      <div class="chapter-item-copy">
+        <p class="eyebrow">Categoria</p>
+        <h3>${escapeHtml(category.name)}</h3>
+        <p>${escapeHtml(category.description)}</p>
+      </div>
+      ${imageMarkup}
+    </a>
+  `;
+}
+
+function renderChapterSection(categories, depth) {
+  const [featuredCategory, ...remainingCategories] = categories;
+
+  return `
+    <section class="editorial-section">
+      ${renderSectionIntro(
+        "Capítulos",
+        "Entradas por tipo de prato, como num livro de cozinha bem ordenado.",
+        "Cada categoria abre uma página própria, com uma seleção editorial de receitas desse universo."
+      )}
+      <div class="chapter-layout">
+        ${renderChapterFeature(featuredCategory, depth)}
+        <div class="chapter-list">
+          ${remainingCategories.map((category) => renderChapterListItem(category, depth)).join("")}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderStoryEntry(recipe, depth, index, compact = false) {
+  const summary = recipe.excerpt || "Abrir a receita completa para ver ingredientes e preparação.";
+
+  return `
+    <article class="story-entry ${index % 2 === 1 ? "is-reversed" : ""} ${compact ? "is-compact" : ""}">
+      <a class="story-media" href="${escapeHtml(buildRecipeHref(recipe.slug, depth))}">
+        <img src="${escapeHtml(buildAssetHref(recipe.image, depth))}" alt="${escapeHtml(recipe.title)}">
+      </a>
+      <div class="story-copy">
+        <p class="eyebrow">${escapeHtml(recipe.category)}</p>
+        <h3>${escapeHtml(recipe.title)}</h3>
+        <p>${escapeHtml(summary)}</p>
+        ${renderTextLink("Abrir receita", buildRecipeHref(recipe.slug, depth))}
+      </div>
+    </article>
+  `;
+}
+
+function renderStoryRiver(recipes, depth, compact = false) {
+  return `
+    <div class="story-river ${compact ? "is-compact" : ""}">
+      ${recipes.map((recipe, index) => renderStoryEntry(recipe, depth, index, compact)).join("")}
     </div>
   `;
 }
@@ -519,23 +570,23 @@ function renderTagMarkup(tags) {
   return tags.map((tag) => `<span class="recipe-tag">${escapeHtml(tag)}</span>`).join("");
 }
 
-function renderStatisticMarkup(label, value, accentClass = "") {
+function renderStatisticMarkup(label, value) {
   return `
-    <article class="metric-panel ${accentClass}">
-      <span class="metric-label">${escapeHtml(label)}</span>
-      <strong class="metric-value">${escapeHtml(value)}</strong>
-    </article>
+    <div class="recipe-fact">
+      <span class="recipe-fact-label">${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+    </div>
   `;
 }
 
-function renderSectionCard(title, content, extraClass = "") {
+function renderArticleSection(title, content, extraClass = "") {
   if (!content) {
     return "";
   }
 
   return `
-    <section class="detail-surface ${extraClass}">
-      <div class="detail-surface-head">
+    <section class="article-section ${extraClass}">
+      <div class="article-section-head">
         <p class="eyebrow">Receita</p>
         <h2>${escapeHtml(title)}</h2>
       </div>
@@ -549,7 +600,7 @@ function renderSectionCard(title, content, extraClass = "") {
 function renderExtraSections(sections) {
   return sections
     .filter((section) => section.html)
-    .map((section) => renderSectionCard(section.title, section.html))
+    .map((section) => renderArticleSection(section.title, section.html))
     .join("");
 }
 
@@ -569,7 +620,7 @@ function buildRelatedRecipes(recipes, recipe) {
         }
       }
 
-      if (candidate.image !== placeholderImage) {
+      if (hasCustomImage(candidate)) {
         score += 1;
       }
 
@@ -582,20 +633,20 @@ function buildRelatedRecipes(recipes, recipe) {
 
       return left.candidate.title.localeCompare(right.candidate.title, "pt");
     })
-    .slice(0, 4)
+    .slice(0, 3)
     .map((entry) => entry.candidate);
 }
 
 function buildCategoryDescription(name) {
   const key = slugify(name);
   const descriptions = {
-    bebidas: "Bebidas para acompanhar, servir ao pequeno-almoço ou fechar a refeição.",
-    entradas: "Receitas para começar a mesa com algo rápido e partilhável.",
-    "molhos-e-temperos": "Molhos, pastas e temperos para completar outros pratos.",
-    "pequeno-almoco-e-lanches": "Ideias simples para manhãs, lanches e pausas rápidas.",
-    "pratos-principais": "Pratos para almoço ou jantar, pensados para ser o centro da refeição.",
-    sobremesas: "Doces e sobremesas para fechar a refeição ou servir em ocasião especial.",
-    sopas: "Sopas e caldos para dias mais leves ou refeições reconfortantes."
+    bebidas: "Bebidas para acompanhar a mesa, abrir a manhã ou fechar a refeição devagar.",
+    entradas: "Receitas para começar a mesa com leveza, partilha e apetite.",
+    "molhos-e-temperos": "Molhos, pastas e temperos para dar profundidade ao que vem a seguir.",
+    "pequeno-almoco-e-lanches": "Ideias simples para manhãs, pausas curtas e pequenos rituais do dia.",
+    "pratos-principais": "Pratos para almoço ou jantar, com presença de mesa e vontade de repetir.",
+    sobremesas: "Doces para fechar a refeição com calma ou abrir espaço para um desvio feliz.",
+    sopas: "Sopas e caldos para dias mais recolhidos, taças quentes e ritmo mais lento."
   };
 
   return descriptions[key] || `Receitas reunidas em ${name.toLowerCase()}.`;
@@ -617,49 +668,47 @@ function buildCategories(recipes) {
       name,
       slug: slugify(name),
       description: buildCategoryDescription(name),
-      recipes: groupedRecipes.sort((left, right) => left.title.localeCompare(right.title, "pt"))
+      recipes: groupedRecipes.sort((left, right) => {
+        if (hasCustomImage(left) !== hasCustomImage(right)) {
+          return hasCustomImage(left) ? -1 : 1;
+        }
+
+        return left.title.localeCompare(right.title, "pt");
+      })
     }))
-    .sort((left, right) => left.name.localeCompare(right.name, "pt"));
+    .sort((left, right) => right.recipes.length - left.recipes.length || left.name.localeCompare(right.name, "pt"));
+}
+
+function selectShowcaseRecipes(recipes, limit) {
+  const withImage = recipes.filter(hasCustomImage);
+  const withoutImage = recipes.filter((recipe) => !hasCustomImage(recipe));
+
+  return [...withImage, ...withoutImage].slice(0, limit);
 }
 
 function renderHomePage(recipes, categories) {
-  const featuredRecipe = recipes.find((recipe) => recipe.image !== placeholderImage) || recipes[0];
-  const prominentCategories = [...categories]
-    .sort((left, right) => right.recipes.length - left.recipes.length || left.name.localeCompare(right.name, "pt"))
-    .slice(0, 4);
-  const featuredRecipes = recipes.filter((recipe) => recipe.image !== placeholderImage).slice(0, 6);
+  const featuredRecipe = selectShowcaseRecipes(recipes, 1)[0];
+  const featuredCategories = categories.slice(0, 5);
+  const showcaseRecipes = selectShowcaseRecipes(recipes, 4);
 
   return `${buildDocumentHead({
     title: "Based Cooking",
-    description: "Receitas organizadas por categoria, com uma página dedicada para cada prato.",
+    description: "Receitas organizadas como um arquivo editorial, com páginas próprias por categoria e por prato.",
     stylesheetHref: "./assets/styles.css"
   })}
-  <body class="catalog-page">
+  <body class="page page-home">
     <div class="site-shell">
       ${renderSiteHeader(0, "home")}
-      ${renderPageHero({
-        eyebrow: "Receitas",
-        title: "Encontra a próxima receita em segundos.",
-        description: "Escolhe por tipo de prato ou abre diretamente uma receita já destacada. Cada opção leva-te para uma página própria, sem confusão de filtros.",
-        primaryHref: buildRecipeIndexHref(),
-        primaryLabel: "Ver todas as receitas",
-        secondaryHref: buildCategoryIndexHref(),
-        secondaryLabel: "Explorar categorias",
-        mediaImage: buildAssetHref(featuredRecipe.image, 0),
-        mediaAlt: featuredRecipe.title
-      })}
-
-      ${renderSection(
-        "Escolhe por tipo de prato",
-        "As categorias funcionam como páginas reais. Entras numa coleção e vês apenas as receitas desse tipo.",
-        renderCategoryGrid(prominentCategories, 0)
-      )}
-
-      ${renderSection(
-        "Receitas para abrir já",
-        "Uma seleção direta para começar sem pensar demasiado.",
-        renderRecipeGrid(featuredRecipes, 0, true)
-      )}
+      ${renderHomeMasthead(featuredRecipe)}
+      ${renderChapterSection(featuredCategories, 0)}
+      <section class="editorial-section">
+        ${renderSectionIntro(
+          "Seleção",
+          "Quatro páginas para abrir já, como numa sequência de revista.",
+          "Fotografia grande, leitura clara e espaço para a receita respirar antes mesmo do clique."
+        )}
+        ${renderStoryRiver(showcaseRecipes, 0)}
+      </section>
     </div>
   </body>
 </html>
@@ -667,28 +716,24 @@ function renderHomePage(recipes, categories) {
 }
 
 function renderCategoriesIndexPage(categories) {
+  const featuredCategory = categories[0];
+
   return `${buildDocumentHead({
     title: buildPageTitle("Categorias"),
-    description: "Navega por categorias e abre coleções com páginas próprias.",
+    description: "Capítulos editoriais para navegar o arquivo de receitas.",
     stylesheetHref: "../assets/styles.css"
   })}
-  <body class="catalog-page">
+  <body class="page page-categories">
     <div class="site-shell">
       ${renderSiteHeader(1, "categories")}
-      ${renderPageHero({
-        eyebrow: "Categorias",
-        title: "Escolhe pela forma como queres comer.",
-        description: "Pratos principais, entradas, sobremesas e outras coleções com página própria para navegação mais clara.",
-        primaryHref: buildRecipeIndexHref(1),
-        primaryLabel: "Ver todas as receitas",
-        secondaryHref: buildHomeHref(1),
-        secondaryLabel: "Voltar ao início"
+      ${renderCollectionHero({
+        eyebrow: "Capítulos",
+        title: "Categorias para entrar pelo apetite, não pelo ruído.",
+        description: "Cada coleção abre a sua própria página e organiza a leitura como um capítulo de livro de cozinha.",
+        imageHref: buildAssetHref((featuredCategory.recipes.find(hasCustomImage) || featuredCategory.recipes[0]).image, 1),
+        imageAlt: featuredCategory.name
       })}
-      ${renderSection(
-        "Todas as categorias",
-        "",
-        renderCategoryGrid(categories, 1)
-      )}
+      ${renderChapterSection(categories, 1)}
     </div>
   </body>
 </html>
@@ -697,32 +742,31 @@ function renderCategoriesIndexPage(categories) {
 
 function renderCategoryPage(category) {
   const depth = 2;
-  const mediaRecipe = category.recipes.find(hasCustomImage) || category.recipes[0];
+  const featureRecipe = category.recipes.find(hasCustomImage) || category.recipes[0];
 
   return `${buildDocumentHead({
     title: buildPageTitle(category.name),
     description: category.description,
     stylesheetHref: buildAssetHref("assets/styles.css", depth)
   })}
-  <body class="catalog-page">
+  <body class="page page-category">
     <div class="site-shell">
       ${renderSiteHeader(depth, "categories")}
-      ${renderPageHero({
+      ${renderCollectionHero({
         eyebrow: "Categoria",
         title: category.name,
         description: category.description,
-        primaryHref: buildRecipeIndexHref(depth),
-        primaryLabel: "Ver todas as receitas",
-        secondaryHref: buildCategoryIndexHref(depth),
-        secondaryLabel: "Mais categorias",
-        mediaImage: buildAssetHref(mediaRecipe.image, depth),
-        mediaAlt: mediaRecipe.title
+        imageHref: buildAssetHref(featureRecipe.image, depth),
+        imageAlt: featureRecipe.title
       })}
-      ${renderSection(
-        `${category.name}: receitas`,
-        "Todas as receitas desta categoria, cada uma com a sua própria página.",
-        renderRecipeGrid(category.recipes, depth, true)
-      )}
+      <section class="editorial-section">
+        ${renderSectionIntro(
+          "Arquivo da categoria",
+          `Receitas de ${category.name.toLowerCase()} em leitura contínua.`,
+          "Cada entrada abre para uma página própria, com fotografia dominante e receita completa."
+        )}
+        ${renderStoryRiver(category.recipes, depth)}
+      </section>
     </div>
   </body>
 </html>
@@ -732,26 +776,20 @@ function renderCategoryPage(category) {
 function renderRecipeIndexPage(recipes) {
   return `${buildDocumentHead({
     title: buildPageTitle("Receitas"),
-    description: "Lista completa das receitas publicadas no site.",
+    description: "Arquivo completo das receitas publicadas no site.",
     stylesheetHref: "../assets/styles.css"
   })}
-  <body class="catalog-page">
+  <body class="page page-recipes">
     <div class="site-shell">
       ${renderSiteHeader(1, "recipes")}
-      ${renderPageHero({
-        eyebrow: "Receitas",
-        title: "Todas as receitas num só sítio.",
-        description: "Abre diretamente a receita certa ou entra numa categoria para reduzir a escolha.",
-        primaryHref: buildCategoryIndexHref(1),
-        primaryLabel: "Ver categorias",
-        secondaryHref: buildHomeHref(1),
-        secondaryLabel: "Voltar ao início"
+      ${renderCollectionHero({
+        eyebrow: "Arquivo",
+        title: "Todas as receitas num arquivo contínuo e sem distrações.",
+        description: "Uma leitura simples, página após página, com prioridade total à fotografia, ao título e ao gesto de abrir."
       })}
-      ${renderSection(
-        "Catálogo completo",
-        "",
-        renderRecipeGrid(recipes, 1, true)
-      )}
+      <section class="editorial-section">
+        ${renderStoryRiver(recipes, 1, true)}
+      </section>
     </div>
   </body>
 </html>
@@ -760,31 +798,22 @@ function renderRecipeIndexPage(recipes) {
 
 function renderRecipePage(recipe, context) {
   const { previousRecipe, nextRecipe, relatedRecipes } = context;
-  const stylesheetHref = buildAssetHref("assets/styles.css", 2);
-  const imageHref = buildAssetHref(recipe.image, 2);
-  const homeHref = buildHomeHref(2);
-  const prevHref = previousRecipe ? buildRecipeHref(previousRecipe.slug, 2) : buildRecipeIndexHref(2);
-  const nextHref = nextRecipe ? buildRecipeHref(nextRecipe.slug, 2) : buildRecipeIndexHref(2);
-  const categoryHref = buildCategoryHref(recipe.categorySlug, 2);
+  const depth = 2;
+  const stylesheetHref = buildAssetHref("assets/styles.css", depth);
+  const imageHref = buildAssetHref(recipe.image, depth);
+  const homeHref = buildHomeHref(depth);
+  const categoryHref = buildCategoryHref(recipe.categorySlug, depth);
+  const prevHref = previousRecipe ? buildRecipeHref(previousRecipe.slug, depth) : buildRecipeIndexHref(depth);
+  const nextHref = nextRecipe ? buildRecipeHref(nextRecipe.slug, depth) : buildRecipeIndexHref(depth);
   const description = recipe.excerpt || `Receita de ${recipe.title}.`;
-  const ingredientCount = recipe.ingredientCount
-    ? `${recipe.ingredientCount} ingrediente${recipe.ingredientCount === 1 ? "" : "s"}`
-    : "Ingredientes";
-  const stepCount = recipe.stepCount
-    ? `${recipe.stepCount} passo${recipe.stepCount === 1 ? "" : "s"}`
-    : "Preparação";
-  const introMarkup = renderSectionCard("Introdução", recipe.introHtml);
-  const notesMarkup = renderSectionCard("Notas", recipe.notesHtml);
+  const introMarkup = renderArticleSection("Introdução", recipe.introHtml, "article-section-intro");
+  const notesMarkup = renderArticleSection("Notas", recipe.notesHtml);
+  const extraMarkup = renderExtraSections(recipe.extraSections);
   const relatedMarkup = relatedRecipes.length
     ? `
-      <section class="section-block">
-        <div class="section-heading">
-          <p class="eyebrow">Mais receitas</p>
-          <h2>Continua a explorar</h2>
-        </div>
-        <div class="recipe-grid recipe-grid-compact">
-          ${relatedRecipes.map((relatedRecipe) => renderRecipeCard(relatedRecipe, 2)).join("")}
-        </div>
+      <section class="editorial-section editorial-section-related">
+        ${renderSectionIntro("Continuação", "Mais páginas para abrir a seguir.")}
+        ${renderStoryRiver(relatedRecipes, depth, true)}
       </section>
     `
     : "";
@@ -794,12 +823,11 @@ function renderRecipePage(recipe, context) {
     description,
     stylesheetHref
   })}
-  <body class="recipe-page">
+  <body class="page page-recipe">
     <div class="site-shell">
-      ${renderSiteHeader(2, "recipes")}
-
-      <section class="recipe-hero">
-        <div class="recipe-hero-copy">
+      ${renderSiteHeader(depth, "recipes")}
+      <article class="recipe-article">
+        <header class="recipe-header">
           <div class="breadcrumb-row">
             <a href="${escapeHtml(homeHref)}">Início</a>
             <span>/</span>
@@ -808,39 +836,40 @@ function renderRecipePage(recipe, context) {
             <span>${escapeHtml(recipe.title)}</span>
           </div>
           <p class="eyebrow">Receita</p>
-          <h1>${escapeHtml(recipe.title)}</h1>
-          <p class="hero-lead">${escapeHtml(description)}</p>
-          <div class="recipe-hero-tags">
-            <span class="recipe-tag recipe-tag-primary">${escapeHtml(recipe.category)}</span>
-            ${renderTagMarkup(recipe.tags)}
+          <h1 class="display-title">${escapeHtml(recipe.title)}</h1>
+          <p class="recipe-dek">${escapeHtml(description)}</p>
+          <div class="recipe-meta-line">
+            ${renderStatisticMarkup("Ingredientes", `${recipe.ingredientCount || 0}`)}
+            ${renderStatisticMarkup("Passos", `${recipe.stepCount || 0}`)}
+            <div class="recipe-meta-tags">
+              <span class="recipe-tag recipe-tag-primary">${escapeHtml(recipe.category)}</span>
+              ${renderTagMarkup(recipe.tags)}
+            </div>
           </div>
-          <div class="metric-row">
-            ${renderStatisticMarkup("Ingredientes", ingredientCount)}
-            ${renderStatisticMarkup("Preparação", stepCount, "metric-panel-highlight")}
-          </div>
-          <div class="hero-actions">
-            <a class="button-primary" href="${escapeHtml(categoryHref)}">Mais desta categoria</a>
-            <a class="button-secondary" href="${escapeHtml(prevHref)}">Anterior</a>
-            <a class="button-secondary" href="${escapeHtml(nextHref)}">Seguinte</a>
-          </div>
-        </div>
-        <figure class="recipe-hero-media">
+        </header>
+
+        <figure class="recipe-figure">
           <img src="${escapeHtml(imageHref)}" alt="${escapeHtml(recipe.title)}">
         </figure>
-      </section>
 
-      <main class="recipe-content-grid">
-        <aside class="recipe-side-column">
-          ${renderSectionCard("Ingredientes", recipe.ingredientsHtml, "detail-surface-sticky")}
-          ${notesMarkup}
-        </aside>
+        <div class="recipe-body">
+          <aside class="recipe-sidebar">
+            ${renderArticleSection("Ingredientes", recipe.ingredientsHtml, "article-section-sidebar")}
+            ${notesMarkup}
+            <nav class="article-pagination" aria-label="Navegação entre receitas">
+              ${renderTextLink("Mais desta categoria", categoryHref)}
+              ${renderTextLink("Receita anterior", prevHref)}
+              ${renderTextLink("Receita seguinte", nextHref)}
+            </nav>
+          </aside>
 
-        <article class="recipe-main-column">
-          ${introMarkup}
-          ${renderSectionCard("Preparação", recipe.preparationHtml, "detail-surface-steps")}
-          ${renderExtraSections(recipe.extraSections)}
-        </article>
-      </main>
+          <div class="recipe-main">
+            ${introMarkup}
+            ${renderArticleSection("Preparação", recipe.preparationHtml, "article-section-steps")}
+            ${extraMarkup}
+          </div>
+        </div>
+      </article>
 
       ${relatedMarkup}
     </div>
@@ -863,7 +892,7 @@ async function loadRecipes() {
     const content = await fs.readFile(filePath, "utf8");
     const { data, body } = parseFrontMatter(content);
     const structured = buildStructuredSections(body);
-    const text = stripMarkdown(body);
+    const bodyText = stripMarkdown(body);
     const title = data.title || fileName.replace(/\.md$/, "");
     const category = data.category || "Sem categoria";
     const tags = (data.tags || "")
@@ -871,6 +900,7 @@ async function loadRecipes() {
       .map((tag) => tag.trim())
       .filter(Boolean);
     const slug = slugify(title);
+    const leadText = structured.introText || bodyText;
 
     recipes.push({
       slug,
@@ -879,8 +909,7 @@ async function loadRecipes() {
       categorySlug: slugify(category),
       tags,
       image: await resolveRecipeImage(data.image),
-      excerpt: buildExcerpt(text),
-      searchText: [title, category, tags.join(" "), text].join(" ").toLowerCase(),
+      excerpt: buildExcerpt(leadText),
       introHtml: structured.introHtml,
       ingredientsHtml: structured.ingredientsHtml,
       preparationHtml: structured.preparationHtml,
@@ -942,23 +971,6 @@ async function writeCategoryPages(categories) {
   }
 }
 
-function buildRecipeIndex(recipes) {
-  return recipes.map((recipe) => ({
-    slug: recipe.slug,
-    title: recipe.title,
-    category: recipe.category,
-    categorySlug: recipe.categorySlug,
-    tags: recipe.tags,
-    image: recipe.image,
-    excerpt: recipe.excerpt,
-    ingredientCount: recipe.ingredientCount,
-    stepCount: recipe.stepCount,
-    searchText: recipe.searchText,
-    href: buildRecipeHref(recipe.slug),
-    categoryHref: buildCategoryHref(recipe.categorySlug)
-  }));
-}
-
 async function main() {
   const recipes = await loadRecipes();
 
@@ -969,16 +981,10 @@ async function main() {
   const categories = buildCategories(recipes);
 
   await fs.rm(outputDir, { recursive: true, force: true });
-  await fs.mkdir(path.join(outputDir, "data"), { recursive: true });
   await copyStaticSource();
   await writeRecipePages(recipes);
   await writeCategoryPages(categories);
   await fs.writeFile(path.join(outputDir, "index.html"), renderHomePage(recipes, categories), "utf8");
-  await fs.writeFile(
-    path.join(outputDir, "data", "recipes.json"),
-    `${JSON.stringify(buildRecipeIndex(recipes), null, 2)}\n`,
-    "utf8"
-  );
 
   console.log(`Built ${recipes.length} recipes and ${categories.length} categories into docs/.`);
 }
