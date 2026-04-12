@@ -303,9 +303,9 @@ function renderRecipeTags(recipe) {
     .slice(0, 4)
     .map(
       (tag) => `
-        <a class="recipe-tag" href="${escapeHtml(buildTagHref(tag))}">
+        <span class="recipe-tag">
           ${escapeHtml(tag)}
-        </a>
+        </span>
       `
     )
     .join("");

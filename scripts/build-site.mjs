@@ -808,11 +808,10 @@ function buildDocumentHead({
 function renderTagMarkup(tags, depth) {
   return tags
     .map((tag) => {
-      const tagSlug = slugify(tag);
       return `
-        <a class="recipe-tag" href="${escapeHtml(buildTagHref(tagSlug, depth))}">
+        <span class="recipe-tag">
           ${escapeHtml(tag)}
-        </a>
+        </span>
       `;
     })
     .join("");
