@@ -15,8 +15,6 @@ const elements = {
   categories: document.querySelector("[data-categories]"),
   tags: document.querySelector("[data-tags]"),
   results: document.querySelector("[data-results]"),
-  resultsTitle: document.querySelector("[data-results-title]"),
-  resultsCopy: document.querySelector("[data-results-copy]"),
   heroImage: document.querySelector("[data-hero-image]"),
   heroCategory: document.querySelector("[data-hero-category]"),
   heroTitle: document.querySelector("[data-hero-title]"),
@@ -140,20 +138,6 @@ function categoryPanelRecipes() {
   });
 }
 
-function buildFilterSummary() {
-  const parts = [];
-
-  if (state.activeCategory !== "all") {
-    parts.push(`Categoria: ${state.activeCategory}`);
-  }
-
-  if (state.query) {
-    parts.push(`Pesquisa: "${state.query}"`);
-  }
-
-  return parts.length ? parts.join(" | ") : "Catálogo completo";
-}
-
 function selectHeroRecipe() {
   const source = state.filteredRecipes.length ? state.filteredRecipes : state.recipes;
   const recipes = sortRecipes(source);
@@ -180,17 +164,6 @@ function renderHeroRecipe() {
   elements.heroTitle.textContent = recipe.title;
   elements.heroExcerpt.textContent = recipe.excerpt;
   elements.heroLink.href = recipe.href;
-}
-
-function renderResultsSummary() {
-  const count = state.filteredRecipes.length;
-
-  elements.resultsTitle.textContent =
-    count === 1 ? "1 receita pronta a abrir" : `${count} receitas prontas a abrir`;
-  elements.resultsCopy.textContent =
-    count === 0
-      ? "Não há receitas para este filtro. Ajusta a pesquisa ou muda a categoria."
-      : buildFilterSummary();
 }
 
 function renderCategories() {
@@ -389,7 +362,6 @@ function applyFilters() {
     Boolean(state.query || state.activeCategory !== "all")
   );
   renderHeroRecipe();
-  renderResultsSummary();
   renderCategories();
   renderTags();
   renderRecipeGrid();
@@ -431,8 +403,6 @@ async function init() {
     state.recipes = await response.json();
     applyFilters();
   } catch (error) {
-    elements.resultsTitle.textContent = "Erro ao carregar";
-    elements.resultsCopy.textContent = "Confirma se o build do site foi publicado.";
     elements.categories.innerHTML = "";
     elements.tags.innerHTML = "";
     elements.results.innerHTML = `
