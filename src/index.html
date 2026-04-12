@@ -6,7 +6,7 @@
     <title>Based Cooking</title>
     <meta
       name="description"
-      content="Catálogo de receitas com pesquisa, categorias e uma página dedicada para cada prato."
+      content="O site final é gerado por scripts/build-site.mjs a partir das receitas em Markdown."
     >
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,163 +17,17 @@
     <link rel="stylesheet" href="./assets/styles.css">
   </head>
   <body class="catalog-page">
-    <div class="site-shell site-shell-catalog">
-      <header class="site-header site-header-catalog">
-        <a class="brand-lockup" href="./">
-          <span class="brand-glyphs" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-          <span class="brand-name">Based Cooking</span>
-        </a>
-
-        <nav class="site-nav" aria-label="Navegação principal">
-          <a class="nav-link" href="#descobrir">Descobrir</a>
-          <a class="nav-link" href="#categorias">Categorias</a>
-          <a class="nav-link" href="#receitas">Receitas</a>
-          <a class="header-pill" href="./" data-random-link>Receita aleatória</a>
-        </nav>
-      </header>
-
-      <main class="catalog-main">
-        <section class="hero-stage">
-          <div class="hero-progress" aria-hidden="true">
-            <span class="is-active"></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-
-          <div class="hero-copy">
-            <p class="eyebrow">Based Cooking</p>
-            <h1>
-              Receitas para escolher <span>depressa</span> e abrir logo a certa.
-            </h1>
-            <p class="hero-lead">
-              O catálogo continua a nascer dos mesmos ficheiros Markdown e imagens, mas a navegação
-              passa a viver numa estrutura muito mais clara para encontrar o prato certo.
-            </p>
-            <div class="hero-inline-meta">
-              <span><strong data-total-recipes>--</strong> receitas</span>
-              <span><strong data-total-categories>--</strong> categorias</span>
-              <span><strong data-total-tags>--</strong> tags</span>
-            </div>
-            <div class="hero-actions">
-              <a class="button-primary" href="#receitas">Explorar catálogo</a>
-              <a class="button-secondary button-secondary-minimal" href="#categorias">
-                Escolher por tema
-              </a>
-            </div>
-          </div>
-
-          <div class="hero-callouts">
-            <a class="hero-callout hero-callout-lilac" data-callout-link="0" href="./">
-              <span class="callout-kicker" data-callout-label="0">Destaque</span>
-              <strong data-callout-title="0">A carregar...</strong>
-            </a>
-
-            <a class="hero-callout hero-callout-dark" data-callout-link="1" href="./">
-              <span class="callout-kicker" data-callout-label="1">Abrir já</span>
-              <strong data-callout-title="1">A carregar...</strong>
-            </a>
-
-            <a class="hero-callout hero-callout-blue" data-callout-link="2" href="./">
-              <span class="callout-kicker" data-callout-label="2">Surpresa</span>
-              <strong data-callout-title="2">A carregar...</strong>
-            </a>
-          </div>
-
-          <article class="hero-spotlight">
-            <div class="hero-spotlight-image-wrap">
-              <img
-                class="hero-spotlight-image"
-                data-hero-image
-                src="./images/recipe-placeholder.svg"
-                alt="Receita em destaque"
-              >
-            </div>
-            <div class="hero-spotlight-body">
-              <p class="eyebrow" data-hero-category>Receita em destaque</p>
-              <h2 data-hero-title>A carregar receita...</h2>
-              <p data-hero-excerpt>O destaque aparece quando as receitas forem carregadas.</p>
-              <a class="text-link" data-hero-link href="./">Abrir receita</a>
-            </div>
-          </article>
-        </section>
-
-        <section id="descobrir" class="discovery-panel">
-          <div class="discovery-copy">
-            <p class="eyebrow">Encontrar</p>
-            <h2>Procura por nome, categoria ou ingrediente.</h2>
-            <div class="discovery-results">
-              <strong data-results-title>A carregar receitas...</strong>
-              <p class="status-copy" data-results-copy>A preparar o catálogo.</p>
-            </div>
-          </div>
-
-          <form class="search-form search-form-inline" data-search-form>
-            <label class="sr-only" for="recipe-search">Pesquisar receitas</label>
-            <input
-              id="recipe-search"
-              class="search-input"
-              type="search"
-              placeholder="Ex.: arroz, canela, frango, forno"
-              autocomplete="off"
-              data-search
-            >
-            <button class="button-primary" type="submit">Pesquisar</button>
-          </form>
-
-          <div class="discovery-actions">
-            <button class="button-secondary" type="button" data-clear>Limpar filtros</button>
-            <a class="button-secondary" href="./" data-random-link>Outra sugestão</a>
-          </div>
-        </section>
-
-        <section id="categorias" class="catalog-block catalog-block-muted">
-          <div class="section-lead">
-            <p class="eyebrow">Categorias</p>
-            <h2>Entradas rápidas para diferentes humores e tipos de prato.</h2>
-            <p class="section-copy">
-              Cada coleção abre logo para a seleção certa e continua a ser alimentada pelos mesmos
-              ficheiros em <code>recipes/</code> e <code>images/</code>.
-            </p>
-          </div>
-          <div class="signpost-grid" data-categories></div>
-        </section>
-
-        <section class="catalog-block tag-block">
-          <div class="section-lead section-lead-inline">
-            <div>
-              <p class="eyebrow">Tags</p>
-              <h2>Afina a seleção.</h2>
-            </div>
-            <p class="section-copy">
-              Usa ingredientes, momentos ou pequenas pistas para reduzir o catálogo.
-            </p>
-          </div>
-          <div class="tag-cloud" data-tags></div>
-        </section>
-
-        <section id="receitas" class="catalog-block recipes-block">
-          <div class="section-lead">
-            <p class="eyebrow">Receitas</p>
-            <h2>Página certa, sem procurar às cegas.</h2>
-            <p class="section-copy">
-              O primeiro card assume o papel principal; os restantes mantêm-se mais contidos para a
-              lista respirar.
-            </p>
-          </div>
-          <div class="recipe-grid" data-results></div>
-        </section>
-      </main>
+    <div class="site-shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Based Cooking</p>
+          <h1>O site é gerado no build.</h1>
+          <p class="hero-lead">
+            A homepage, as categorias e as páginas de receita são geradas por
+            <code>scripts/build-site.mjs</code>.
+          </p>
+        </div>
+      </section>
     </div>
-
-    <script type="module" src="./assets/app.js"></script>
   </body>
 </html>
