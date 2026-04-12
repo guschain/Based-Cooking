@@ -8,6 +8,11 @@ const imageDir = path.join(rootDir, "images");
 const outputDir = path.join(rootDir, "docs");
 const placeholderImage = "images/recipe-placeholder.svg";
 const recipePageDirName = "receitas";
+const tagPageDirName = "tags";
+const siteBaseUrl = (process.env.SITE_URL || "https://guschain.github.io/Based-Cooking").replace(
+  /\/+$/,
+  ""
+);
 
 function normalise(value) {
   return value
@@ -96,9 +101,7 @@ function markdownToHtml(markdown) {
       return;
     }
 
-    html.push(
-      `<ol>${orderedItems.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ol>`
-    );
+    html.push(`<ol>${orderedItems.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ol>`);
     orderedItems = [];
   };
 
@@ -326,6 +329,18 @@ function relativePrefix(depth) {
   return depth === 0 ? "./" : "../".repeat(depth);
 }
 
+function buildSiteUrl(relativePath = "") {
+  if (!relativePath) {
+    return `${siteBaseUrl}/`;
+  }
+
+  if (/^https?:\/\//.test(relativePath)) {
+    return relativePath;
+  }
+
+  return `${siteBaseUrl}/${normaliseRelativePath(relativePath)}`;
+}
+
 function buildAssetHref(assetPath, depth) {
   if (!assetPath) {
     return "";
@@ -338,8 +353,24 @@ function buildAssetHref(assetPath, depth) {
   return `${relativePrefix(depth)}${normaliseRelativePath(assetPath)}`;
 }
 
+function buildAbsoluteAssetUrl(assetPath) {
+  if (!assetPath) {
+    return "";
+  }
+
+  if (/^https?:\/\//.test(assetPath)) {
+    return assetPath;
+  }
+
+  return buildSiteUrl(assetPath);
+}
+
 function buildRecipeHref(slug, depth = 0) {
   return `${relativePrefix(depth)}${recipePageDirName}/${slug}/`;
+}
+
+function buildTagHref(slug, depth = 0) {
+  return `${relativePrefix(depth)}${tagPageDirName}/${slug}/`;
 }
 
 function buildHomeHref(depth = 0) {
@@ -350,9 +381,35 @@ function buildPageTitle(value) {
   return `${value} | Based Cooking`;
 }
 
-function buildDocumentHead({ title, description, stylesheetHref, canonicalHref = "" }) {
-  const canonicalMarkup = canonicalHref
-    ? `<link rel="canonical" href="${escapeHtml(canonicalHref)}">`
+function buildDocumentHead({
+  title,
+  description,
+  stylesheetHref,
+  canonicalHref = "",
+  ogUrl = "",
+  ogType = "website",
+  ogImageHref = "",
+  ogImageAlt = ""
+}) {
+  const finalCanonicalHref = canonicalHref || ogUrl;
+  const canonicalMarkup = finalCanonicalHref
+    ? `<link rel="canonical" href="${escapeHtml(finalCanonicalHref)}">`
+    : "";
+  const socialMarkup = ogUrl
+    ? `
+    <meta property="og:locale" content="pt_PT">
+    <meta property="og:site_name" content="Based Cooking">
+    <meta property="og:type" content="${escapeHtml(ogType)}">
+    <meta property="og:title" content="${escapeHtml(title)}">
+    <meta property="og:description" content="${escapeHtml(description)}">
+    <meta property="og:url" content="${escapeHtml(ogUrl)}">
+    ${ogImageHref ? `<meta property="og:image" content="${escapeHtml(ogImageHref)}">` : ""}
+    ${ogImageAlt ? `<meta property="og:image:alt" content="${escapeHtml(ogImageAlt)}">` : ""}
+    <meta name="twitter:card" content="${ogImageHref ? "summary_large_image" : "summary"}">
+    <meta name="twitter:title" content="${escapeHtml(title)}">
+    <meta name="twitter:description" content="${escapeHtml(description)}">
+    ${ogImageHref ? `<meta name="twitter:image" content="${escapeHtml(ogImageHref)}">` : ""}
+  `
     : "";
 
   return `<!doctype html>
@@ -370,11 +427,21 @@ function buildDocumentHead({ title, description, stylesheetHref, canonicalHref =
     >
     <link rel="stylesheet" href="${escapeHtml(stylesheetHref)}">
     ${canonicalMarkup}
+    ${socialMarkup}
   </head>`;
 }
 
-function renderTagMarkup(tags) {
-  return tags.map((tag) => `<span class="recipe-tag">${escapeHtml(tag)}</span>`).join("");
+function renderTagMarkup(tags, depth) {
+  return tags
+    .map((tag) => {
+      const tagSlug = slugify(tag);
+      return `
+        <a class="recipe-tag" href="${escapeHtml(buildTagHref(tagSlug, depth))}">
+          ${escapeHtml(tag)}
+        </a>
+      `;
+    })
+    .join("");
 }
 
 function renderStatisticMarkup(label, value, accentClass = "") {
@@ -444,10 +511,114 @@ function renderExtraSections(sections) {
     .join("");
 }
 
+function renderRecipeCard(recipe, depth, featured = false) {
+  return `
+    <a class="recipe-card ${featured ? "recipe-card-feature" : ""}" href="${escapeHtml(
+      buildRecipeHref(recipe.slug, depth)
+    )}">
+      <figure class="recipe-card-media">
+        <img
+          src="${escapeHtml(buildAssetHref(recipe.image, depth))}"
+          alt="${escapeHtml(recipe.title)}"
+        >
+      </figure>
+      <div class="recipe-card-body">
+        <div class="recipe-card-head">
+          <span class="recipe-kicker">${escapeHtml(recipe.category)}</span>
+          <span class="recipe-meta-line">${escapeHtml(
+            `${recipe.ingredientCount || 0} ingredientes · ${recipe.stepCount || 0} passos`
+          )}</span>
+        </div>
+        <h3>${escapeHtml(recipe.title)}</h3>
+        <p>${escapeHtml(recipe.excerpt)}</p>
+        <div class="recipe-card-tags">
+          ${renderTagMarkup(recipe.tags.slice(0, 4), depth)}
+        </div>
+        <span class="text-link">Abrir receita</span>
+      </div>
+    </a>
+  `;
+}
+
+function renderListingPage({
+  bodyClass,
+  eyebrow,
+  title,
+  description,
+  recipes,
+  depth,
+  canonicalHref,
+  ogImageHref
+}) {
+  const stylesheetHref = buildAssetHref("assets/styles.css", depth);
+  const homeHref = buildHomeHref(depth);
+  const catalogHref = `${homeHref}#receitas`;
+  const recipeGridMarkup = recipes.length
+    ? recipes.map((recipe, index) => renderRecipeCard(recipe, depth, index === 0)).join("")
+    : `
+      <article class="recipe-card recipe-card-empty">
+        <div class="recipe-card-body">
+          <p class="eyebrow">Sem resultados</p>
+          <h3>Não há receitas para esta seleção.</h3>
+          <p>Volta ao catálogo para escolher outro caminho.</p>
+        </div>
+      </article>
+    `;
+
+  return `${buildDocumentHead({
+    title: buildPageTitle(title),
+    description,
+    stylesheetHref,
+    canonicalHref,
+    ogUrl: canonicalHref,
+    ogImageHref,
+    ogImageAlt: title
+  })}
+  <body class="${escapeHtml(bodyClass)}">
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand-link" href="${escapeHtml(homeHref)}">Based Cooking</a>
+        <div class="site-header-actions">
+          <a class="header-link" href="${escapeHtml(catalogHref)}">Catálogo</a>
+        </div>
+      </header>
+
+      <section class="hero-banner listing-hero">
+        <div class="hero-banner-copy">
+          <p class="eyebrow">${escapeHtml(eyebrow)}</p>
+          <h1>${escapeHtml(title)}</h1>
+          <p class="intro-copy">${escapeHtml(description)}</p>
+          <div class="hero-actions">
+            <a class="button-secondary" href="${escapeHtml(homeHref)}">Voltar ao início</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="receitas" class="catalog-section recipes-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Receitas</p>
+            <h2>${escapeHtml(
+              recipes.length === 1 ? "1 receita nesta página" : `${recipes.length} receitas nesta página`
+            )}</h2>
+          </div>
+        </div>
+        <div class="recipe-grid">
+          ${recipeGridMarkup}
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
+`;
+}
+
 function renderRecipePage(recipe, context) {
   const { previousRecipe, nextRecipe, relatedRecipes } = context;
   const stylesheetHref = buildAssetHref("assets/styles.css", 2);
   const imageHref = buildAssetHref(recipe.image, 2);
+  const absoluteImageHref =
+    recipe.image && recipe.image !== placeholderImage ? buildAbsoluteAssetUrl(recipe.image) : "";
   const homeHref = buildHomeHref(2);
   const prevHref = previousRecipe ? buildRecipeHref(previousRecipe.slug, 2) : homeHref;
   const nextHref = nextRecipe ? buildRecipeHref(nextRecipe.slug, 2) : homeHref;
@@ -460,6 +631,7 @@ function renderRecipePage(recipe, context) {
     : "Preparação";
   const introMarkup = renderSectionCard("Introdução", recipe.introHtml);
   const notesMarkup = renderSectionCard("Notas", recipe.notesHtml);
+  const canonicalHref = buildSiteUrl(`${recipePageDirName}/${recipe.slug}/`);
   const relatedMarkup = relatedRecipes.length
     ? `
       <section class="catalog-section related-section">
@@ -500,7 +672,12 @@ function renderRecipePage(recipe, context) {
   return `${buildDocumentHead({
     title: buildPageTitle(recipe.title),
     description,
-    stylesheetHref
+    stylesheetHref,
+    canonicalHref,
+    ogUrl: canonicalHref,
+    ogType: "article",
+    ogImageHref: absoluteImageHref,
+    ogImageAlt: recipe.title
   })}
   <body class="recipe-page">
     <div class="site-shell site-shell-recipe">
@@ -523,7 +700,7 @@ function renderRecipePage(recipe, context) {
           <p class="intro-copy recipe-summary">${escapeHtml(description)}</p>
           <div class="recipe-hero-tags">
             <span class="recipe-kicker">${escapeHtml(recipe.category)}</span>
-            ${renderTagMarkup(recipe.tags)}
+            ${renderTagMarkup(recipe.tags, 2)}
           </div>
           <div class="metric-row">
             ${renderStatisticMarkup("Ingredientes", ingredientCount)}
@@ -560,6 +737,27 @@ function renderRecipePage(recipe, context) {
   </body>
 </html>
 `;
+}
+
+function renderTagPage(tag, recipes) {
+  const tagSlug = slugify(tag);
+  const featuredRecipe = recipes.find((recipe) => recipe.image !== placeholderImage) || recipes[0];
+  const ogImageHref = featuredRecipe ? buildAbsoluteAssetUrl(featuredRecipe.image) : "";
+  const description =
+    recipes.length === 1
+      ? `Explora 1 receita com a tag ${tag}.`
+      : `Explora ${recipes.length} receitas com a tag ${tag}.`;
+
+  return renderListingPage({
+    bodyClass: "tag-page",
+    eyebrow: "Tag",
+    title: `Receitas com ${tag}`,
+    description,
+    recipes,
+    depth: 2,
+    canonicalHref: buildSiteUrl(`${tagPageDirName}/${tagSlug}/`),
+    ogImageHref
+  });
 }
 
 async function loadRecipes() {
@@ -640,6 +838,35 @@ async function writeRecipePages(recipes) {
   }
 }
 
+async function writeTagPages(recipes) {
+  const tagDirOutput = path.join(outputDir, tagPageDirName);
+  await fs.mkdir(tagDirOutput, { recursive: true });
+
+  const tagMap = new Map();
+
+  for (const recipe of recipes) {
+    for (const tag of recipe.tags) {
+      if (!tagMap.has(tag)) {
+        tagMap.set(tag, []);
+      }
+
+      tagMap.get(tag).push(recipe);
+    }
+  }
+
+  const tags = [...tagMap.keys()].sort((left, right) => left.localeCompare(right, "pt"));
+
+  for (const tag of tags) {
+    const pageDir = path.join(tagDirOutput, slugify(tag));
+    const tagRecipes = tagMap.get(tag).sort((left, right) => left.title.localeCompare(right.title, "pt"));
+
+    await fs.mkdir(pageDir, { recursive: true });
+    await fs.writeFile(path.join(pageDir, "index.html"), renderTagPage(tag, tagRecipes), "utf8");
+  }
+
+  return tags.length;
+}
+
 function buildRecipeIndex(recipes) {
   return recipes.map((recipe) => ({
     slug: recipe.slug,
@@ -666,13 +893,14 @@ async function main() {
   await fs.mkdir(path.join(outputDir, "data"), { recursive: true });
   await copyStaticSource();
   await writeRecipePages(recipes);
+  const tagCount = await writeTagPages(recipes);
   await fs.writeFile(
     path.join(outputDir, "data", "recipes.json"),
     `${JSON.stringify(buildRecipeIndex(recipes), null, 2)}\n`,
     "utf8"
   );
 
-  console.log(`Built ${recipes.length} recipes into docs/.`);
+  console.log(`Built ${recipes.length} recipes and ${tagCount} tag pages into docs/.`);
 }
 
 main().catch((error) => {

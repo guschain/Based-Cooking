@@ -221,6 +221,10 @@ p {
     linear-gradient(135deg, #ffffff 0%, #f7faff 100%);
 }
 
+.listing-hero {
+  grid-template-columns: 1fr;
+}
+
 .hero-banner-copy {
   display: grid;
   align-content: start;
@@ -471,6 +475,13 @@ p {
 }
 
 .tag-chip strong {
+  color: var(--accent-strong);
+}
+
+.tag-chip:hover,
+.recipe-tag:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
   color: var(--accent-strong);
 }
 
@@ -815,5 +826,38 @@ p {
   .hero-banner-media,
   .recipe-hero-media {
     min-height: 220px;
+  }
+
+  .hero-banner-media {
+    display: grid;
+    gap: 12px;
+    min-height: 0;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .hero-banner .hero-image {
+    height: auto;
+    aspect-ratio: 16 / 10;
+    border-radius: 12px;
+  }
+
+  .hero-banner h1 {
+    max-width: 9ch;
+    font-size: clamp(1.85rem, 6.8vw, 2.6rem);
+    line-height: 0.98;
+  }
+
+  .hero-banner .hero-feature-card {
+    position: static;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: 0;
+  }
+
+  .hero-banner .hero-feature-card h2 {
+    font-size: clamp(1.35rem, 7vw, 1.8rem);
+    line-height: 1.08;
   }
 }

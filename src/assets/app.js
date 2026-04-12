@@ -5,8 +5,7 @@ const state = {
   recipes: [],
   filteredRecipes: [],
   query: "",
-  activeCategory: "all",
-  activeTags: new Set()
+  activeCategory: "all"
 };
 
 const elements = {
@@ -28,8 +27,7 @@ const elements = {
 
 function buildSearchParams({
   query = state.query,
-  category = state.activeCategory,
-  tags = state.activeTags
+  category = state.activeCategory
 } = {}) {
   const params = new URLSearchParams();
 
@@ -39,12 +37,6 @@ function buildSearchParams({
 
   if (category && category !== "all") {
     params.set("category", category);
-  }
-
-  const tagValues = tags instanceof Set ? [...tags] : [...(tags || [])];
-
-  if (tagValues.length) {
-    params.set("tags", tagValues.join(","));
   }
 
   return params;
@@ -71,6 +63,16 @@ function normalise(value) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
+}
+
+function slugify(value) {
+  return normalise(value)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function buildTagHref(tag) {
+  return `./tags/${slugify(tag)}/`;
 }
 
 function resolveAssetPath(value) {
@@ -104,32 +106,13 @@ function uniqueCategories() {
   return [...categories].sort((left, right) => left.localeCompare(right, "pt"));
 }
 
-function uniqueTags() {
-  const tags = new Set();
-
-  for (const recipe of state.recipes) {
-    for (const tag of recipe.tags) {
-      tags.add(tag);
-    }
-  }
-
-  return [...tags].sort((left, right) => left.localeCompare(right, "pt"));
-}
-
 function parseSearchParams() {
   const params = new URLSearchParams(window.location.search);
   const query = params.get("q");
   const category = params.get("category");
-  const tags = params.get("tags");
 
   state.query = query ? query.trim() : "";
   state.activeCategory = category || "all";
-  state.activeTags = new Set(
-    (tags || "")
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean)
-  );
 
   if (elements.search) {
     elements.search.value = state.query;
@@ -141,11 +124,7 @@ function syncSearchParams() {
 }
 
 function recipeMatchesBase(recipe) {
-  const categoryMatches =
-    state.activeCategory === "all" || recipe.category === state.activeCategory;
-  const tagMatches = [...state.activeTags].every((tag) => recipe.tags.includes(tag));
-
-  return categoryMatches && tagMatches;
+  return state.activeCategory === "all" || recipe.category === state.activeCategory;
 }
 
 function recipeMatches(recipe) {
@@ -157,22 +136,7 @@ function recipeMatches(recipe) {
 
 function categoryPanelRecipes() {
   return state.recipes.filter((recipe) => {
-    const queryMatches =
-      !state.query || normalise(recipe.searchText).includes(normalise(state.query));
-    const tagMatches = [...state.activeTags].every((tag) => recipe.tags.includes(tag));
-
-    return queryMatches && tagMatches;
-  });
-}
-
-function tagPanelRecipes() {
-  return state.recipes.filter((recipe) => {
-    const queryMatches =
-      !state.query || normalise(recipe.searchText).includes(normalise(state.query));
-    const categoryMatches =
-      state.activeCategory === "all" || recipe.category === state.activeCategory;
-
-    return queryMatches && categoryMatches;
+    return !state.query || normalise(recipe.searchText).includes(normalise(state.query));
   });
 }
 
@@ -181,10 +145,6 @@ function buildFilterSummary() {
 
   if (state.activeCategory !== "all") {
     parts.push(`Categoria: ${state.activeCategory}`);
-  }
-
-  if (state.activeTags.size) {
-    parts.push(`Tags: ${[...state.activeTags].join(", ")}`);
   }
 
   if (state.query) {
@@ -229,15 +189,16 @@ function renderResultsSummary() {
     count === 1 ? "1 receita pronta a abrir" : `${count} receitas prontas a abrir`;
   elements.resultsCopy.textContent =
     count === 0
-      ? "Não há receitas para este filtro. Ajusta a pesquisa ou remove uma tag."
+      ? "Não há receitas para este filtro. Ajusta a pesquisa ou muda a categoria."
       : buildFilterSummary();
 }
 
 function renderCategories() {
+  const scopedRecipes = categoryPanelRecipes();
   const counts = new Map();
   const representatives = new Map();
 
-  for (const recipe of categoryPanelRecipes()) {
+  for (const recipe of scopedRecipes) {
     counts.set(recipe.category, (counts.get(recipe.category) || 0) + 1);
 
     if (!representatives.has(recipe.category)) {
@@ -248,8 +209,8 @@ function renderCategories() {
   }
 
   const categories = uniqueCategories();
-  const allCount = categoryPanelRecipes().length;
-  const allRepresentative = sortRecipes(categoryPanelRecipes())[0];
+  const allCount = scopedRecipes.length;
+  const allRepresentative = sortRecipes(scopedRecipes)[0];
 
   const items = [
     {
@@ -273,8 +234,7 @@ function renderCategories() {
       const subtitle = item.recipe ? item.recipe.title : "Sem destaque";
       const href = buildCatalogHref({
         category: item.value,
-        query: state.query,
-        tags: state.activeTags
+        query: state.query
       });
 
       return `
@@ -301,23 +261,18 @@ function renderCategories() {
 function renderTags() {
   const counts = new Map();
 
-  for (const recipe of tagPanelRecipes()) {
+  for (const recipe of state.recipes) {
     for (const tag of recipe.tags) {
       counts.set(tag, (counts.get(tag) || 0) + 1);
     }
   }
 
-  const visibleTags = [...new Set([...counts.keys(), ...state.activeTags])]
+  const visibleTags = [...counts.keys()]
     .map((tag) => ({
       tag,
-      count: counts.get(tag) || 0,
-      active: state.activeTags.has(tag)
+      count: counts.get(tag) || 0
     }))
     .sort((left, right) => {
-      if (left.active !== right.active) {
-        return left.active ? -1 : 1;
-      }
-
       if (left.count !== right.count) {
         return right.count - left.count;
       }
@@ -327,42 +282,33 @@ function renderTags() {
     .slice(0, maxVisibleTags);
 
   if (!visibleTags.length) {
-    elements.tags.innerHTML = '<p class="empty-inline">Sem tags disponíveis para este filtro.</p>';
+    elements.tags.innerHTML = '<p class="empty-inline">Sem tags disponíveis.</p>';
     return;
   }
 
   elements.tags.innerHTML = visibleTags
     .map(
       (entry) => `
-        <button
-          class="tag-chip ${entry.active ? "is-active" : ""}"
-          type="button"
-          data-tag-filter="${escapeHtml(entry.tag)}"
-        >
+        <a class="tag-chip" href="${escapeHtml(buildTagHref(entry.tag))}">
           <span>${escapeHtml(entry.tag)}</span>
           <strong>${entry.count}</strong>
-        </button>
+        </a>
       `
     )
     .join("");
+}
 
-  for (const button of elements.tags.querySelectorAll("[data-tag-filter]")) {
-    button.addEventListener("click", () => {
-      const tag = button.dataset.tagFilter;
-
-      if (!tag) {
-        return;
-      }
-
-      if (state.activeTags.has(tag)) {
-        state.activeTags.delete(tag);
-      } else {
-        state.activeTags.add(tag);
-      }
-
-      applyFilters();
-    });
-  }
+function renderRecipeTags(recipe) {
+  return recipe.tags
+    .slice(0, 4)
+    .map(
+      (tag) => `
+        <a class="recipe-tag" href="${escapeHtml(buildTagHref(tag))}">
+          ${escapeHtml(tag)}
+        </a>
+      `
+    )
+    .join("");
 }
 
 function renderRecipeGrid() {
@@ -372,7 +318,7 @@ function renderRecipeGrid() {
         <div class="recipe-card-body">
           <p class="eyebrow">Sem resultados</p>
           <h3>Nenhuma receita corresponde a este filtro.</h3>
-          <p>Ajusta a pesquisa, muda a categoria ou remove uma tag.</p>
+          <p>Ajusta a pesquisa ou muda a categoria.</p>
         </div>
       </article>
     `;
@@ -401,10 +347,7 @@ function renderRecipeGrid() {
             <h3>${escapeHtml(recipe.title)}</h3>
             <p>${escapeHtml(recipe.excerpt)}</p>
             <div class="recipe-card-tags">
-              ${recipe.tags
-                .slice(0, 4)
-                .map((tag) => `<span class="recipe-tag">${escapeHtml(tag)}</span>`)
-                .join("")}
+              ${renderRecipeTags(recipe)}
             </div>
             <span class="text-link">Abrir receita</span>
           </div>
@@ -434,13 +377,10 @@ function updateRandomLinks() {
 
 function normaliseState() {
   const categories = new Set(uniqueCategories());
-  const tags = new Set(uniqueTags());
 
   if (state.activeCategory !== "all" && !categories.has(state.activeCategory)) {
     state.activeCategory = "all";
   }
-
-  state.activeTags = new Set([...state.activeTags].filter((tag) => tags.has(tag)));
 }
 
 function applyFilters() {
@@ -448,7 +388,7 @@ function applyFilters() {
   state.filteredRecipes = sortRecipes(state.recipes.filter(recipeMatches));
   document.body.classList.toggle(
     "is-searching",
-    Boolean(state.query || state.activeCategory !== "all" || state.activeTags.size)
+    Boolean(state.query || state.activeCategory !== "all")
   );
   renderHeroRecipe();
   renderResultsSummary();
@@ -474,7 +414,6 @@ function bindEvents() {
   elements.clear.addEventListener("click", () => {
     state.query = "";
     state.activeCategory = "all";
-    state.activeTags.clear();
     elements.search.value = "";
     applyFilters();
   });
