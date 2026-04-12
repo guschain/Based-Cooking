@@ -81,6 +81,10 @@ h3 {
   letter-spacing: -0.03em;
 }
 
+h2 {
+  padding-bottom: 0.45rem;
+}
+
 p {
   margin: 0;
 }
@@ -100,6 +104,11 @@ p {
   width: min(1360px, calc(100% - 32px));
   margin: 0 auto;
   padding: 20px 0 48px;
+}
+
+.catalog-page .site-shell {
+  display: flex;
+  flex-direction: column;
 }
 
 .site-shell-recipe {
@@ -322,6 +331,18 @@ p {
 
 .search-panel .section-heading h2 {
   margin-top: 10px;
+}
+
+.catalog-page.is-searching .recipes-section {
+  order: 3;
+}
+
+.catalog-page.is-searching .categories-section {
+  order: 4;
+}
+
+.catalog-page.is-searching .tag-section {
+  order: 5;
 }
 
 .section-heading,

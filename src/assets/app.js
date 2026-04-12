@@ -26,6 +26,37 @@ const elements = {
   randomLinks: document.querySelectorAll("[data-random-link]")
 };
 
+function buildSearchParams({
+  query = state.query,
+  category = state.activeCategory,
+  tags = state.activeTags
+} = {}) {
+  const params = new URLSearchParams();
+
+  if (query) {
+    params.set("q", query);
+  }
+
+  if (category && category !== "all") {
+    params.set("category", category);
+  }
+
+  const tagValues = tags instanceof Set ? [...tags] : [...(tags || [])];
+
+  if (tagValues.length) {
+    params.set("tags", tagValues.join(","));
+  }
+
+  return params;
+}
+
+function buildCatalogHref(options = {}) {
+  const params = buildSearchParams(options);
+  const query = params.toString();
+
+  return query ? `${window.location.pathname}?${query}` : window.location.pathname;
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -106,23 +137,7 @@ function parseSearchParams() {
 }
 
 function syncSearchParams() {
-  const params = new URLSearchParams();
-
-  if (state.query) {
-    params.set("q", state.query);
-  }
-
-  if (state.activeCategory !== "all") {
-    params.set("category", state.activeCategory);
-  }
-
-  if (state.activeTags.size) {
-    params.set("tags", [...state.activeTags].join(","));
-  }
-
-  const nextQuery = params.toString();
-  const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
-  window.history.replaceState(null, "", nextUrl);
+  window.history.replaceState(null, "", buildCatalogHref());
 }
 
 function recipeMatchesBase(recipe) {
@@ -256,12 +271,18 @@ function renderCategories() {
       const isActive = state.activeCategory === item.value;
       const image = item.recipe ? resolveAssetPath(item.recipe.image) : `./${placeholderImage}`;
       const subtitle = item.recipe ? item.recipe.title : "Sem destaque";
+      const href = buildCatalogHref({
+        category: item.value,
+        query: state.query,
+        tags: state.activeTags
+      });
 
       return `
-        <button
+        <a
           class="signpost-card ${isActive ? "is-active" : ""}"
-          type="button"
           data-category-filter="${escapeHtml(item.value)}"
+          href="${escapeHtml(href)}"
+          ${isActive ? 'aria-current="page"' : ""}
         >
           <div class="signpost-card-copy">
             <span class="signpost-card-title">${escapeHtml(item.title)}</span>
@@ -271,17 +292,10 @@ function renderCategories() {
             <span class="signpost-card-subtitle">${escapeHtml(subtitle)}</span>
           </div>
           <img class="signpost-card-image" src="${escapeHtml(image)}" alt="${escapeHtml(item.title)}">
-        </button>
+        </a>
       `;
     })
     .join("");
-
-  for (const button of elements.categories.querySelectorAll("[data-category-filter]")) {
-    button.addEventListener("click", () => {
-      state.activeCategory = button.dataset.categoryFilter || "all";
-      applyFilters();
-    });
-  }
 }
 
 function renderTags() {
@@ -432,6 +446,10 @@ function normaliseState() {
 function applyFilters() {
   normaliseState();
   state.filteredRecipes = sortRecipes(state.recipes.filter(recipeMatches));
+  document.body.classList.toggle(
+    "is-searching",
+    Boolean(state.query || state.activeCategory !== "all" || state.activeTags.size)
+  );
   renderHeroRecipe();
   renderResultsSummary();
   renderCategories();
