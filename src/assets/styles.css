@@ -841,6 +841,10 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .recipe-card-body {
+    padding-top: 24px;
+  }
+
   .signpost-grid {
     grid-template-columns: 1fr;
   }
