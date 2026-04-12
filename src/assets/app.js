@@ -18,8 +18,6 @@ const elements = {
   results: document.querySelector("[data-results]"),
   resultsTitle: document.querySelector("[data-results-title]"),
   resultsCopy: document.querySelector("[data-results-copy]"),
-  totalRecipes: document.querySelector("[data-total-recipes]"),
-  visibleRecipes: document.querySelector("[data-visible-recipes]"),
   heroImage: document.querySelector("[data-hero-image]"),
   heroCategory: document.querySelector("[data-hero-category]"),
   heroTitle: document.querySelector("[data-hero-title]"),
@@ -179,11 +177,6 @@ function buildFilterSummary() {
   }
 
   return parts.length ? parts.join(" | ") : "Catálogo completo";
-}
-
-function renderHeroStats() {
-  elements.totalRecipes.textContent = String(state.recipes.length);
-  elements.visibleRecipes.textContent = String(state.filteredRecipes.length);
 }
 
 function selectHeroRecipe() {
@@ -439,7 +432,6 @@ function normaliseState() {
 function applyFilters() {
   normaliseState();
   state.filteredRecipes = sortRecipes(state.recipes.filter(recipeMatches));
-  renderHeroStats();
   renderHeroRecipe();
   renderResultsSummary();
   renderCategories();

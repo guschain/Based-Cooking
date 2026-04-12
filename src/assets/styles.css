@@ -316,8 +316,12 @@ p {
 
 .search-panel,
 .catalog-section {
-  margin-top: 18px;
+  margin-top: 24px;
   padding: 20px;
+}
+
+.search-panel .section-heading h2 {
+  margin-top: 10px;
 }
 
 .section-heading,
