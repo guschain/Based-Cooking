@@ -9,6 +9,10 @@ const outputDir = path.join(rootDir, "docs");
 const placeholderImage = "images/recipe-placeholder.svg";
 const recipePageDirName = "receitas";
 const tagPageDirName = "tags";
+const assetVersion = (process.env.GITHUB_SHA || process.env.ASSET_VERSION || Date.now().toString()).slice(
+  0,
+  8
+);
 const siteBaseUrl = (process.env.SITE_URL || "https://guschain.github.io/Based-Cooking").replace(
   /\/+$/,
   ""
@@ -727,6 +731,14 @@ function buildAssetHref(assetPath, depth) {
   return `${relativePrefix(depth)}${normaliseRelativePath(assetPath)}`;
 }
 
+function withAssetVersion(href) {
+  if (!href || /^https?:\/\//.test(href) || href.includes("?")) {
+    return href;
+  }
+
+  return `${href}?v=${assetVersion}`;
+}
+
 function buildAbsoluteAssetUrl(assetPath) {
   if (!assetPath) {
     return "";
@@ -766,6 +778,7 @@ function buildDocumentHead({
   ogImageAlt = ""
 }) {
   const finalCanonicalHref = canonicalHref || ogUrl;
+  const versionedStylesheetHref = withAssetVersion(stylesheetHref);
   const canonicalMarkup = finalCanonicalHref
     ? `<link rel="canonical" href="${escapeHtml(finalCanonicalHref)}">`
     : "";
@@ -799,7 +812,7 @@ function buildDocumentHead({
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     >
-    <link rel="stylesheet" href="${escapeHtml(stylesheetHref)}">
+    <link rel="stylesheet" href="${escapeHtml(versionedStylesheetHref)}">
     ${canonicalMarkup}
     ${socialMarkup}
   </head>`;
@@ -1180,6 +1193,14 @@ async function loadRecipes() {
 
 async function copyStaticSource() {
   await fs.cp(sourceDir, outputDir, { recursive: true });
+
+  const indexPath = path.join(outputDir, "index.html");
+  const sourceIndex = await fs.readFile(indexPath, "utf8");
+  const versionedIndex = sourceIndex
+    .replace("./assets/styles.css", withAssetVersion("./assets/styles.css"))
+    .replace("./assets/app.js", withAssetVersion("./assets/app.js"));
+
+  await fs.writeFile(indexPath, versionedIndex, "utf8");
 
   try {
     await fs.access(imageDir);
