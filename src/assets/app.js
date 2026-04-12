@@ -19,13 +19,17 @@ const elements = {
   resultsTitle: document.querySelector("[data-results-title]"),
   resultsCopy: document.querySelector("[data-results-copy]"),
   totalRecipes: document.querySelector("[data-total-recipes]"),
-  visibleRecipes: document.querySelector("[data-visible-recipes]"),
+  totalCategories: document.querySelector("[data-total-categories]"),
+  totalTags: document.querySelector("[data-total-tags]"),
   heroImage: document.querySelector("[data-hero-image]"),
   heroCategory: document.querySelector("[data-hero-category]"),
   heroTitle: document.querySelector("[data-hero-title]"),
   heroExcerpt: document.querySelector("[data-hero-excerpt]"),
   heroLink: document.querySelector("[data-hero-link]"),
-  randomLinks: document.querySelectorAll("[data-random-link]")
+  calloutTitles: [...document.querySelectorAll("[data-callout-title]")],
+  calloutLabels: [...document.querySelectorAll("[data-callout-label]")],
+  calloutLinks: [...document.querySelectorAll("[data-callout-link]")],
+  randomLinks: [...document.querySelectorAll("[data-random-link]")]
 };
 
 function escapeHtml(value) {
@@ -178,19 +182,42 @@ function buildFilterSummary() {
     parts.push(`Pesquisa: "${state.query}"`);
   }
 
-  return parts.length ? parts.join(" | ") : "Catálogo completo";
+  return parts.length ? parts.join(" · ") : "Catálogo completo";
+}
+
+function heroSourceRecipes() {
+  return state.filteredRecipes.length ? state.filteredRecipes : state.recipes;
+}
+
+function selectHeroRecipe() {
+  const recipes = sortRecipes(heroSourceRecipes());
+  return recipes.find(hasCustomImage) || recipes[0] || null;
+}
+
+function selectCalloutRecipes() {
+  return sortRecipes(heroSourceRecipes()).slice(0, elements.calloutLinks.length);
+}
+
+function buildCalloutLabel(recipe, index) {
+  if (index === 0) {
+    return recipe.category;
+  }
+
+  if (index === 1) {
+    return recipe.tags[0] || recipe.category;
+  }
+
+  if (recipe.ingredientCount) {
+    return `${recipe.ingredientCount} ingredientes`;
+  }
+
+  return recipe.category;
 }
 
 function renderHeroStats() {
   elements.totalRecipes.textContent = String(state.recipes.length);
-  elements.visibleRecipes.textContent = String(state.filteredRecipes.length);
-}
-
-function selectHeroRecipe() {
-  const source = state.filteredRecipes.length ? state.filteredRecipes : state.recipes;
-  const recipes = sortRecipes(source);
-
-  return recipes.find(hasCustomImage) || recipes[0] || null;
+  elements.totalCategories.textContent = String(uniqueCategories().length);
+  elements.totalTags.textContent = String(uniqueTags().length);
 }
 
 function renderHeroRecipe() {
@@ -212,6 +239,35 @@ function renderHeroRecipe() {
   elements.heroTitle.textContent = recipe.title;
   elements.heroExcerpt.textContent = recipe.excerpt;
   elements.heroLink.href = recipe.href;
+}
+
+function renderHeroCallouts() {
+  const recipes = selectCalloutRecipes();
+
+  elements.calloutLinks.forEach((link, index) => {
+    const recipe = recipes[index];
+    const title = elements.calloutTitles[index];
+    const label = elements.calloutLabels[index];
+
+    if (!title || !label) {
+      return;
+    }
+
+    if (!recipe) {
+      link.href = "./";
+      link.classList.add("is-disabled");
+      title.textContent = "Sem receita";
+      label.textContent = "Indisponível";
+      link.setAttribute("aria-disabled", "true");
+      return;
+    }
+
+    link.href = recipe.href;
+    link.classList.remove("is-disabled");
+    link.removeAttribute("aria-disabled");
+    title.textContent = recipe.title;
+    label.textContent = buildCalloutLabel(recipe, index);
+  });
 }
 
 function renderResultsSummary() {
@@ -240,8 +296,9 @@ function renderCategories() {
   }
 
   const categories = uniqueCategories();
-  const allCount = categoryPanelRecipes().length;
-  const allRepresentative = sortRecipes(categoryPanelRecipes())[0];
+  const filteredForCategories = categoryPanelRecipes();
+  const allCount = filteredForCategories.length;
+  const allRepresentative = sortRecipes(filteredForCategories)[0];
 
   const items = [
     {
@@ -259,10 +316,12 @@ function renderCategories() {
   ];
 
   elements.categories.innerHTML = items
-    .map((item) => {
+    .map((item, index) => {
       const isActive = state.activeCategory === item.value;
       const image = item.recipe ? resolveAssetPath(item.recipe.image) : `./${placeholderImage}`;
       const subtitle = item.recipe ? item.recipe.title : "Sem destaque";
+      const countLabel =
+        item.count === 1 ? "1 receita pronta" : `${item.count} receitas prontas`;
 
       return `
         <button
@@ -270,14 +329,15 @@ function renderCategories() {
           type="button"
           data-category-filter="${escapeHtml(item.value)}"
         >
+          <span class="signpost-card-index">${String(index + 1).padStart(2, "0")}</span>
           <div class="signpost-card-copy">
             <span class="signpost-card-title">${escapeHtml(item.title)}</span>
-            <span class="signpost-card-meta">${escapeHtml(
-              item.count === 1 ? "1 receita" : `${item.count} receitas`
-            )}</span>
+            <p class="signpost-card-summary">${escapeHtml(countLabel)}</p>
             <span class="signpost-card-subtitle">${escapeHtml(subtitle)}</span>
           </div>
-          <img class="signpost-card-image" src="${escapeHtml(image)}" alt="${escapeHtml(item.title)}">
+          <div class="signpost-card-media">
+            <img class="signpost-card-image" src="${escapeHtml(image)}" alt="${escapeHtml(item.title)}">
+          </div>
         </button>
       `;
     })
@@ -441,6 +501,7 @@ function applyFilters() {
   state.filteredRecipes = sortRecipes(state.recipes.filter(recipeMatches));
   renderHeroStats();
   renderHeroRecipe();
+  renderHeroCallouts();
   renderResultsSummary();
   renderCategories();
   renderTags();
