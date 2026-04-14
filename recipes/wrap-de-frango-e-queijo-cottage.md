@@ -8,7 +8,7 @@ image: images/wrap-de-frango-e-queijo-cottage.jpg
 #### Ingredientes
 - 2 ovos
 - 200 g de queijo cottage light
-- 1 1/2 colheres de café de sal
+- 1 + 1/2 colheres de café de sal
 - 1 colher de sobremesa de tempero de cebola e alho
 - 100 g de queijo da ilha de São Jorge ralado
 - 85 g de espinafres salteados
