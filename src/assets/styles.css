@@ -612,6 +612,7 @@ p {
 }
 
 .detail-surface-sticky {
+  align-self: start;
   position: sticky;
   top: 18px;
 }

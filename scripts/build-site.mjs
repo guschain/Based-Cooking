@@ -863,8 +863,8 @@ function renderRecipePage(recipe, context) {
       </section>
 
       <main class="recipe-content-grid">
-        <aside class="recipe-side-column">
-          ${renderSectionCard("Ingredientes", recipe.ingredientsHtml, "detail-surface-sticky")}
+        <aside class="recipe-side-column detail-surface-sticky">
+          ${renderSectionCard("Ingredientes", recipe.ingredientsHtml)}
           ${notesMarkup}
         </aside>
 
