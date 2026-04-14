@@ -13,9 +13,9 @@ image: images/recipe-placeholder.svg
 - 1 colher de chá de chocolate preto raspado ou picado
 
 #### Preparação
-1. Num recipiente, colocar a água, o iogurte grego e a gelatina; mexer bem
+1. Num recipiente, colocar 250 ml de água quente, 250 g de iogurte grego e 1 saco de gelatina em pó sem açúcar; mexer bem
 2. Colocar em recipientes e levar ao frigorífico até solidificar
-3. Antes de comer, colocar a fruta (framboesas) e o chocolate
+3. Antes de comer, colocar 1 punhado de framboesas (30 a 40 g, ou outra fruta) e 1 colher de chá de chocolate preto raspado ou picado
 
 #### Notas
 - Calorias: 76

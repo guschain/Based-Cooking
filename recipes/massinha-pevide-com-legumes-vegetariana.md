@@ -21,10 +21,10 @@ image: images/recipe-placeholder.svg
 - 1 colher (sopa) de óleo
 
 #### Preparação
-1. Cortar todos os ingredientes frescos em cubos pequenos.
-2. Aquecer o óleo numa frigideira. Adicionar a cebola, o pimento e a cenoura.
-3. De seguida, adicionar os cogumelos, mexendo de vez em quando.
-4. Adicionar a manteiga e a massa.
-5. Mexer durante 1 minuto. Adicionar a água quente e as ervilhas e misturar.
-6. Assim que começar a ferver, diminuir o lume e deixar ferver com tampa, até que toda a água tenha sido absorvida pela massa. Não mexer até estar cozida.
+1. Cortar 1 cenoura, 1 cebola, 1 pimento vermelho pontiagudo e 6 cogumelos em cubos pequenos.
+2. Aquecer 1 colher (sopa) de óleo numa frigideira. Adicionar a cebola, o pimento e a cenoura.
+3. De seguida, adicionar os 6 cogumelos, mexendo de vez em quando.
+4. Adicionar 1 colher (sopa) de manteiga e 220 g de massa pevide.
+5. Mexer durante 1 minuto. Adicionar 600 ml de água a ferver e 5 colheres (sopa) de ervilhas e misturar.
+6. Assim que começar a ferver, diminuir o lume e deixar ferver com tampa, até que os 600 ml de água tenham sido absorvidos pelos 220 g de massa. Não mexer até estar cozida.
 7. Depois, deixar descansar cerca de 15-20 minutos.

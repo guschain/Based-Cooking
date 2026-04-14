@@ -20,12 +20,12 @@ image: images/ovos-coreanos.jpg
 - 200 ml de água, ou q.b. para cobrir os ovos
 
 #### Preparação
-1. Cozer os ovos 7 minutos (remover a casca)
-2. Cortar os ingredientes (malagueta, gengibre, cebola, alho, cebolinha)
-3. Colocar a mistura num recipiente alto para fazer o molho
-4. Adicionar o molho de soja
-5. Colocar os ovos em água gelada
-6. Numa taça muito grande, colocar os ovos
-7. Juntar o molho aos ovos e garantir que ficam submersos (se necessário, adicionar água)
+1. Cozer 6 ovos durante 7 minutos e remover a casca.
+2. Cortar 1 malagueta, 9 g de gengibre, 1/2 cebola, 2 dentes de alho e 2 cebolinhas.
+3. Colocar essa mistura num recipiente alto para fazer o molho e juntar 200 ml de molho de soja, 1 colher de sopa de vinagre de arroz, 2 colheres de sopa de mel, 1 colher de sopa de óleo de sésamo e 2 colheres de sopa de sementes de sésamo.
+4. Misturar bem o molho.
+5. Colocar os 6 ovos em água gelada.
+6. Numa taça muito grande, colocar os 6 ovos descascados.
+7. Juntar o molho aos ovos e garantir que ficam submersos; se necessário, adicionar até 200 ml de água.
 8. Fechar o recipiente e colocar no frigorífico durante 12 horas
-9. Servir com arroz
+9. Servir simples ou com o acompanhamento que preferir

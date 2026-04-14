@@ -14,8 +14,8 @@ image: images/molho-iogurte-grego-limao.jpg
 - 1/4 de colher de chá de pimenta-preta
 
 #### Preparação
-1. Colocar o iogurte grego numa tigela.
-2. Juntar o sumo de limão, a salsa picada e o alho amassado.
-3. Adicionar o sal e a pimenta-preta.
+1. Colocar 320 g de iogurte grego zero gordura numa tigela.
+2. Juntar o sumo de 1 limão, 4 colheres de sopa de salsa picada e 2 dentes de alho amassados.
+3. Adicionar 1 colher de chá de sal e 1/4 de colher de chá de pimenta-preta.
 4. Misturar bem até obter um molho homogéneo e cremoso.
 5. Servir de imediato ou levar ao frigorífico durante alguns minutos para intensificar o sabor.

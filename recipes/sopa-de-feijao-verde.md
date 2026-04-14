@@ -16,7 +16,7 @@ image: images/recipe-placeholder.svg
 - 1/2 cenoura (fininha)
 
 #### Preparação
-1. Numa panela, pôr um pouco de água ao lume com o sal; cortar as batatas aos cubos, as cenouras, a cebola e os dentes de alho; juntar à panela quando a água estiver a ferver; deixar cozer 20–30 minutos
+1. Numa panela, pôr água ao lume com 1 colher de chá de sal; cortar 6 batatas médias, 4 cenouras, 1 cebola e 2 dentes de alho aos cubos e juntar à panela quando a água estiver a ferver; deixar cozer 20–30 minutos
 2. Decorrido o tempo, passar a sopa com a varinha elétrica até ficar creme
-3. Arranjar os feijões verdes e cortar em tiras finas; cortar a cenoura fininha em rodelas fininhas; levar a cozer mais 15 minutos
-4. Opcional: no fim da cozedura, adicionar um fio de azeite
+3. Arranjar 400–500 g de feijão verde e cortar em tiras finas; cortar 1/2 cenoura fininha em rodelas fininhas; levar a cozer mais 15 minutos
+4. Opcional: no fim da cozedura, adicionar 1 colher de sopa de azeite

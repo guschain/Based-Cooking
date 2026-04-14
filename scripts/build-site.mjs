@@ -308,201 +308,9 @@ function validateRecipeIngredientQuantities(fileName, title, body) {
   }
 }
 
-const ingredientTokenStopwords = new Set([
-  "a",
-  "ao",
-  "aos",
-  "as",
-  "ate",
-  "b",
-  "base",
-  "branca",
-  "branco",
-  "brancos",
-  "brancas",
-  "cha",
-  "colher",
-  "colheres",
-  "com",
-  "como",
-  "copo",
-  "copos",
-  "cortada",
-  "cortadas",
-  "cortado",
-  "cortados",
-  "cozida",
-  "cozidas",
-  "cozido",
-  "cozidos",
-  "da",
-  "das",
-  "de",
-  "dl",
-  "do",
-  "dos",
-  "e",
-  "em",
-  "fase",
-  "fio",
-  "folha",
-  "folhas",
-  "fresca",
-  "frescas",
-  "fresco",
-  "frescos",
-  "g",
-  "grande",
-  "grandes",
-  "inteira",
-  "inteiras",
-  "inteiro",
-  "inteiros",
-  "kg",
-  "l",
-  "lata",
-  "latas",
-  "mais",
-  "meia",
-  "meias",
-  "meio",
-  "meios",
-  "media",
-  "medias",
-  "medio",
-  "medios",
-  "mistura",
-  "ml",
-  "molho",
-  "opcional",
-  "os",
-  "ou",
-  "outra",
-  "outras",
-  "outro",
-  "outros",
-  "pacote",
-  "pacotes",
-  "para",
-  "pequena",
-  "pequenas",
-  "pequeno",
-  "pequenos",
-  "picada",
-  "picadas",
-  "picado",
-  "picados",
-  "pitada",
-  "pouco",
-  "punhado",
-  "q",
-  "qb",
-  "ralada",
-  "raladas",
-  "ralado",
-  "ralados",
-  "restante",
-  "saco",
-  "sacos",
-  "saqueta",
-  "saquetas",
-  "sem",
-  "servir",
-  "sopa",
-  "tipo",
-  "um",
-  "uma",
-  "verde",
-  "verdes",
-  "vermelha",
-  "vermelhas",
-  "vermelho",
-  "vermelhos"
-]);
-
 function extractGroupLabel(line) {
   const match = line.trim().match(/^\*\*(.+?)\*\*$/);
   return match ? match[1].trim() : "";
-}
-
-function buildIngredientTokens(text) {
-  const cleaned = normalise(text)
-    .toLowerCase()
-    .replace(/\([^)]*\)/g, " ")
-    .replace(/[0-9]+(?:[.,/-][0-9]+)*/g, " ")
-    .replace(/[^\p{L}\s]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  const tokens = [];
-  const seen = new Set();
-
-  for (const token of cleaned.split(" ")) {
-    if (!token) {
-      continue;
-    }
-
-    if (ingredientTokenStopwords.has(token)) {
-      continue;
-    }
-
-    if (token.length < 4 && !["mel", "ovo", "sal"].includes(token)) {
-      continue;
-    }
-
-    if (!seen.has(token)) {
-      tokens.push(token);
-      seen.add(token);
-    }
-
-    if (token.endsWith("s") && token.length > 4) {
-      const singularToken = token.slice(0, -1);
-
-      if (!seen.has(singularToken)) {
-        tokens.push(singularToken);
-        seen.add(singularToken);
-      }
-    }
-
-    if (tokens.length >= 2) {
-      break;
-    }
-  }
-
-  return tokens;
-}
-
-function parseIngredientItems(lines) {
-  const items = [];
-  let currentGroup = "";
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    const groupLabel = extractGroupLabel(trimmed);
-
-    if (groupLabel) {
-      currentGroup = groupLabel;
-      continue;
-    }
-
-    const match = trimmed.match(/^- (.*)$/);
-
-    if (!match) {
-      continue;
-    }
-
-    const text = match[1].trim();
-    const tokens = buildIngredientTokens(text);
-
-    items.push({
-      text,
-      group: currentGroup,
-      groupKey: normalise(currentGroup).toLowerCase(),
-      tokens,
-      keyToken: tokens[0] || text
-    });
-  }
-
-  return items;
 }
 
 function parsePreparationBlocks(lines) {
@@ -544,48 +352,7 @@ function parsePreparationBlocks(lines) {
   return blocks;
 }
 
-function findStepIngredients(stepText, stepGroup, ingredientItems) {
-  const normalisedStep = normalise(stepText)
-    .toLowerCase()
-    .replace(/[^\p{L}\d\s]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  const paddedStep = ` ${normalisedStep} `;
-  const stepGroupKey = normalise(stepGroup || "").toLowerCase();
-  const referencedGroups = new Set(
-    ingredientItems
-      .map((item) => item.groupKey)
-      .filter(Boolean)
-      .filter((groupKey) => normalisedStep.includes(groupKey))
-  );
-  const matches = new Map();
-
-  if (normalisedStep.includes("todos os ingredientes")) {
-    if (referencedGroups.size) {
-      return ingredientItems.filter((item) => referencedGroups.has(item.groupKey));
-    }
-
-    if (stepGroupKey) {
-      return ingredientItems.filter((item) => item.groupKey === stepGroupKey);
-    }
-
-    return ingredientItems.filter((item) => !/opcional/i.test(item.text));
-  }
-
-  for (const item of ingredientItems) {
-    if (item.tokens.some((token) => paddedStep.includes(` ${token} `))) {
-      matches.set(item.keyToken || item.text, item);
-    }
-  }
-
-  if (!matches.size && referencedGroups.size) {
-    return ingredientItems.filter((item) => referencedGroups.has(item.groupKey));
-  }
-
-  return [...matches.values()];
-}
-
-function renderPreparationMarkup(lines, ingredientItems) {
+function renderPreparationMarkup(lines) {
   const blocks = parsePreparationBlocks(lines);
 
   if (!blocks.length) {
@@ -622,14 +389,7 @@ function renderPreparationMarkup(lines, ingredientItems) {
       listOpen = true;
     }
 
-    const relatedIngredients = findStepIngredients(block.text, block.group, ingredientItems);
-    const relatedMarkup = relatedIngredients.length
-      ? `<p class="step-ingredients"><span>Usar aqui:</span> ${relatedIngredients
-          .map((item) => renderInline(item.text))
-          .join(" · ")}</p>`
-      : "";
-
-    html += `<li><p>${renderInline(block.text)}</p>${relatedMarkup}</li>`;
+    html += `<li><p>${renderInline(block.text)}</p></li>`;
   }
 
   closeList();
@@ -655,7 +415,6 @@ function buildStructuredSections(body) {
     preparationHtml: "",
     notesHtml: "",
     extraSections: [],
-    ingredientItems: [],
     preparationLines: [],
     ingredientCount: 0,
     stepCount: 0
@@ -673,7 +432,6 @@ function buildStructuredSections(body) {
 
     if (type === "ingredients") {
       structured.ingredientsHtml = appendHtml(structured.ingredientsHtml, html);
-      structured.ingredientItems.push(...parseIngredientItems(section.lines));
       structured.ingredientCount += countMatchingLines(section.lines, /^- /);
       continue;
     }
@@ -695,10 +453,7 @@ function buildStructuredSections(body) {
     });
   }
 
-  structured.preparationHtml = renderPreparationMarkup(
-    structured.preparationLines,
-    structured.ingredientItems
-  );
+  structured.preparationHtml = renderPreparationMarkup(structured.preparationLines);
 
   return structured;
 }

@@ -30,15 +30,15 @@ image: images/recipe-placeholder.svg
 - 1 limão espremido
 
 #### Preparação
-1. Misture sal, cominho, coentro, paprika, pimenta caiena, açafrão e garam masala numa tigela.
-2. Corte o frango em pedaços.
+1. Misture 2 colheres de chá de sal kosher, 1/2 colher de chá de cominho moído, 1 colher de chá de coentro moído, 2 colheres de chá de paprika, 1/2 colher de chá de pimenta caiena, 1/2 colher de chá de açafrão moído e 2 colheres de chá de garam masala numa tigela.
+2. Corte 2 kg de peito de frango em pedaços.
 3. Transfira o frango para uma tigela. Adicione o óleo e cerca de 1/2 da mistura de especiarias e misture.
 4. Cubra com filme de plástico e deixe marinar por 4 a 12 horas no frigorífico.
 5. Aqueça 1 colher de sopa de manteiga em fogo alto até derreter e dourar. Adicione o frango numa camada única.
 6. Cozinhe até dourar, 4 a 5 minutos de cada lado. Retorne o frango e o molho acumulado para a tigela.
-7. Aqueça a manteiga restante na mesma panela em fogo médio-alto. Adicione a cebola, a mistura de especiarias restante, a pasta de tomate, o alho e o gengibre.
+7. Aqueça a colher de sopa de manteiga restante na mesma panela em fogo médio-alto. Adicione 1 cebola picada, a mistura de especiarias restante, 2 colheres de massa de tomate, 4 dentes de alho picados e 1 colher de sopa de raiz de gengibre fresco picado.
 8. Cozinhe e mexa, 2 a 3 minutos.
-9. Despeje o caldo de galinha e leve para ferver. Adicione o frango com o molho.
-10. Misture a água e as castanhas de caju no liquidificador. Misture em alta velocidade até ficar homogéneo.
+9. Despeje 240 ml de caldo de galinha e leve para ferver. Adicione o frango com o molho.
+10. Misture 480 ml de água fria e cerca de 100 g de castanha de caju inteira torrada no liquidificador. Bata em alta velocidade até ficar homogéneo.
 11. Misture o creme de caju na panela. Reduza o fogo para médio e cozinhe até que os sabores se misturem, 15 a 20 minutos.
-12. Junte a cebolinha e o coentro. Esprema o sumo de limão.
+12. Junte 80 ml de cebolinha verde fatiada e 80 ml de coentro fresco picado. Esprema 1 limão.

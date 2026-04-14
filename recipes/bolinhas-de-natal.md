@@ -11,7 +11,7 @@ image: images/bolinhas-de-natal.jpg
 - 1 copo de coco ralado
 
 #### Preparação
-1. Misturar o leite condensado (frio) com as bolachas trituradas
+1. Misturar 1 lata de leite condensado cozido (395 g), bem fria, com 250 g de bolacha Maria triturada
 2. Fazer bolinhas com a mão
-3. Colocar cada bolinha no coco e rodar até ficar completamente coberta
+3. Colocar cada bolinha no 1 copo de coco ralado e rodar até ficar completamente coberta
 4. Colocar no frigorífico durante 20–30 minutos

@@ -16,9 +16,9 @@ image: images/bolachas-de-canela-e-mel.jpg
 - Raspa de 1 limão
 
 #### Preparação
-1. Misturar a manteiga com o açúcar.
-2. Juntar os ovos e misturar novamente.
-3. Adicionar a farinha, fermento, canela, mel e raspas de limão.
+1. Misturar 340 g de manteiga com 425 g de açúcar.
+2. Juntar 3 ovos e misturar novamente.
+3. Adicionar 638 g de farinha, 3 colheres (chá) de fermento, 3 colheres (chá) de canela, 6 colheres (sopa) de mel e a raspa de 1 limão.
 4. Amassar até obter uma massa homogénea.
 5. Formar uma bola e deixar descansar 15 minutos.
 6. Pré-aquecer o forno a 180ºC.

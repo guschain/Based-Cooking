@@ -19,4 +19,4 @@ image: images/recipe-placeholder.svg
 - 2 cebolinhas verdes picadas e 1 colher de sopa de sementes de sésamo para cobertura
 
 #### Preparação
-1. Depois de fazer a parte da carne, misturar a massa escorrida na frigideira da carne
+1. Depois de fazer a parte da carne, misturar os 170 g de massa escorrida na frigideira com os 500 g de carne picada magra.

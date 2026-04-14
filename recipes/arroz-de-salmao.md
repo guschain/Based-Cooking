@@ -19,10 +19,10 @@ image: images/recipe-placeholder.svg
 - Molho picante q.b. para servir
 
 #### Preparação
-1. Misture o gengibre, a soja e o vinagre e reserve.
-2. Aqueça uma panela grande ou wok e adicione 1 colher de sopa de óleo, os legumes e o salmão.
+1. Misture 15 g de gengibre fresco ralado, 1 a 2 dentes de alho ralados, 2 colheres de sopa de molho de soja e 1/2 colher de sopa de vinagre de arroz ou vinho de xerez; reserve.
+2. Aqueça uma panela grande ou wok e adicione 1 colher de sopa de óleo, 1 cenoura grande, 1 pacote de 175 g de milho baby e mangetout ou ervilhas picadas e 2 postas de salmão sem pele.
 3. Frite o salmão por 2 minutos de cada lado até começar a ficar opaco.
-4. Junte o arroz e mexa, lascando o peixe em pedaços grandes. Reserve noutro recipiente.
-5. Adicione o óleo restante à panela, quebre os ovos e mexa.
-6. Quando feito, misture o arroz e regue com a marinada de soja.
-7. Tempere e deixe borbulhar por mais alguns minutos, para que todo o arroz fique coberto pelo molho.
+4. Junte 250 g de arroz basmati cozido e mexa, lascando o peixe em pedaços grandes. Reserve noutro recipiente.
+5. Adicione a 1 colher de sopa de óleo restante à panela, quebre 2 ovos e mexa.
+6. Quando os ovos estiverem cozinhados, misture os 250 g de arroz reservado e regue com toda a marinada reservada.
+7. Tempere e deixe borbulhar por mais alguns minutos, para que o arroz fique bem envolvido. Sirva de imediato.

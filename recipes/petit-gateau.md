@@ -17,9 +17,9 @@ image: images/recipe-placeholder.svg
 - 1 a 2 colheres de sopa de chocolate em pó para polvilhar as formas
 
 #### Preparação
-1. Levar a banho-maria o chocolate e a manteiga (em cubos)
-2. Numa taça, juntar ovos, gemas, farinha e açúcar; bater com as varas
-3. Juntar o chocolate derretido à mistura anterior e bater com as varas
-4. Untar as formas com um pouco de margarina ou óleo e polvilhar com chocolate em pó
+1. Levar a banho-maria 300 g de chocolate meio amargo e 250 g de manteiga sem sal, em cubos
+2. Numa taça, juntar 5 ovos inteiros, 5 gemas, 100 g de farinha de trigo e 170 g de açúcar; bater com as varas
+3. Juntar os 300 g de chocolate derretido à mistura anterior e bater com as varas
+4. Untar as formas com margarina ou óleo q.b. e polvilhar com 1 a 2 colheres de sopa de chocolate em pó
 5. Adicionar a massa às formas (umas colheres por forma) e levar ao forno pré-aquecido a 200ºC durante 5 minutos
-6. Polvilhar com açúcar em pó e servir com gelado de baunilha
+6. Polvilhar com açúcar em pó a gosto, usando até 50 g, e servir com gelado de baunilha

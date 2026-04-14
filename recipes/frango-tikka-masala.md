@@ -44,7 +44,7 @@ image: images/recipe-placeholder.svg
 
 #### Preparação
 **Temperar carne**
-1. Cortar o peito de frango em pedaços. Seque com guardanapos.
+1. Cortar 650 g de peito de frango em pedaços. Secar com guardanapos.
 2. Adicionar: 1/2 a 1 colher de chá de pimenta vermelha em pó; 1 colher de chá de garam masala; 1/2 colher de chá de cominho em pó; 1 colher de chá de coentro em pó; 1/4 colher de chá de açafrão; 1/2 colher de chá de sal.
 3. Adicione 1 colher de sopa de sumo de limão e 1 colher de sopa de óleo. Para sabores autênticos, use óleo de mostarda.
 4. Adicione 1 colher de sopa de pasta de alho e gengibre e 1 colher de sopa de kasuri methi (folhas de feno-grego secas).
@@ -58,12 +58,12 @@ image: images/recipe-placeholder.svg
 4. Mexa bem rapidamente.
 5. Despeje imediatamente o puré de tomate (polpa) (60 ml de polpa).
 6. Cozinhe em fogo médio-alto, até que o masala engrosse. Enquanto isso, leve 480 ml de água a ferver.
-7. Quando o tikka masala estiver grosso, despeje a água quente e misture.
+7. Quando o tikka masala estiver grosso, despeje 480 ml de água quente e misture.
 8. Cubra e cozinhe em lume baixo até que o molho fique espesso.
 
 **Grelhe o frango**
-1. Enquanto o tikka masala cozinha, grelhe o tikka de frango.
-2. Espete o frango nos espetos e coloque-os num tabuleiro.
+1. Enquanto o tikka masala cozinha, grelhe os 650 g de tikka de frango marinado.
+2. Espete os 650 g de frango marinado nos espetos e coloque-os num tabuleiro.
 3. Coloque a bandeja forrada com papel de alumínio na prateleira do meio do forno, pré-aquecido a 240 ºC, por 9 a 10 min.
 4. Vire as espetadas e deixe cozinhar por mais 9 a 10 min. Se ficarem secos, regue com a marinada.
 
