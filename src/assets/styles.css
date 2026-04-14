@@ -700,6 +700,17 @@ p {
   border-top: 1px solid var(--line);
 }
 
+.content-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+  font-weight: 600;
+}
+
+.content-link:hover {
+  color: var(--accent-strong);
+}
+
 .related-filmstrip {
   display: grid;
   grid-auto-flow: column;
