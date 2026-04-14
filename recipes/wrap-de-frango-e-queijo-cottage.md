@@ -13,8 +13,8 @@ image: images/wrap-de-frango-e-queijo-cottage.jpg
 - 100 g de queijo da ilha de São Jorge ralado
 - 85 g de espinafres salteados
 - 60 g de peito de frango cozinhado e desfiado ou em pedaços
-- tomate cherry (opcional)
-- molho de iogurte grego e limão (opcional)
+- 2 tomate cherry (opcional)
+- 5 ml molho de iogurte grego e limão
 
 #### Preparacao
 1. Adicionar ao liquidificador os ovos, o queijo cottage light, o sal e o tempero de cebola e alho.
