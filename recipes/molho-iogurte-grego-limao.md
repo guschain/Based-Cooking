@@ -1,7 +1,7 @@
 ---
 title: Molho de Iogurte Grego e Limão
 category: Molhos e temperos
-tags: molhos-e-temperos, molho, iogurte-grego, limao, salsa
+tags: molhos-e-temperos, molho, iogurte-grego, limao, salsa, perda-peso
 image: images/molho-iogurte-grego-limao.jpg
 ---
 
