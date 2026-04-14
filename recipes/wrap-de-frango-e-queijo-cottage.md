@@ -1,7 +1,7 @@
 ---
 title: Wrap de Frango e Queijo Cottage
 category: Pratos principais
-tags: pratos-principais, frango, forno
+tags: pratos-principais, frango, forno, perda-peso
 image: images/wrap-de-frango-e-queijo-cottage.jpg
 ---
 
